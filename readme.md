@@ -8,10 +8,10 @@ Web application that evaluates english pronunciation using AI and provides pract
 
 ## Getting Started
 
-###  Git ignore
+###  1. Create a git ignore file
 
 Please create a `.gitignore` file with the following contents:
-`
+```
 env
 **/datasets/*
-`
+```
