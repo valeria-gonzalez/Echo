@@ -32,7 +32,7 @@ All the original resources were obtained from [tatoeba.org](https://tatoeba.org/
 - **Section: Sentences with audio**
 
   - **File Description:** Contains the ids of the sentences, in all languages, for which audio is available.
-  - **Origin Filename:** `sentences_with_audio.tar.csv`
+  - **Origin Filename:** `sentences_with_audio.csv`
   - **Filename Notebook:** Same
   - **Fields and structure:** Sentence id [tab] Audio id [tab] Username [tab] License [tab] Attribution URL
 
