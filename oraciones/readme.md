@@ -36,3 +36,23 @@ All the original resources were obtained from [tatoeba.org](https://tatoeba.org/
   - **Filename Notebook:** Same
   - **Fields and structure:** Sentence id [tab] Audio id [tab] Username [tab] License [tab] Attribution URL
 
+###  Generating Files
+
+The `sentence_audios.ipynb` file must be executed before the `sentence_translations.ipynb` file. 
+
+To save the final clean datasets, uncomment the final block of code in both notebooks. The resulting files will be:
+
+- **Filename:** `english_audio_sen.csv`
+
+  - **File Description:** Contains all the english sentences under the creative commons license that have an audio file. 
+  - **Fields and structure:** id,audio_id,username,license,attribution_url
+
+- **Filename:** `eng_spa_audio_sentences.csv`
+
+  - **File Description:** Contains all the english sentences that have an audio file and a spanish translation. 
+  - **Fields and structure:** eng_id,eng_sentence,spa_id,spa_sen,audio_id
+
+All the ids that are referenced are those provided by the tatoeba database.
+
+###  Note
+Do not upload the files to the git repository.
