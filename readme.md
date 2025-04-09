@@ -20,7 +20,16 @@ If you are creating your branch from your terminal, just remember to:
 2. Update your main branch with `git fetch origin`.
 3. Create your branch as `git checkout -b your_branch`.
 
-   3.1 Name your branch with the following convention `IssueNumber-description-of-issue`.
+   3.1 Name your branch with the following convention `IssueNumber-description-of-issue`. Example: `2-process-words`
+
+If you created your branch from github, use the following to make sure you're where you need to be:
+
+```
+git checkout main
+git fetch origin
+git checkout your_branch
+git branch
+```
 
 ###  3. Save all data to a folder named dataset
 Please save all of your data (such as .csv, .zip files) that aren't directly related to the data processing scripts in a folder named `datasets`. The `.gitignore` file will ignore it no matter where it is.
