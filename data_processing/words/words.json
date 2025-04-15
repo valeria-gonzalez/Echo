@@ -1,0 +1,57 @@
+{
+    "dictionary": {
+        "definitions": {
+            "noun": [
+                "A synchronic dictionary of a standardised language held to only contain words that are properly part of the language.",
+                "An associative array, a data structure where each value is referenced by a particular key, analogous to words and definitions in a dictionary (sense 1).",
+                "A reference work with a list of words from one or more languages, normally ordered alphabetically, explaining each word's meanings (senses), and sometimes also containing information on its etymology, pronunciation, usage, semantic relations, and translations, as well as other data.",
+                "Any work that has a list of material organized alphabetically; e.g., biographical dictionary, encyclopedic dictionary."
+            ],
+            "verb": [
+                "To look up in a dictionary.",
+                "To compile a dictionary.",
+                "To add to a dictionary."
+            ]
+        },
+        "ipa": "/\u02c8d\u026ak.\u0283\u0259.n\u0259.\u0279i/",
+        "mp3_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/En-uk-dictionary.ogg/En-uk-dictionary.ogg.mp3",
+        "translation": "diccionario"
+    },
+    "free": {
+        "definitions": {
+            "adj": [
+                "Unattached or uncombined.",
+                "With no or only freedom-preserving limitations on distribution or modification.",
+                "Upholding individual rights.",
+                "To be enjoyed by anyone freely.",
+                "Complimentary.",
+                "Clear of offence or crime; guiltless; innocent.",
+                "Unconstrained of identifiers, not bound.",
+                "Of a rocket or missile: not under the control of a guidance system after being launched.",
+                "Not attached; loose.",
+                "In any of various technical senses generic, universal.",
+                "Unconstrained.",
+                "Not currently in use; not taken; unoccupied.",
+                "Unobstructed, without blockages.",
+                "Such that any map f from X to the underlying set of an object A in the same category as F induces a map \u0304f from F to A which is compatible with f (i.e. such that f=\u0304f\u2218i).",
+                "Not imprisoned or enslaved.",
+                "Having a linearly independent set of generators (called a basis).",
+                "Ready; eager; acting without spurring or whipping; spirited.",
+                "(of a morpheme) That can be used by itself, unattached to another morpheme.",
+                "Intended for release, as opposed to a checked version.",
+                "Privileged or individual; proprietary.",
+                "Obtainable without any payment.",
+                "Certain or honourable; the opposite of base.",
+                "Without; not containing (what is specified); exempt; clear; liberated.",
+                "Without obligations.",
+                "Having a set of generators which satisfy no non-trivial relations; equivalently, being the group of reduced words on a set of generators.",
+                "Invested with a particular freedom or franchise; enjoying certain immunities or privileges; admitted to special rights; followed by of.",
+                "Unconstrained by quantifiers.",
+                "Generous; liberal."
+            ]
+        },
+        "ipa": "/f\u0279i\u02d0/",
+        "mp3_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c9/En-uk-free.ogg/En-uk-free.ogg.mp3",
+        "translation": "libre"
+    }
+}
