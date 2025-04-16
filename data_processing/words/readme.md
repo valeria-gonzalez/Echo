@@ -1,13 +1,16 @@
-# Words preprocessing
+# Word preprocessing
 
-Extract relevant information obtained from different files obtained from Tatoeba.org pertaining to english sentences, their spanish translation and audio files for the Echo english pronunciation evaluation app. 
+Extract relevant information pertaining to english words provided by the  from Tatoeba.org and save them into a single file for the Echo English Pronunciation Evaluation App. 
 
 ## Description
 
-In order to provide practice sentences for the project, information obtained from different files must be extracted to only save relevant fields. These fields will mainly be:
+In order to provide practice sentences for the project, information obtained from different files must be extracted. 
+
+The data of main relevance for sentences is:
+
 - English Sentence
 - Spanish Sentence
-- Audio Link
+- Link to audio pronunciation
 
 ## Getting Started
 
