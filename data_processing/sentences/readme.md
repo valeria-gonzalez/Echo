@@ -2,20 +2,23 @@
 
 ## Objective
 
-In order to provide practice sentences for the project, relevant information pertaining to english sentences provided by different files obtained from Tatoeba.org must be extracted and saved into a single file.
+In order to provide practice sentences for the project, relevant information pertaining to english sentences provided by different files from Tatoeba.org must be extracted and saved into a single file.
 
 The needed information for a sentence is the following:
 
-- English Sentence
-- Spanish Sentence
+- English sentence
+- Spanish sentence translation
 - Link to audio pronunciation
 
 ## What is Tatoeba?
+
 Tatoeba is a large database of sentences and translations. Its content is ever-growing and results from the voluntary contributions of thousands of members.
 
 Tatoeba provides a tool for you to see examples of how words are used in the context of a sentence. You specify words that interest you, and it returns sentences containing these words with their translations in the desired languages.
 
 Special thanks and acknowledgments to Tatoeba.
+
+[Click here for more information](https://tatoeba.org/en/about).
 
 ## Dataset description
 

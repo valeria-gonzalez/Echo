@@ -1,61 +1,131 @@
 # Word preprocessing
 
-Extract relevant information pertaining to english words provided by the  from Tatoeba.org and save them into a single file for the Echo English Pronunciation Evaluation App. 
+## Objective
 
-## Description
+In order to provide practice words for the project, relevant information pertaining to english words must be extracted from the raw Wiktionary data dump provided by Wikiextract. 
 
-In order to provide practice sentences for the project, information obtained from different files must be extracted. 
+Since the data file is very large, the objective of this step is not to unify all the entries in a single file, but to extract a specified amount of words and save a set amount of words per JSON file. This is entirely up to the user's choosing. 
 
-The data of main relevance for sentences is:
+The needed information for a word is the following:
 
-- English Sentence
-- Spanish Sentence
-- Link to audio pronunciation
+- English word
+- Spanish word translation
+- Word definitions
+- IPA pronunciation
+- Audio pronunciation file
+
+## What is Wikiextract?
+
+Wikiextract is a Python package and tool for extracting information from various Wiktionary data dumps, most notably and completely the English edition (enwiktionary). 
+
+The English edition extraction 'module' extracts glosses, parts-of-speech, declension/conjugation information when available, translations for all languages when available, pronunciations (including audio file links), qualifiers including usage notes, word forms, links between words including hypernyms, hyponyms, holonyms, meronyms, related words, derived terms, compounds, alternative forms, etc.
+
+Special thanks and acknowledgments to Wikiextract.
+
+[Click here for more information.](https://github.com/tatuylonen/wiktextract)
+
+## Dataset description
+
+Wikiextract offers a pre-expanded data JSONL file for easier use, which is what is used for this project. The file can be obtained from the [Raw data downloads extracted from Wiktionary](https://kaikki.org/dictionary/rawdata.html).
+
+The file to download is under the link: "Download raw Wiktextract data (JSONL, one object per line) (18.8GB) or compressed .gz (2.2GB)"
+
+Please download the compressed version.
+
+The resulting file is in a JSONL format, which has one JSON object per line. Given the large size of the file, this makes it much easier to process the data line-by-line.
+
+**Disclaimer:** If you try to open the file in a preview mode, it most probably will not work.
+
+### Format of the extracted word entries
+---
+
+The information returned for each word is a dictionary. The keys used in the dictionary has the following keys:
+
+- `word`: (string) The word form.
+
+- `pos` : (string) Part of speech, such as "noun", "verb", "adj", "adv", "pron", "determiner", "prep" (preposition), "postp" (postposition), and many others.
+
+- `lang` : (string) Name of the language this word belongs to (e.g., English).
+
+- `senses` : (list of dictionaries) List of word senses for this word/part-of-speech. Each word entry may have multiple glosses under the senses key. Each sense is a dictionary, the keys used were: 
+
+  - `glosses`: (list of strings) List of glosses for the word.
+
+- `sounds` : (list of dictionaries) Contains pronunciation, hyphenation, rhyming, and related information in multiple dictionaries. The keys used were:
+
+  - `ipa` : (string) pronunciation specifications as an IPA string /.../ or [...]
+
+  - `mp3_url` : (string) URL for an MP3 format sound file
+
+
+- `translations`: (list of dictionaries) Non-disambiguated translation entries. The translations are stored in a list of dictionaries, the keys used were:
+
+  - `lang` : the language name that the translation is for.
+
+  - `word` : the translation in the specified language (may be missing when `note` is present)
+
 
 ## Getting Started
 
-###  Download files
+### 1. Install needed libraries
+---
 
-All the original resources were obtained from [tatoeba.org](https://tatoeba.org/en/downloads). In order to execute this notebook, please download the following files and save them in a directory named `datasets`:
+For this section, the following modules were used:
+- ipykernel
+- ipython
+- json
+- uuid
+- collections
 
-- **Section: Sentence pairs**
+These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
 
-  - **File Description:** All sentences in language A that are translated into language B, along with the translations (download English - Spanish).
-  - **Origin Filename:** `Sentence pairs in English-Spanish -YYYY-MM-DD.tsv`
-  - **Filename Notebook:** `engspa_translations.tsv`
-  - **Fields and structure:** Sentence id [tab] Text [tab] Translation_id [tab] Text
+To install using the `requirements.txt`use:
 
-- **Section: Sentences (CC0)**
+```
+pip install -r requirements.txt
+```
 
-  - **File Description:** Contains all the sentences available under CC0 (Download two files, only sentences in Spanish and in English).
-  - **Origin Filename:** `{eng/spa}_sentences_CC0.tsv`
-  - **Filename Notebook:** Same
-  - **Fields and structure:** Sentence id [tab] Lang [tab] Text [tab] Date last modified
+###  2. Download required files
+---
 
-- **Section: Sentences with audio**
+ In order to execute this notebook, please download the necessary file described above and save it in a directory named `datasets`.
 
-  - **File Description:** Contains the ids of the sentences, in all languages, for which audio is available.
-  - **Origin Filename:** `sentences_with_audio.csv`
-  - **Filename Notebook:** Same
-  - **Fields and structure:** Sentence id [tab] Audio id [tab] Username [tab] License [tab] Attribution URL
+ Needed file:
 
-###  Generating Files
+ - `raw-wiktextract-data.jsonl`
 
-The `sentence_audios.ipynb` file must be executed before the `sentence_translations.ipynb` file. 
+###  3. Execute `word_processing.ipynb`
+---
 
-To save the final clean datasets, uncomment the final block of code in both notebooks. The resulting files will be:
+Before executing the cells, feel free to change the parameters for the `process_words_from_file` function. 
 
-- **Filename:** `english_audio_sen.csv`
+This function extracts up to `max_words` entries from a JSONL file, saving them in batches of `batch_size` entries per output JSON file.
 
-  - **File Description:** Contains all the english sentences under the creative commons license that have an audio file. 
-  - **Fields and structure:** id,audio_id,username,license,attribution_url
+For example, if the parameters are `max_words=10000` and `batch_size=2000`, five JSON files with 2000 words per file will be generated. 
 
-- **Filename:** `eng_spa_audio_sentences.csv`
+This is done so that the user can decide how large they want the resulting files to be. 
 
-  - **File Description:** Contains all the english sentences that have an audio file and a spanish translation. 
-  - **Fields and structure:** eng_id,eng_sentence,spa_id,spa_sen,audio_id
+**Disclaimer:** If no parameters are given, the function will read the whole JSONL file and save the words in batches of 5000 words.
 
-All the ids that are referenced are those provided by the tatoeba database.
+After specifying these parameters, please execute all the `word_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
 
-###  Note
-Do not upload the files to the git repository.
+
+#### Final file description
+
+The resulting files after execution will be named `words-{unique_identifier}.json`. It will contain the amount of specified english words with their definitions depending on the part of speech, a list of spanish translations and an audio file link.
+
+The file has the following keys:
+
+- `word` : (string) The english word
+
+- `definitions` : (list of dictionaries) A list of dictionaries with the definitions of a word according to its part of speech. It has the following keys:
+
+  - `pos`: (string) Part of speech, such as "noun", "verb", "adj", "adv", "pron", "determiner", "prep" (preposition), "postp" (postposition), and many others.
+
+  - `definitions`: (list of strings) List of definitions.
+
+- `ipa` : (string) pronunciation specifications as an IPA string 
+
+- `mp3_url` : (string) URL for an MP3 format sound file
+
+- `translations` : (list of strings) Spanish translations of the word
