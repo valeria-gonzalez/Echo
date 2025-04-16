@@ -10,14 +10,14 @@ The needed information for a sentence is the following:
 - Spanish Sentence
 - Link to audio pronunciation
 
-### What is Tatoeba?
+## What is Tatoeba?
 Tatoeba is a large database of sentences and translations. Its content is ever-growing and results from the voluntary contributions of thousands of members.
 
 Tatoeba provides a tool for you to see examples of how words are used in the context of a sentence. You specify words that interest you, and it returns sentences containing these words with their translations in the desired languages.
 
 Special thanks and acknowledgments to Tatoeba.
 
-### Dataset description
+## Dataset description
 
 All the files used in this project were obtained from [tatoeba.org/downloads](https://tatoeba.org/en/downloads).
 
@@ -30,10 +30,11 @@ For the information needed for this project, the following files were used:
   - **File Description:** All sentences in language A that are translated into language B, along with the translations (download English - Spanish).
   - **Origin Filename:** `Sentence pairs in English-Spanish -YYYY-MM-DD.tsv`
   - **Fields and structure:** Sentence id [tab] Text [tab] Translation_id [tab] Text
+  - **Note:** When downloading, please rename as `Sentence pairs in English-Spanish.tsv`
 
 - **Category: Sentences (CC0)**
 
-  - **File Description:** Contains all the sentences available under CC0 in a specific language.
+  - **File Description:** Contains all the sentences available under Creative Commons Zero (CC0) license in a specific language.
   - **Origin Filename:** `{eng/spa}_sentences_CC0.tsv`
   - **Fields and structure:** Sentence id [tab] Lang [tab] Text [tab] Date last modified
   - **Note:** Two files from this category are generated under the option "only sentences in Spanish" and "only sentences in English".
@@ -47,30 +48,51 @@ For the information needed for this project, the following files were used:
 
 ## Getting Started
 
-###  1. Download files
+### 1. Install needed libraries
+
+For this section, the following modules were used:
+- pandas 
+- ipykernel
+- ipython
+
+These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
+
+To install using the `requirements.txt`use:
+
+```
+pip install -r requirements.txt
+```
+
+###  2. Download required files
 
  In order to execute this notebook, please download the necessary files described above and save them in a directory named `datasets`.
 
  Needed files:
- - `Sentence pairs in English-Spanish -YYYY-MM-DD.tsv`
 
-###  Generating Files
+ - `Sentence pairs in English-Spanish.tsv`
+ - `eng_sentences_CC0.tsv`
+ - `spa_sentences_CC0.tsv`
+ - `sentences_with_audio.csv`
 
-The `sentence_audios.ipynb` file must be executed before the `sentence_translations.ipynb` file. 
+###  3. Execute `sentence_preprocessing.ipynb`
 
-To save the final clean datasets, uncomment the final block of code in both notebooks. The resulting files will be:
+Please execute the `sentence_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
 
-- **Filename:** `english_audio_sen.csv`
+#### Final file description
 
-  - **File Description:** Contains all the english sentences under the creative commons license that have an audio file. 
-  - **Fields and structure:** id,audio_id,username,license,attribution_url
+The resulting file after execution will be named `eng_spa_audio_sentences.csv`. It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+
+The csv file is separated by commas as a delimiter. The file has the following fields:
+
+- `eng_id` : Id of the english sentence in Tatoeba
+- `eng_sentence` : Text of english sentence
+- `spa_id` : Id of the spanish translation of the sentence in Tatoeba
+- `spa_sentence` : Text of spanish translation sentence
+- `audio_id` : Id of the audio pronunciation file of the english sentence
+
+Below is the file description:
 
 - **Filename:** `eng_spa_audio_sentences.csv`
 
   - **File Description:** Contains all the english sentences that have an audio file and a spanish translation. 
   - **Fields and structure:** eng_id,eng_sentence,spa_id,spa_sen,audio_id
-
-All the ids that are referenced are those provided by the tatoeba database.
-
-###  Note
-Do not upload the files to the git repository.
