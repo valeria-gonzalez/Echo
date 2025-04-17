@@ -37,7 +37,6 @@ The resulting file is in a JSONL format, which has one JSON object per line. Giv
 **Disclaimer:** If you try to open the file in a preview mode, it most probably will not work.
 
 ### Format of the extracted word entries
----
 
 The information returned for each word is a dictionary. The keys used in the dictionary has the following keys:
 
@@ -68,7 +67,6 @@ The information returned for each word is a dictionary. The keys used in the dic
 ## Getting Started
 
 ### 1. Install needed libraries
----
 
 For this section, the following modules were used:
 - ipykernel
@@ -86,7 +84,6 @@ pip install -r requirements.txt
 ```
 
 ###  2. Download required files
----
 
  In order to execute this notebook, please download the necessary file described above and save it in a directory named `datasets`.
 
@@ -95,7 +92,6 @@ pip install -r requirements.txt
  - `raw-wiktextract-data.jsonl`
 
 ###  3. Execute `word_processing.ipynb`
----
 
 Before executing the cells, feel free to change the parameters for the `process_words_from_file` function. 
 
@@ -108,7 +104,6 @@ This is done so that the user can decide how large they want the resulting files
 **Disclaimer:** If no parameters are given, the function will read the whole JSONL file and save the words in batches of 5000 words.
 
 After specifying these parameters, please execute all the `word_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
-
 
 #### Final file description
 
