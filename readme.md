@@ -1,9 +1,19 @@
-# Echo: English Pronunciation App
+![ECHO](https://github.com/user-attachments/assets/2e313394-b87c-4e16-99ba-69796744d9ef)
+<em> English Pronunciation </em>
 
-Web application that evaluates english pronunciation using AI and provides practice resources such as words, sentences and texts with audio.
 
-## Description
+## What is echo?
 
+A web application is proposed for the evaluation and feedback of pronunciation of passive English speakers between 18 and 30 years old, using audio recordings of the speaker emulating audios and transcriptions in English used as didactic material. It will be developed as a web application, will make use of different artificial intelligence models to evaluate the audios and will store the didactic material and user information in a database.
+
+## Why is echo?
+Nowadays, mastery of the English language has become essential to have better social and work opportunities. The project seeks to attack the problem in which thousands of people find themselves, which is to learn to pronounce well, so the passive speaker will be able to use this tool to improve in the language and discover their weaknesses 
+
+## What does echo do?
+Improving the pronunciation of passive English speakers through a system that uses Artificial Intelligence models to evaluate and provide feedback on recordings of the speaker's pronunciation, emulating English audio and transcripts used as teaching materials.
+
+## What should echo look like?
+![Echo should look like a user-friendly, educational website.](https://github.com/user-attachments/assets/23378af0-6fea-4503-9528-888496f9d2ed)
 
 
 ## Getting Started
