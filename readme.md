@@ -23,7 +23,7 @@ Echo should look like a user-friendly, educational website.
 
 ## Documentation
 
-[Documentation]([https://linktodocumentation](https://docs.google.com/document/d/1B9YQfvb7I7E13JZI4Byv3aVxBOVHXdGzn8iEgpIhnzM/edit?tab=t.0#heading=h.zajcq29ck796))
+[Documentation]((https://docs.google.com/document/d/1B9YQfvb7I7E13JZI4Byv3aVxBOVHXdGzn8iEgpIhnzM/edit?tab=t.0#heading=h.zajcq29ck796))
 
 
 ## Getting Started
