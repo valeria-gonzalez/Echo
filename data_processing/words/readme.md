@@ -4,7 +4,7 @@
 
 In order to provide practice words for the project, relevant information pertaining to english words must be extracted from the raw Wiktionary data dump provided by Wikiextract. 
 
-Since the data file is very large, the objective of this step is not to unify all the entries in a single file, but to extract a specified amount of words and save a set amount of words per JSON file. This is entirely up to the user's choosing. 
+Since the data file is very large, the objective of this step is not to unify all the entries in a single file, but to extract a specified amount of words and save a set amount of words per JSONL file. This is entirely up to the user's choosing. 
 
 The needed information for a word is the following:
 
