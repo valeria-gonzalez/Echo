@@ -1,6 +1,5 @@
-![ECHO](https://github.com/user-attachments/assets/2e313394-b87c-4e16-99ba-69796744d9ef)
 <em> English Pronunciation </em>
-
+![ECHO](https://github.com/user-attachments/assets/2e313394-b87c-4e16-99ba-69796744d9ef)
 
 ## What is echo?
 
@@ -15,6 +14,11 @@ Improving the pronunciation of passive English speakers through a system that us
 ## What should echo look like?
 ![Echo should look like a user-friendly, educational website.](https://github.com/user-attachments/assets/23378af0-6fea-4503-9528-888496f9d2ed)
 
+## 👥 Authors
+
+- [Valeria González Segura](https://github.com/valeria-gonzalez)
+- [Diego Tristán Domínguez Dueñas](https://github.com/DiegoDominguez25)
+- [Alan Josafat Ramos Preciado](https://github.com/Alan-codigo)
 
 ## Getting Started
 
