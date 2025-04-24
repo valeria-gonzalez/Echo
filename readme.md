@@ -24,7 +24,6 @@ Echo should look like a user-friendly, educational website.
 ## Documentation
 
 [Documentation]([https://linktodocumentation](https://docs.google.com/document/d/1B9YQfvb7I7E13JZI4Byv3aVxBOVHXdGzn8iEgpIhnzM/edit?tab=t.0#heading=h.zajcq29ck796))
-[Resourses]([https://linktodocumentation](https://docs.google.com/document/d/1Et9c0ZzpGofkerB-mC5LdGqCwqHUKcXjMGOmZ4DnOt0/edit?tab=t.0))
 
 
 ## Getting Started
