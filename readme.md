@@ -13,6 +13,7 @@ Improving the pronunciation of passive English speakers through a system that us
 
 ## What should echo look like?
 ![Echo should look like a user-friendly, educational website.](https://github.com/user-attachments/assets/23378af0-6fea-4503-9528-888496f9d2ed)
+Echo should look like a user-friendly, educational website.
 
 ## 👥 Authors
 
