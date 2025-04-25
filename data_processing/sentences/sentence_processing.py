@@ -161,21 +161,29 @@ class TatoebaProcessor:
         clean_sentences = self.get_sentences_df()
         clean_sentences.to_csv(filepath, index=False)
         
-    def sentences_to_jsonl(self, df:pd.DataFrame):
-        sentences = list()
+    def df_to_jsonl(self, df:pd.DataFrame)->None:
+        """Write every row in a dataframe as its own json object to a JSONL file.
+
+        Args:
+            df (pd.DataFrame): Dataframe to turn into JSONL
+        """
+        # Dictionary for all instances
+        instances = list()
         columns = df.columns.tolist()
         
-        # Fill sentence dictionary
         for instance in df.values.tolist():
-            sentence = dict()
-            for key, value in zip(columns, instance):
-                sentence[key] = value
-            sentences.append(sentence)
+            # Dictionary for individual instance
+            instance_dict = dict()
             
-        # Create json object of sentence
-        json_object = json.dumps(sentences)
+            for key, value in zip(columns, instance):
+                instance_dict[key] = value
+                
+            instances.append(instance_dict)
+            
+        # Create json object of all instances
+        json_object = json.dumps(instances)
  
-        # Writing to json file
+        # Writing to jsonl file
         with open(self.json_filepath, "w") as outfile:
             outfile.write(json_object + "\n")
         
@@ -190,7 +198,7 @@ class TatoebaProcessor:
         """
         self.json_filepath = filepath
         clean_sentences = self.get_sentences_df()
-        self.sentences_to_jsonl(clean_sentences)
+        self.df_to_jsonl(clean_sentences)
         
         
         
