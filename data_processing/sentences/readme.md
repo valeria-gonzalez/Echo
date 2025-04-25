@@ -33,14 +33,12 @@ For the information needed for this project, the following files were used:
   - **File Description:** All sentences in language A that are translated into language B, along with the translations (download English - Spanish).
   - **Origin Filename:** `Sentence pairs in English-Spanish -YYYY-MM-DD.tsv`
   - **Fields and structure:** Sentence id [tab] Text [tab] Translation_id [tab] Text
-  - **Note:** When downloading, please rename as `Sentence pairs in English-Spanish.tsv`
 
 - **Category: Sentences (CC0)**
 
   - **File Description:** Contains all the sentences available under Creative Commons Zero (CC0) license in a specific language.
-  - **Origin Filename:** `{eng/spa}_sentences_CC0.tsv`
+  - **Origin Filename:** `eng_sentences_CC0.tsv`
   - **Fields and structure:** Sentence id [tab] Lang [tab] Text [tab] Date last modified
-  - **Note:** Two files from this category are generated under the option "only sentences in Spanish" and "only sentences in English".
 
 - **Section: Sentences with audio**
 
@@ -74,7 +72,6 @@ pip install -r requirements.txt
 
  - `Sentence pairs in English-Spanish.tsv`
  - `eng_sentences_CC0.tsv`
- - `spa_sentences_CC0.tsv`
  - `sentences_with_audio.csv`
 
 ###  3. Execute `sentence_preprocessing.ipynb`
@@ -83,7 +80,7 @@ Please execute the `sentence_preprocessing` notebook cells in order. This can be
 
 #### Final file description
 
-The resulting file after execution will be named `eng_spa_audio_sentences.csv`. It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+The resulting file after execution will be named `tatoeba_sentences.csv`. It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
 
 The csv file is separated by commas as a delimiter. The file has the following fields:
 
