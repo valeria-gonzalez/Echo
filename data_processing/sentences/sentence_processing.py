@@ -130,6 +130,32 @@ class TatoebaProcessor:
         
         return pd.DataFrame(data=data)
     
+    def df_to_jsonl(self, df:pd.DataFrame)->None:
+        """Write every row in a dataframe as its own json object to a JSONL file.
+
+        Args:
+            df (pd.DataFrame): Dataframe to turn into JSONL
+        """
+        # Dictionary for all instances
+        instances = list()
+        columns = df.columns.tolist()
+        
+        for instance in df.values.tolist():
+            # Dictionary for individual instance
+            instance_dict = dict()
+            
+            for key, value in zip(columns, instance):
+                instance_dict[key] = value
+                
+            instances.append(instance_dict)
+            
+        # Create json object of all instances
+        json_object = json.dumps(instances)
+ 
+        # Writing to jsonl file
+        with open(self.json_filepath, "w") as outfile:
+            outfile.write(json_object + "\n")
+    
     def get_sentences_df(self)->pd.DataFrame:
         """Retrieve english sentences with spanish translation and audio. The
         datframe has the following data (in this order):
@@ -161,33 +187,6 @@ class TatoebaProcessor:
         clean_sentences = self.get_sentences_df()
         clean_sentences.to_csv(filepath, index=False)
         
-    def df_to_jsonl(self, df:pd.DataFrame)->None:
-        """Write every row in a dataframe as its own json object to a JSONL file.
-
-        Args:
-            df (pd.DataFrame): Dataframe to turn into JSONL
-        """
-        # Dictionary for all instances
-        instances = list()
-        columns = df.columns.tolist()
-        
-        for instance in df.values.tolist():
-            # Dictionary for individual instance
-            instance_dict = dict()
-            
-            for key, value in zip(columns, instance):
-                instance_dict[key] = value
-                
-            instances.append(instance_dict)
-            
-        # Create json object of all instances
-        json_object = json.dumps(instances)
- 
-        # Writing to jsonl file
-        with open(self.json_filepath, "w") as outfile:
-            outfile.write(json_object + "\n")
-        
-        
     def get_sentences_jsonl(self, filepath:str="tatoeba_sentences.jsonl")->None:
         """Get a jsonl file of the english sentences with spanish translation 
         and audio.
@@ -199,6 +198,3 @@ class TatoebaProcessor:
         self.json_filepath = filepath
         clean_sentences = self.get_sentences_df()
         self.df_to_jsonl(clean_sentences)
-        
-        
-        
