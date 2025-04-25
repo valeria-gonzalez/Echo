@@ -14,7 +14,7 @@ class TextDifficultyEvaluator:
         # Threshold constants per sentence 
         self.MAX_WORDS = 15
         self.MAX_GRADE = 9
-        self.MAX_SYLL_SEN = 15 
+        self.MAX_SYLL_SEN = 17 
 
         # Evaluation weights for words
         self.FREQ_WEIGHT = 0.2
@@ -132,7 +132,7 @@ class TextDifficultyEvaluator:
         difficulty = min(difficulty, 1.0)
         
         # Obtain final difficulty
-        thresholds = { 0.4 : 0, 0.55: 1, 1:2 }
+        thresholds = { 0.4 : 0, 0.6: 1, 1:2 }
         return self.difficulty_threshold(thresholds, difficulty)
         
         
