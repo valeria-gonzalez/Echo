@@ -63,11 +63,11 @@ These modules can be installed individually or via the `requirements.txt` file l
 
 To install using the `requirements.txt`use:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
-###  2. Download required files
+### 2. Download required files
 
  In order to use this module, please download the necessary files described above.
 
@@ -77,9 +77,9 @@ pip install -r requirements.txt
  - `eng_sentences_CC0.tsv`
  - `sentences_with_audio.csv`
 
-###  3. Example usage
+### 3. Example usage
 
-```
+```python
 from sentence_processing import TatoebaProcessor
 
 def main():
@@ -95,7 +95,7 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-
+### Results
 #### Final csv file description
 
 The `get_sentences_csv` method will create a file, by default named `tatoeba_sentences.csv` in the current directory. 

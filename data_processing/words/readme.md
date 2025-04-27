@@ -67,16 +67,19 @@ The information returned for each word is a dictionary. The keys used in the dic
 
 ### 1. Install needed libraries
 
-For this section, the following modules were used:
-- json
-- uuid
-- collections
+Install the required dependencies:
+
+```bash
+pip install uuid
+pip install json
+pip install collections
+```
 
 These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
 
 To install using the `requirements.txt`use:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -90,13 +93,19 @@ Needed file:
 
 ###  3. Usage
 
-```
+```python
 from word_processing import WikiExtractProcessor
 
 def main():
     filepath = "datasets/raw-wiktextract-data.jsonl"
+
     processor = WikiExtractProcessor(word_dump_filepath=filepath)
-    total_words = processor.get_words_JSONL(max_words=5000, words_per_file=5000)
+
+    total_words = processor.get_words_JSONL(
+        max_words=500, 
+        words_per_file=5000
+    )
+
     print(f"{total_words} words extracted.")
     
 if __name__ == "__main__":
