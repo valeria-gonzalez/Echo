@@ -56,7 +56,6 @@ The information returned for each word is a dictionary. The keys used in the dic
 
   - `mp3_url` : (string) URL for an MP3 format sound file
 
-
 - `translations`: (list of dictionaries) Non-disambiguated translation entries. The translations are stored in a list of dictionaries, the keys used were:
 
   - `lang` : the language name that the translation is for.
@@ -69,8 +68,6 @@ The information returned for each word is a dictionary. The keys used in the dic
 ### 1. Install needed libraries
 
 For this section, the following modules were used:
-- ipykernel
-- ipython
 - json
 - uuid
 - collections
@@ -85,27 +82,39 @@ pip install -r requirements.txt
 
 ###  2. Download required files
 
- In order to execute this notebook, please download the necessary file described above and save it in a directory named `datasets`.
+In order to execute this module, please download the necessary file described above.
 
- Needed file:
+Needed file:
 
  - `raw-wiktextract-data.jsonl`
 
-###  3. Execute `word_processing.ipynb`
+###  3. Usage
 
-Before executing the cells, feel free to change the parameters for the `process_words_from_file` function. 
+```
+from word_processing import WikiExtractProcessor
 
-This function extracts up to `max_words` entries from a JSONL file, saving them in batches of `batch_size` entries per output JSON file.
+def main():
+    filepath = "datasets/raw-wiktextract-data.jsonl"
+    processor = WikiExtractProcessor(word_dump_filepath=filepath)
+    total_words = processor.get_words_JSONL(max_words=5000, words_per_file=5000)
+    print(f"{total_words} words extracted.")
+    
+if __name__ == "__main__":
+    main()
+```
 
-For example, if the parameters are `max_words=10000` and `batch_size=2000`, five JSON files with 2000 words per file will be generated. 
+- `get_words_JSONL` : This method extracts up to `max_words` entries from the 
+WikiExtract data dump JSONL file. These words can be saved in multiple JSONL 
+files with a specific amount of `words_per_file`. By default it will extract all
+words and save them in files with 10000 words each.
 
-This is done so that the user can decide how large they want the resulting files to be. 
+For example, if the parameters are `max_words=10000` and `words_per_file=2000`, 
+five JSON files with 2000 words per file will be generated. 
 
-**Disclaimer:** If no parameters are given, the function will read the whole JSONL file and save the words in batches of 5000 words.
+This is done so that the user can decide how large they want the resulting 
+files to be given that the WikiExtract Dump has more than 100,000 words.
 
-After specifying these parameters, please execute all the `word_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
-
-#### Final file description
+#### Results
 
 The resulting files after execution will be named `words-{unique_identifier}.json`. It will contain the amount of specified english words with their definitions depending on the part of speech, a list of spanish translations and an audio file link.
 
