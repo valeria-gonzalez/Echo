@@ -51,10 +51,13 @@ For the information needed for this project, the following files were used:
 
 ### 1. Install needed libraries
 
-For this section, the following modules were used:
-- pandas 
-- json
-- typing
+Install the required dependencies:
+
+```bash
+pip install pandas
+pip install json
+pip install typing
+```
 
 These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
 
