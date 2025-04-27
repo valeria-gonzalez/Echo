@@ -1,24 +1,77 @@
 # 📁 LibriSpeech Chapter Grouper and Segmenter
 
-This project contains two Python scripts designed to help preprocess audio data from the [LibriSpeech](http://www.openslr.org/12) dataset. The scripts organize the dataset into manageable groups and segment each chapter’s audio files into 30-second chunks with their corresponding transcriptions.
+## Objective
+
+In order to provide practice texts for the project, relevant information pertaining to english texts provided by the LibriSpeech corpus must be extracted and saved into a single file.
+
+The needed information for a text is the following:
+
+- English text
+- Audio file (max 30s)
+- Transcript
+- Book origin
+
+This module preprocesses audio data from the [LibriSpeech](http://www.openslr.org/12) dataset by segmenting each chapter’s audio files into 30-second chunks with their corresponding transcriptions.
+
+## What is LibriSpeech?
+
+LibriSpeech is a corpus of approximately 1000 hours of 16kHz read English speech, prepared by Vassil Panayotov with the assistance of Daniel Povey. The data is derived from read audiobooks from the LibriVox project, and has been carefully segmented and aligned.
+
+Special thanks and acknowledgments to LibriSpeech.
+
+[Click here for more information](https://www.openslr.org/12).
+
+---
+
+## 📂 Dataset description
+The purpose of this corpus is to enable the training and testing of automatic speech recognition(ASR) systems. It's split into different parts, for this project, the information in the directory `dev-clean`is used.
+
+When extracted, the set is a directory, where the audio for each individual speaker is stored under a dedicated subdirectory and each audio chapter read by this speaker is stored in separate subsubdirectory. The following ASCII diagram depicts the directory structure:
+
+```
+dev- clean /
+        |
+        .- reader id/
+            |
+            .- chapter id/
+            |    |
+            |    .- readerid-chapterid.trans.txt
+            |    |    
+            |    .- readerid-chapterid-0001.flac
+            |    |
+            |    .- readerid-chapterid-0002.flac
+            |    |
+            |    ...
+            |
+            .- chapter id/
+                | ...
+```
+The *.trans.txt files contain the transcripts for each
+of the utterances, derived from the respective chapter and the FLAC files contain the audio itself.
 
 ---
 
 ## 📜 Overview
 
-### 1. `get_group_chapters.ipynb`
+This module organizes LibriSpeech chapter folders into groups of N elements (e.g., 100 chapters per group) and moves them into a target directory.
 
-This script organizes LibriSpeech chapter folders into groups of N elements (e.g., 100 chapters per group) and moves them into a target directory.
-
-#### What it does:
+Its first callable method `create_chapters_directory`:
 
 - Takes a list of chapter folders.
 - Groups them into chunks of specified size.
 - Moves them into `group_1`, `group_2`, etc., under a new parent folder.
 
-### 2. `get_new_audios.ipynb`
+### Folder Structure
 
-This script:
+```
+LibriSpeech/
+├── dev-clean/
+│   ├── chapter1/
+│   ├── chapter2/
+│   └── ...
+```
+
+Its second callable method `process_all_chapters`:
 
 - Loads a transcription `.txt` file where each line is in the format `<AUDIO_ID> <TRANSCRIPTION>`.
 - Iterates through each audio file in a chapter.
@@ -38,6 +91,8 @@ Install the required dependencies:
 
 ```bash
 pip install pydub
+pip install shutil
+pip install os
 ```
 
 Also make sure you have `ffmpeg` installed and accessible via system path. You can install it via:
@@ -61,29 +116,29 @@ brew install ffmpeg
 
 ---
 
-## 📂 Folder Structure
-
-```
-LibriSpeech/
-├── dev-clean/
-│   ├── chapter1/
-│   ├── chapter2/
-│   └── ...
-```
-
----
-
 ## ▶️ Usage
 
 ### Step 1: Group Chapters
 
 ```python
-rootDirectory = "LibriSpeech/dev-clean/"
-destDirectory = "groups/"
+from text_processing import LibriSpeechProcessor
 
-chapters = getChapters(rootDirectory)
-groups = list(getGroups(chapters, 100))  # Group size
-moveChaptersInGroups(groups, destDirectory)
+def main():
+    dest_directory = "datasets/chapters"
+    
+    processor = LibriSpeechProcessor(
+        corpus_directory="datasets/LibriSpeech/dev-clean"
+    )
+
+    # Extract and group chapters
+    processor.create_chapters_directory(
+        group_length=100,
+        dest_directory=dest_directory,
+        verbose=False
+    )
+
+if __name__ == "__main__":
+    main()
 ```
 
 ### Step 2: Segment Audio + Generate Transcriptions
