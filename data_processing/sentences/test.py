@@ -7,7 +7,7 @@ def main():
         sentences_with_audio="datasets/sentences_with_audio.csv"
     ) 
     
-    processor.get_sentences_csv()
+    processor.get_sentences_csv(filepath="datasets/tatoeba.csv")
     processor.get_sentences_jsonl()
 
 if __name__ == "__main__":
