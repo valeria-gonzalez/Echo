@@ -21,35 +21,51 @@ Special thanks and acknowledgments to LibriSpeech.
 
 [Click here for more information](https://www.openslr.org/12).
 
----
-
 ## 📂 Dataset description
 The purpose of this corpus is to enable the training and testing of automatic speech recognition(ASR) systems. It's split into different parts, for this project, the information in the directory `dev-clean`is used.
 
-When extracted, the set is a directory, where the audio for each individual speaker is stored under a dedicated subdirectory and each audio chapter read by this speaker is stored in separate subsubdirectory. The following ASCII diagram depicts the directory structure:
+When extracted, the corpus re-creates LibriSpeech's root directory, containing some metadata, and a dedicated subdirectory for the subset itself. The audio for each individual speaker is stored under a dedicated subdirectory in the subset's directory, and each audio chapter read by this speaker is stored in separate subsubdirectory. The following ASCII diagram depicts the directory structure:
 
 ```
-dev- clean /
-        |
-        .- reader id/
-            |
-            .- chapter id/
-            |    |
-            |    .- readerid-chapterid.trans.txt
-            |    |    
-            |    .- readerid-chapterid-0001.flac
-            |    |
-            |    .- readerid-chapterid-0002.flac
-            |    |
-            |    ...
-            |
-            .- chapter id/
-                | ...
+<corpus root>
+    |
+    .- README.TXT
+    |
+    .- READERS.TXT
+    |
+    .- CHAPTERS.TXT
+    |
+    .- BOOKS.TXT
+    |
+    .- train-clean-100/
+                   |
+                   .- 19/
+                       |
+                       .- 198/
+                       |    |
+                       |    .- 19-198.trans.txt
+                       |    |    
+                       |    .- 19-198-0001.flac
+                       |    |
+                       |    .- 14-208-0002.flac
+                       |    |
+                       |    ...
+                       |
+                       .- 227/
+                            | ...
 ```
-The *.trans.txt files contain the transcripts for each
-of the utterances, derived from the respective chapter and the FLAC files contain the audio itself.
+, where 19 is the ID of the reader, and 198 and 227 are the IDs of the chapters
+read by this speaker. The *.trans.txt files contain the transcripts for each
+of the utterances, derived from the respective chapter and the FLAC files contain
+the audio itself.
 
----
+The main metainfo about the speech is listed in the READERS and the CHAPTERS:
+
+- READERS.TXT contains information about speaker's gender and total amount of audio in the corpus.
+
+- CHAPTERS.TXT has information about the per-chapter audio durations.
+
+- BOOKS.TXT contains the title for each book, whose text is used in the corpus, and its Project Gutenberg ID.
 
 ## 📜 Overview
 
@@ -77,8 +93,6 @@ Its second callable method `process_all_chapters`:
 - Iterates through each audio file in a chapter.
 - Concatenates audio files until reaching a 30-second segment (max).
 - Saves each audio segment and its corresponding transcriptions into a new folder.
-
----
 
 ## 🧪 Requirements
 
@@ -113,8 +127,6 @@ brew install ffmpeg
 
 - Download from: https://ffmpeg.org/download.html
 - Add the `bin/` folder to your system PATH.
-
----
 
 ## ▶️ Usage
 
@@ -153,8 +165,6 @@ process_all_chapters(root_dir, dest_dir)
 
 Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
 
----
-
 ## ✨ Output Example (Transcription)
 
 ```
@@ -163,15 +173,8 @@ Each segment will contain up to 30 seconds of audio and a `.txt` file with align
 ...
 ```
 
----
-
 ## 📌 Notes
 
 - The scripts expect that `.flac` audio files and one transcription `.txt` file are present in each chapter folder.
 - Only audio files with matching transcription IDs will be included in the output.
 
----
-
-## 📬 License
-
-MIT License. Feel free to modify or reuse!
