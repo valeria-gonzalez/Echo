@@ -53,8 +53,6 @@ For the information needed for this project, the following files were used:
 
 For this section, the following modules were used:
 - pandas 
-- ipykernel
-- ipython
 - json
 - typing
 
@@ -68,7 +66,7 @@ pip install -r requirements.txt
 
 ###  2. Download required files
 
- In order to execute this notebook, please download the necessary files described above and save them in a directory named `datasets`.
+ In order to use this module, please download the necessary files described above.
 
  Needed files:
 
@@ -88,7 +86,7 @@ def main():
         sentences_with_audio="datasets/sentences_with_audio.csv"
     ) 
     
-    processor.get_sentences_csv()
+    processor.get_sentences_csv(filepath="datasets/tatoeba.csv")
     processor.get_sentences_jsonl()
 
 if __name__ == "__main__":
