@@ -134,6 +134,3 @@ class TextDifficultyEvaluator:
         # Obtain final difficulty
         thresholds = { 0.4 : 0, 0.6: 1, 1:2 }
         return self.difficulty_threshold(thresholds, difficulty)
-        
-        
-        
