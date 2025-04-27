@@ -55,6 +55,8 @@ For this section, the following modules were used:
 - pandas 
 - ipykernel
 - ipython
+- json
+- typing
 
 These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
 
@@ -74,13 +76,30 @@ pip install -r requirements.txt
  - `eng_sentences_CC0.tsv`
  - `sentences_with_audio.csv`
 
-###  3. Execute `sentence_preprocessing.ipynb`
+###  3. Example usage
 
-Please execute the `sentence_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
+```
+from sentence_processing import TatoebaProcessor
 
-#### Final file description
+def main():
+    processor = TatoebaProcessor(
+        eng_sentences="datasets/eng_sentences_CC0.tsv",
+        eng_spa_pairs="datasets/engspa_translations.tsv",
+        sentences_with_audio="datasets/sentences_with_audio.csv"
+    ) 
+    
+    processor.get_sentences_csv()
+    processor.get_sentences_jsonl()
 
-The resulting file after execution will be named `tatoeba_sentences.csv`. It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+if __name__ == "__main__":
+    main()
+```
+
+#### Final csv file description
+
+The `get_sentences_csv` method will create a file, by default named `tatoeba_sentences.csv` in the current directory. 
+
+It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
 
 The csv file is separated by commas as a delimiter. The file has the following fields:
 
@@ -90,9 +109,16 @@ The csv file is separated by commas as a delimiter. The file has the following f
 - `spa_sentence` : Text of spanish translation sentence
 - `audio_id` : Id of the audio pronunciation file of the english sentence
 
-Below is the file description:
+#### Final jsonl file description
 
-- **Filename:** `eng_spa_audio_sentences.csv`
+The `get_sentences_jsonl` method will create a file, by default named `tatoeba_sentences.jsonl` in the current directory. 
 
-  - **File Description:** Contains all the english sentences that have an audio file and a spanish translation. 
-  - **Fields and structure:** eng_id,eng_sentence,spa_id,spa_sen,audio_id
+It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+
+The json file is an array of json objects with the following keys.
+
+- `eng_id`:  (int) Id of the english sentence in Tatoeba
+- `eng_sentence`: (str) Text of english sentence
+- `spa_id`: (int) Id of the spanish translation of the sentence in Tatoeba
+- `spa_sentence`: (str) Text of spanish translation sentence
+- `audio_id`: (int) Id of the audio pronunciation file of the english sentence
