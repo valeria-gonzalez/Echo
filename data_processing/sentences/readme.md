@@ -33,14 +33,12 @@ For the information needed for this project, the following files were used:
   - **File Description:** All sentences in language A that are translated into language B, along with the translations (download English - Spanish).
   - **Origin Filename:** `Sentence pairs in English-Spanish -YYYY-MM-DD.tsv`
   - **Fields and structure:** Sentence id [tab] Text [tab] Translation_id [tab] Text
-  - **Note:** When downloading, please rename as `Sentence pairs in English-Spanish.tsv`
 
 - **Category: Sentences (CC0)**
 
   - **File Description:** Contains all the sentences available under Creative Commons Zero (CC0) license in a specific language.
-  - **Origin Filename:** `{eng/spa}_sentences_CC0.tsv`
+  - **Origin Filename:** `eng_sentences_CC0.tsv`
   - **Fields and structure:** Sentence id [tab] Lang [tab] Text [tab] Date last modified
-  - **Note:** Two files from this category are generated under the option "only sentences in Spanish" and "only sentences in English".
 
 - **Section: Sentences with audio**
 
@@ -55,8 +53,8 @@ For the information needed for this project, the following files were used:
 
 For this section, the following modules were used:
 - pandas 
-- ipykernel
-- ipython
+- json
+- typing
 
 These modules can be installed individually or via the `requirements.txt` file located in the root directory. As a disclaimer, it will also install all the required modules needed for preprocessing words, sentences and texts.
 
@@ -68,22 +66,38 @@ pip install -r requirements.txt
 
 ###  2. Download required files
 
- In order to execute this notebook, please download the necessary files described above and save them in a directory named `datasets`.
+ In order to use this module, please download the necessary files described above.
 
  Needed files:
 
  - `Sentence pairs in English-Spanish.tsv`
  - `eng_sentences_CC0.tsv`
- - `spa_sentences_CC0.tsv`
  - `sentences_with_audio.csv`
 
-###  3. Execute `sentence_preprocessing.ipynb`
+###  3. Example usage
 
-Please execute the `sentence_preprocessing` notebook cells in order. This can be done by clicking the `Run All` option.
+```
+from sentence_processing import TatoebaProcessor
 
-#### Final file description
+def main():
+    processor = TatoebaProcessor(
+        eng_sentences="datasets/eng_sentences_CC0.tsv",
+        eng_spa_pairs="datasets/engspa_translations.tsv",
+        sentences_with_audio="datasets/sentences_with_audio.csv"
+    ) 
+    
+    processor.get_sentences_csv(filepath="datasets/tatoeba.csv")
+    processor.get_sentences_jsonl()
 
-The resulting file after execution will be named `eng_spa_audio_sentences.csv`. It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+if __name__ == "__main__":
+    main()
+```
+
+#### Final csv file description
+
+The `get_sentences_csv` method will create a file, by default named `tatoeba_sentences.csv` in the current directory. 
+
+It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
 
 The csv file is separated by commas as a delimiter. The file has the following fields:
 
@@ -93,9 +107,16 @@ The csv file is separated by commas as a delimiter. The file has the following f
 - `spa_sentence` : Text of spanish translation sentence
 - `audio_id` : Id of the audio pronunciation file of the english sentence
 
-Below is the file description:
+#### Final jsonl file description
 
-- **Filename:** `eng_spa_audio_sentences.csv`
+The `get_sentences_jsonl` method will create a file, by default named `tatoeba_sentences.jsonl` in the current directory. 
 
-  - **File Description:** Contains all the english sentences that have an audio file and a spanish translation. 
-  - **Fields and structure:** eng_id,eng_sentence,spa_id,spa_sen,audio_id
+It will contain all the english sentences under the Creative Commons Zero (CCO) license that also have audio and a spanish translation.
+
+The json file is an array of json objects with the following keys.
+
+- `eng_id`:  (int) Id of the english sentence in Tatoeba
+- `eng_sentence`: (str) Text of english sentence
+- `spa_id`: (int) Id of the spanish translation of the sentence in Tatoeba
+- `spa_sentence`: (str) Text of spanish translation sentence
+- `audio_id`: (int) Id of the audio pronunciation file of the english sentence
