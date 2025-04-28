@@ -118,6 +118,12 @@ The csv file is separated by commas as a delimiter. The file has the following f
 - `spa_sentence` : Text of spanish translation sentence
 - `audio_id` : Id of the audio pronunciation file of the english sentence
 
+This is the format of the csv file:
+```
+eng_id,eng_sen,spa_id,spa_sen,audio_id
+403859,"If I could rearrange the alphabet, I would put U and I together.",690143,"Si pudiera reordenar el alfabeto, pondría la T y la Q juntas.",1123747
+```
+
 ### Final jsonl file description
 
 The `get_sentences_jsonl` method will create a file, by default named `tatoeba_sentences.jsonl` in the current directory. 
@@ -131,3 +137,21 @@ The json file is an array of json objects with the following keys.
 - `spa_id`: (int) Id of the spanish translation of the sentence in Tatoeba
 - `spa_sentence`: (str) Text of spanish translation sentence
 - `audio_id`: (int) Id of the audio pronunciation file of the english sentence
+
+This is the format of the json object: 
+
+```json 
+{
+    "eng_id": 403859, 
+    "eng_sen": "If I could rearrange the alphabet, I would put U and I together.", 
+    "spa_id": 690143, 
+    "spa_sen": "Si pudiera reordenar el alfabeto, pondr\u00eda la T y la Q juntas.",
+    "audio_id": 1123747
+}
+```
+
+This is the format of the jsonl file:
+
+```jsonl
+[{"eng_id": 403859, "eng_sen": "If I could rearrange the alphabet, I would put U and I together.", "spa_id": 690143, "spa_sen": "Si pudiera reordenar el alfabeto, pondr\u00eda la T y la Q juntas.", "audio_id": 1123747}, {"eng_id": 403860, "eng_sen": "I'm not good at multitasking.", "spa_id": 1612871, "spa_sen": "No soy bueno para hacer varias cosas a la vez.", "audio_id": 32210}]
+```
