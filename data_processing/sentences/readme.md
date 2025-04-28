@@ -1,6 +1,6 @@
-# Sentence preprocessing
+# 📁 Tatoeba Sentence Processing
 
-## Objective
+## 📚 Objective
 
 In order to provide practice sentences for the project, relevant information pertaining to english sentences provided by different files from Tatoeba.org must be extracted and saved into a single file.
 
@@ -10,7 +10,7 @@ The needed information for a sentence is the following:
 - Spanish sentence translation
 - Link to audio pronunciation
 
-## What is Tatoeba?
+## 🌐 What is Tatoeba?
 
 Tatoeba is a large database of sentences and translations. Its content is ever-growing and results from the voluntary contributions of thousands of members.
 
@@ -20,7 +20,7 @@ Special thanks and acknowledgments to Tatoeba.
 
 [Click here for more information](https://tatoeba.org/en/about).
 
-## Dataset description
+## 📂 Dataset description
 
 All the files used in this project were obtained from [tatoeba.org/downloads](https://tatoeba.org/en/downloads).
 
@@ -47,9 +47,17 @@ For the information needed for this project, the following files were used:
   - **Fields and structure:** Sentence id [tab] Audio id [tab] Username [tab] License [tab] Attribution URL
   - **Note:** A single sentence can have one or more audio, each from a different voice. To download a particular audio, use its audio id to compute the download URL. For example, to download the audio with the id 1234, the URL is https://tatoeba.org/audio/download/1234.
 
-## Getting Started
+## 📜 Overview
 
-### 1. Install needed libraries
+This module combines the information from the csv files provided by Tatoeba and
+creates a single csv or JSONL file with the data on english sentences, their 
+spanish translation and audio file id.
+
+## ⚙️⚙️ Requirements
+
+### 🔧 Installation
+
+- Python 3.7+
 
 Install the required dependencies:
 
@@ -67,7 +75,7 @@ To install using the `requirements.txt`use:
 pip install -r requirements.txt
 ```
 
-### 2. Download required files
+### 🗄️ Required files
 
  In order to use this module, please download the necessary files described above.
 
@@ -77,7 +85,7 @@ pip install -r requirements.txt
  - `eng_sentences_CC0.tsv`
  - `sentences_with_audio.csv`
 
-### 3. Example usage
+## 🚀 Usage
 
 ```python
 from sentence_processing import TatoebaProcessor
@@ -95,8 +103,8 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-### Results
-#### Final csv file description
+## ✨ Results
+### Final csv file description
 
 The `get_sentences_csv` method will create a file, by default named `tatoeba_sentences.csv` in the current directory. 
 
@@ -110,7 +118,7 @@ The csv file is separated by commas as a delimiter. The file has the following f
 - `spa_sentence` : Text of spanish translation sentence
 - `audio_id` : Id of the audio pronunciation file of the english sentence
 
-#### Final jsonl file description
+### Final jsonl file description
 
 The `get_sentences_jsonl` method will create a file, by default named `tatoeba_sentences.jsonl` in the current directory. 
 

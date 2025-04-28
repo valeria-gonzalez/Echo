@@ -1,6 +1,6 @@
-# 📁 LibriSpeech Chapter Grouper and Segmenter
+# 📁 LibriSpeech Chapter Grouper and Audio Combiner
 
-## Objective
+## 📚 Objective
 
 In order to provide practice texts for the project, relevant information pertaining to english texts provided by the LibriSpeech corpus must be extracted and saved into a single file.
 
@@ -13,7 +13,7 @@ The needed information for a text is the following:
 
 This module preprocesses audio data from the [LibriSpeech](http://www.openslr.org/12) dataset by segmenting each chapter’s audio files into 30-second chunks with their corresponding transcriptions.
 
-## What is LibriSpeech?
+## 🌐 What is LibriSpeech?
 
 LibriSpeech is a corpus of approximately 1000 hours of 16kHz read English speech, prepared by Vassil Panayotov with the assistance of Daniel Povey. The data is derived from read audiobooks from the LibriVox project, and has been carefully segmented and aligned.
 
@@ -71,35 +71,11 @@ The main metainfo about the speech is listed in the READERS and the CHAPTERS:
 
 This module organizes LibriSpeech chapter folders into groups of N elements (e.g., 100 chapters per group) and moves them into a target directory.
 
-Its first callable method `create_chapters_directory`:
-
-- Takes a list of chapter folders.
-- Groups them into chunks of specified size.
-- Moves them into `group_1`, `group_2`, etc., under a new parent folder.
-
-### Folder Structure
-
-```
-LibriSpeech/
-├── dev-clean/
-│   ├── chapter1/
-│   ├── chapter2/
-│   └── ...
-```
-
-Its second callable method `process_all_chapters`:
-
-- Loads a transcription `.txt` file where each line is in the format `<AUDIO_ID> <TRANSCRIPTION>`.
-- Iterates through each audio file in a chapter.
-- Concatenates audio files until reaching a 30-second segment (max).
-- Saves each audio segment and its corresponding transcriptions into a new folder.
-
-## 🧪 Requirements
-
-- Python 3.7+
-- [`pydub`](https://github.com/jiaaro/pydub) (used for manipulating audio)
+## ⚙️⚙️ Requirements
 
 ### 🔧 Installation
+
+- Python 3.7+
 
 Install the required dependencies:
 
@@ -128,44 +104,113 @@ brew install ffmpeg
 - Download from: https://ffmpeg.org/download.html
 - Add the `bin/` folder to your system PATH.
 
-## ▶️ Usage
 
-### Step 1: Group Chapters
+### 🗄️ Required files
+
+In order to use this module, please download LibriSpeech corpus from the page link mentioned above.
+
+Needed files:
+
+ - `dev-clean.tar.gz`
+
+## 🚀 Usage
 
 ```python
 from text_processing import LibriSpeechProcessor
 
 def main():
-    dest_directory = "datasets/chapters"
     
     processor = LibriSpeechProcessor(
-        corpus_directory="datasets/LibriSpeech/dev-clean"
+        corpus_directory="datasets/LibriSpeech/dev-clean",
+        books_txt_filepath="datasets/LibriSpeech/BOOKS.TXT",
+        chapters_txt_filepath="datasets/LibriSpeech/CHAPTERS.TXT"
     )
-
-    # Extract and group chapters
-    processor.create_chapters_directory(
-        group_length=100,
-        dest_directory=dest_directory,
-        verbose=False
-    )
-
+    
+    # Extract chapters in groups
+    chapters_dest_directory = "datasets/chapters"
+    processor.create_chapters_directory(amount_of_chapters=100, 
+                                        dest_directory=chapters_dest_directory,
+                                        verbose=True)
+    
+    # Create 30s audios for each chapter
+    chapters_directory = "datasets/chapters/group_1"
+    audio_dest_directory = "datasets/audio_segments"
+    processor.combine_chapter_group_audios(chapters_directory, 
+                                           audio_dest_directory,
+                                           audio_length=30,
+                                           verbose=True)
+    
 if __name__ == "__main__":
     main()
+```
+
+### Step 1: Group Chapters
+```python
+chapters_dest_directory = "datasets/chapters"
+    processor.create_chapters_directory(amount_of_chapters=100, 
+                                        dest_directory=chapters_dest_directory,
+                                        verbose=True)
 ```
 
 ### Step 2: Segment Audio + Generate Transcriptions
 
 ```python
-root_dir = "groups/group_1/"
-dest_dir = "processed_segments/"
-
-os.makedirs(dest_dir, exist_ok=True)
-process_all_chapters(root_dir, dest_dir)
+chapters_directory = "datasets/chapters/group_1"
+audio_dest_directory = "datasets/audio_segments"
+processor.combine_chapter_group_audios(chapters_directory, 
+                                        audio_dest_directory,
+                                        audio_length=30,
+                                        verbose=True)
 ```
 
 Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
 
-## ✨ Output Example (Transcription)
+## ✨ Results
+
+The first callable method `create_chapters_directory`:
+
+- Takes a list of chapter folders.
+- Groups them into chunks of specified size.
+- Moves them into `group_1`, `group_2`, etc., under a new parent folder.
+
+### Folder Structure
+
+```
+chapters/
+├── group_1/
+│   ├── chapterid/
+│   ├── chapterid/
+│   └── ...
+├── group_2/
+│   ├── chapterid/
+│   ├── chapterid/
+│   └── ...
+```
+
+The second callable method `combine_chapter_group_audios`:
+
+- Loads a transcription `.txt` file where each line is in the format `<AUDIO_ID> <TRANSCRIPTION>`.
+- Iterates through each audio file in a chapter.
+- Concatenates audio files until reaching a 30-second segment (max).
+- Saves each audio segment and its corresponding transcriptions into a new folder.
+
+### Folder Structure
+
+```
+audio_segments/
+├── chapterid/
+│   ├── segment_0.flac
+│   ├── segment_0.txt
+│   ├── segment_1.flac
+│   ├── segment_1.txt
+│   └── ...
+├── chapterid/
+│   ├── segment_0.flac
+│   ├── segment_0.txt
+│   └── ...
+```
+
+Example of a generated transcript.
 
 ```
 0: 84-121550-0000 [0.00s - 3.20s]: THE DOCTOR SEEMED DETERMINED TO MAKE HIMSELF DISAGREEABLE
