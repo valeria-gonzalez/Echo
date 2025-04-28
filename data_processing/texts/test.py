@@ -22,5 +22,7 @@ def main():
                                            audio_length=30,
                                            verbose=True)
     
+    processor.get_texts_jsonl(verbose=True)
+    
 if __name__ == "__main__":
     main()
