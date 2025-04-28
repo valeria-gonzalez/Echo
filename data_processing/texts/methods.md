@@ -2,6 +2,16 @@
 
 ## extract_chapter_directories
 
+```text
+Get all chapters from the root directory. 
+
+Args:
+    root_directory (str): Path to the root directory
+
+Returns:
+    list[str]: List of paths to chapters  
+```
+
 The `extract_chapter_directories` function takes the root directory of a dataset and returns all directories that do not have subdirectories (final chapter directories). Here's an example:
 
 **Root directory structure:**
@@ -28,6 +38,17 @@ datasets/
 
 ## group_chapters
 
+```text
+Splits the list of chapters into groups of a specified length.
+
+Args:
+    list_of_chapters (List[str]): List of chapters to be grouped
+    length_group (int): Length of each group
+
+Yields:
+    Generator[List, None, None]: Generator yielding groups of chapters
+```
+
 The `group_chapters` function takes a list of chapters and splits it into groups of a specified length.
 
 Assume you have the following list of chapter paths:
@@ -51,6 +72,15 @@ calling the `group_chapters(list_of_chapters, 2)` **would return:**
 ]
 ```
 ## move_chapters
+
+```text
+Moves each chapter into a new directory structure under a destination path.
+
+ Args:
+    groups (list[str]): List of groups of chapters
+    dest_directory (str): Path to the destination directory
+    verbose (bool): Indicator for terminal messages. Defaults to False.
+```
 
 The `move_chapters` function takes a list of grouped chapter paths and moves 
 each chapter into a new directory structure under a destination path.
@@ -78,6 +108,14 @@ datasets/
 
 ## map_book_to_chapter
 
+```text
+A function to create a mapping between chapter IDs and book titles.
+
+Returns:
+    dict: A dictionary mapping chapter IDs to book titles.
+    verbose (bool): Indicator for terminal messages. Defaults to False.
+```
+
 The `map_book_chapter` function reads two text files: one containing book information and another with chapter metadata. It creates a mapping between each chapter ID and its corresponding book title.
 
 **Given:**
@@ -93,7 +131,6 @@ The `map_book_chapter` function reads two text files: one containing book inform
 147956 | 1988 | ... | ... | ... | 1002 | Chapter 1
 ```
 
-
 Calling `map_book_to_chapter("books.txt", "chapters.txt")` **would return:**
 
 ```text
@@ -105,6 +142,16 @@ Calling `map_book_to_chapter("books.txt", "chapters.txt")` **would return:**
 ```
 
 ## map_audio_transcript
+
+```text
+This function converts a transcription file into a dictionary.
+
+Args:
+    transcript_filepath (str): Path to the transcription file
+
+Returns:
+    dict: Dictionary with audio IDs as keys and their corresponding text as values  
+```
 
 The `map_audio_transcript` function reads a transcription text file 
 where each line starts with an audio ID followed by its corresponding 
@@ -129,6 +176,16 @@ Calling `map_audio_transcript("transcript.txt")` **would return:**
 ```
 
 ## combine_chapter_audios
+
+```text
+Combine all audio files in a chapter into 30 second audio files and creating their corresponding transcription files.
+
+Args:
+    chapter_filepath (str): path to the chapter directory
+    transcript_filepath (str): path to the transcription file
+    dest_dir (str): path to the destination directory for the segments
+    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.   
+```
 
 The `combine_chapter_audios` function takes a chapter directory containing .flac audio 
 files and a transcription file, and splits the audio into segments of up to 30 
@@ -172,6 +229,16 @@ Book title: English Stories - (Chapter One)
 2: 1272-128104-0002 [7.89s - 10.52s]: HELLO WORLD
 ```
 ## combine_chapter_group_audios
+
+```text
+For every chapter in a chapter group, combine all audio files in a chapter into 30 second audio files and create their corresponding transcription files. Returns every processed chapter in a new directory.
+
+Args:
+    chapter_group_dir (str): path to the directory containing chapter subdirectories
+    dest_dir (str): path to the destination directory to store the  processed chapters
+    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.
+    verbose (bool): Indicator for terminal messages. Defaults to False.
+```
 
 The `combine_chapter_group_audios` function iterates over a root directory containing 
 multiple chapter folders. For each chapter, it identifies the corresponding transcription file and processes the audio and transcription using 
