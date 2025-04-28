@@ -109,7 +109,7 @@ brew install ffmpeg
 
 In order to use this module, please download LibriSpeech corpus from the page link mentioned above.
 
-Needed files:
+Needed file:
 
  - `dev-clean.tar.gz`
 

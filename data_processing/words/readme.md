@@ -1,6 +1,6 @@
-# Word preprocessing
+# 📁 Wikiextract Word processing
 
-## Objective
+## 📚 Objective
 
 In order to provide practice words for the project, relevant information pertaining to english words must be extracted from the raw Wiktionary data dump provided by Wikiextract. 
 
@@ -14,7 +14,7 @@ The needed information for a word is the following:
 - IPA pronunciation
 - Audio pronunciation file
 
-## What is Wikiextract?
+## 🌐 What is Wikiextract?
 
 Wikiextract is a Python package and tool for extracting information from various Wiktionary data dumps, most notably and completely the English edition (enwiktionary). 
 
@@ -24,7 +24,7 @@ Special thanks and acknowledgments to Wikiextract.
 
 [Click here for more information.](https://github.com/tatuylonen/wiktextract)
 
-## Dataset description
+## 📂 Dataset description
 
 Wikiextract offers a pre-expanded data JSONL file for easier use, which is what is used for this project. The file can be obtained from the [Raw data downloads extracted from Wiktionary](https://kaikki.org/dictionary/rawdata.html).
 
@@ -62,10 +62,15 @@ The information returned for each word is a dictionary. The keys used in the dic
 
   - `word` : the translation in the specified language (may be missing when `note` is present)
 
+## 📜 Overview
 
-## Getting Started
+This module extracts and organizes the information on words provided by the Wikiextract word dump. It extracts a specified amount of words and returns one or more JSONL files with a maximum amount of words per file. 
 
-### 1. Install needed libraries
+## ⚙️⚙️ Requirements
+
+### 🔧 Installation
+
+- Python 3.7+
 
 Install the required dependencies:
 
@@ -83,7 +88,7 @@ To install using the `requirements.txt`use:
 pip install -r requirements.txt
 ```
 
-###  2. Download required files
+### 🗄️ Required files
 
 In order to execute this module, please download the necessary file described above.
 
@@ -91,7 +96,7 @@ Needed file:
 
  - `raw-wiktextract-data.jsonl`
 
-###  3. Usage
+## 🚀 Usage
 
 ```python
 from word_processing import WikiExtractProcessor
@@ -112,18 +117,16 @@ if __name__ == "__main__":
     main()
 ```
 
-- `get_words_JSONL` : This method extracts up to `max_words` entries from the 
-WikiExtract data dump JSONL file. These words can be saved in multiple JSONL 
-files with a specific amount of `words_per_file`. By default it will extract all
+## ✨ Results
+
+The method `get_words_JSONL` extracts up to `max_words` entries from the WikiExtract data dump JSONL file. These words can be saved in multiple JSONL files with a specific amount of `words_per_file`. By default it will extract all
 words and save them in files with 10000 words each.
 
-For example, if the parameters are `max_words=10000` and `words_per_file=2000`, 
-five JSON files with 2000 words per file will be generated. 
+For example, if the parameters are `max_words=10000` and `words_per_file=2000`,five JSON files with 2000 words per file will be generated. 
 
-This is done so that the user can decide how large they want the resulting 
-files to be given that the WikiExtract Dump has more than 100,000 words.
+This is done so that the user can decide how large they want the resulting files to be given that the WikiExtract Dump has more than 100,000 words.
 
-#### Results
+### JSONL file description
 
 The resulting files after execution will be named `words-{unique_identifier}.json`. It will contain the amount of specified english words with their definitions depending on the part of speech, a list of spanish translations and an audio file link.
 
