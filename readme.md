@@ -16,10 +16,9 @@
 4. List of Project Functions
 5. Moonshot
 6. Design Vision
-7. Authors
-8. External Tools Used
-9. Tools and Technologies
-
+7. Tools and Technologies
+8. Authors
+9. Acknowledgements
 
 
 ##  🔊 What is echo?
@@ -47,8 +46,25 @@ Improve the pronunciation of passive English speakers through a system that uses
 ## 💡 Desing Vision?
 **Echo should look like a user-friendly, educational website.**
 
-![Diseño sin título](https://github.com/user-attachments/assets/386b3b6f-90e5-4387-8c42-749086c89130)
+![Diseño sin título (1)](https://github.com/user-attachments/assets/e49c5578-a939-4419-9c44-7ed38bbbe4df)
 
+## Tools And Technologies 🔧
+
+### 👨‍💻 Programing Language
+- ![Python](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+- ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+### 📚 Framework
+- ![Flask](https://img.shields.io/badge/-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+
+### 🎨 Front-End
+- ![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+
+### ⚙️ Back-End
+- ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+
+### 🗄️ Database
+- ![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 
 ## 👥 Authors ✨
 
@@ -57,40 +73,29 @@ Improve the pronunciation of passive English speakers through a system that uses
     <td align="center">
       <img src="https://avatars.githubusercontent.com/u/71797910?v=4" width="100px;" alt="Nombre 1"/><br />
       <sub><b>Valeria González Segura</b></sub><br />
-      Documentación, ideas
+      code
     </td>
     <td align="center">
       <img src="https://avatars.githubusercontent.com/u/99103747?v=4" width="100px;" alt="Nombre 2"/><br />
       <sub><b>Diego Tristán Domínguez Dueñas</b></sub><br />
-      Código, diseño
+      code
     </td>
     <td align="center">
       <img src="https://avatars.githubusercontent.com/u/87654321?v=4" width="100px;" alt="Nombre 3"/><br />
       <sub><b>Alan Josafat Ramos Preciado</b></sub><br />
-      Código, diseño
+      code
     </td>
   </tr>
 </table>
 
-## External Tools Used 🧩
+## 🙏  Acknowledgements 🙏
 
-### *Wikiextract*
-### *Tatoeba*
+### 📚 *Wikiextract*
+🔍 Kaikki.org is a digital archive and a data mining group. 
 
-## Tools And Technologies 🔧
+### 🌍 *Tatoeba*
+🗣️ Tatoeba is a collection of prayers and translations.
+🤝 It's collaborative, open, free, and even addictive.
 
-### Programing Language
-- **Python** 🐍
-- **JavaScript**
-
-### Framework
-- **Flask** 📐
-
-### Front-End
-- **React**
-
-### Back-end
-- **FastAPI**
-
-### Database
-- **Firebase**
+### 🎧 *LibriSpeech* OpenSLR 
+🌐 OpenSLR is a site devoted to hosting speech and language resources, such as training corpora for speech recognition, and software related to speech recognition. We intend to be a convenient place for anyone to put resources that they have created, so that they can be downloaded publicly.
