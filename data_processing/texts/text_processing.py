@@ -12,7 +12,6 @@ class LibriSpeechProcessor:
         self.chapters_txt_filepath = chapters_txt_filepath
         self.chapter_to_book = None
         self.json_filepath = "texts.json"
-        self.amount_of_chapters = 0
         
     def extract_chapter_directories(self)->list[str]:
         """ Get all chapters from the root directory. 
@@ -70,7 +69,7 @@ class LibriSpeechProcessor:
                 shutil.copytree(chapter, new_directory)
                 if verbose: print(f"Moved {chapter} to {new_directory}")
                 
-            if verbose: print(f"\nGroup {i + 1} completed ({len(group)} chapters) in {dest_group}.\n")
+            if verbose: print(f"\nGroup {i + 1} completed: ({len(group)} chapters) in {dest_group}.\n")
     
     def create_chapters_directory(self, amount_of_chapters:int, dest_directory:str,
                                   verbose:bool=False)->None:
@@ -87,6 +86,9 @@ class LibriSpeechProcessor:
             subdirectories of chapters.
             
         """
+        if verbose: 
+            print(f"Grouping chapters for: {dest_directory} ...", end="")
+            
         self.amount_of_chapters = amount_of_chapters
         chapters = self.extract_chapter_directories()
         chapter_groups = list(self.group_chapters(chapters))
@@ -122,10 +124,6 @@ class LibriSpeechProcessor:
                         chapter_title = parts[6]
                         book_title = book_id_to_title.get(book_id, "Unknown Book")
                         chapter_to_book[chapter_id] = f"{book_title} - ({chapter_title})"
-                        if verbose: 
-                            print(
-                                f"Chapter ID: {chapter_id} mapped to Book ID: {book_id}" 
-                            )
                         
         return chapter_to_book
     
@@ -152,7 +150,8 @@ class LibriSpeechProcessor:
         return trans
     
     def combine_chapter_audios(self, chapter_filepath:str, transcript_filepath:str, 
-                               dest_dir:str, audio_length:float=30)->dict:
+                               dest_dir:str, audio_length:float=30,
+                               verbose:bool=False)->dict:
         """ Combine all audio files in a chapter directory into `audio_lenght`
         second audio files and creating their corresponding transcription files.
 
@@ -162,6 +161,7 @@ class LibriSpeechProcessor:
             dest_dir (str): path to the destination directory for the segments
             audio_length (float): Duration in seconds of combined audio segments. 
             Defaults to 30s.
+            verbose (bool): Indicator for terminal messages. Defaults to False.
             
         Returns: 
             dict: JSON structure containing the chapter ID, book name, and a list 
@@ -268,11 +268,15 @@ class LibriSpeechProcessor:
             }
             
             chapter_json["transcript"].append(segment_data)
+            count += 1
+            
+        if verbose: 
+            print(f"resulted in {count} audios.") 
             
         return chapter_json
     
     def combine_chapter_group_audios(self, chapter_group_dir:str, dest_dir:str,
-                                     audio_length:float=30, 
+                                     audio_length:float=30,
                                      verbose:bool=False)->None:
         """For every chapter in a chapter group, combine all audio files in a 
         chapter into 30 second audio files and create their corresponding 
@@ -291,6 +295,9 @@ class LibriSpeechProcessor:
             Returns every processed chapter in a new directory named `dest_dir`
             and a json file with the chapter information named `words.json`.
         """   
+        if(verbose): 
+            print(f"Combining audio files for {chapter_group_dir} ...")
+            
         os.makedirs(dest_dir, exist_ok=True) 
         self.chapter_to_book = self.map_book_chapter(verbose)
         
@@ -301,15 +308,16 @@ class LibriSpeechProcessor:
                 file_txt = [f for f in os.listdir(chapter_path)
                             if f.endswith(".txt")]
                 if file_txt:
+                    if verbose: print(f"Chapter: {chapter} ", end="")
                     transcript_txt = os.path.join(chapter_path, file_txt[0])
                     # Process each chapter
                     chapter_data = self.combine_chapter_audios(chapter_path,
                                                                transcript_txt, 
                                                                dest_dir,
-                                                               audio_length)
+                                                               audio_length,
+                                                               verbose=verbose)
                     # Append the chapter dictionary to the data list
                     data.append(chapter_data)
-                    if verbose: print(f"Processed chapter: {chapter}")
                 
         # Create the json file with the data list
         with open(os.path.join(dest_dir, self.json_filepath), 
@@ -317,6 +325,8 @@ class LibriSpeechProcessor:
                   encoding="utf-8"
                   ) as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
+            
+        if verbose: print(f"Created json file as: {self.json_filepath}")
             
     def get_texts_jsonl(self, json_filepath:str, 
                         jsonl_filepath:str="words.jsonl", 
@@ -331,7 +341,10 @@ class LibriSpeechProcessor:
             
         Returns:
             A JSONL file with the specified chapter information.
-        """    
+        """   
+        if(verbose): 
+            print(f"Creating JSONL file for {json_filepath} ...")
+         
         segments_count = 0
         chapter_count = 0
         # Index for the transcript
@@ -342,7 +355,10 @@ class LibriSpeechProcessor:
         with open(json_filepath, "r", encoding="utf-8") as file:
             json_chapters = json.load(file)
             
-        while segments_count < self.amount_of_chapters:
+        if verbose:
+            print(f"Amount of chapters in {json_filepath}: {len(json_chapters)}")
+            
+        while segments_count < len(json_chapters):
             # Get the current chapter
             current_chapter = json_chapters[chapter_count]
             segment_id = current_chapter["chapter_id"]
@@ -379,3 +395,5 @@ class LibriSpeechProcessor:
         with open(jsonl_filepath, "w", encoding="utf-8") as file:
             # Write the JSON object to the file
             file.write(json_object + "\n")
+        
+        if verbose: print(f"Created jsonl file as: {jsonl_filepath}")

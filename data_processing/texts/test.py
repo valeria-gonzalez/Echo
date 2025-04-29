@@ -23,7 +23,7 @@ def main():
                                            verbose=True)
     
     # Create JSONL file
-    json_filepath = "datasets/chapters/group_1_audios/words.json"
+    json_filepath = "datasets/chapters/group_1_audios/texts.json"
     jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
     processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)
     
