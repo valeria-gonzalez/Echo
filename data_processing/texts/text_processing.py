@@ -12,7 +12,7 @@ class LibriSpeechProcessor:
         self.chapters_txt_filepath = chapters_txt_filepath
         self.dest_directory = None
         self.chapter_to_book = None
-        self.json_filepath = "data.json"
+        self.json_filepath = "texts.json"
         self.audio_dest_directory = None
         self.amount_of_chapters = 0
         
@@ -127,10 +127,7 @@ class LibriSpeechProcessor:
                         chapter_to_book[chapter_id] = f"{book_title} - ({chapter_title})"
                         if verbose: 
                             print(
-                                f"Chapter ID: {chapter_id}, "
-                                f"Book ID: {book_id}, " 
-                                f"Book Title: {book_title}, "
-                                f"Chapter Title: {chapter_title}"
+                                f"Chapter ID: {chapter_id} mapped to Book ID: {book_id}" 
                             )
                         
         return chapter_to_book
@@ -325,12 +322,12 @@ class LibriSpeechProcessor:
                   ) as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
             
-    def get_texts_jsonl(self, verbose:bool=False) -> None:
+    def get_texts_jsonl(self, filepath:str="words.jsonl", 
+                        verbose:bool=False)->None:
         """ This function creates a JSONL file with `amount_of_chapters` chapters.
 
         Args:
-            json_file (str): Path to the original JSON file
-            dest_dir (str): Path to the destination directory for the new JSON file
+            filepath (str): Path for generated JSONL file. Defaults to `words.json`.
             verbose (bool): Indicator for terminal messages. Defaults to False.
             
         Returns:
@@ -380,15 +377,12 @@ class LibriSpeechProcessor:
             # If we have 100 transcripts, break the loop
             segments_count += 1
             if verbose: 
-                print(
-                    f"number: {segments_count}, " 
-                    f"chapter: {segment_id}, "
-                    f"transcript: {one_transcript}")
+                print(f"{segments_count}: chapter {segment_id} added to JSONL.") 
             
         # Serialize the data to JSON format
         json_object = json.dumps(all_chapters)
         with open(
-            os.path.join(self.audio_dest_directory, "data.jsonl"), 
+            filepath, 
             "w", 
             encoding="utf-8"
         )as file:

@@ -137,13 +137,17 @@ def main():
                                         dest_directory=chapters_dest_directory,
                                         verbose=True)
     
-    # Create 30s audios for each chapter
+    # Create 30s audios for each chapter and json file for all chapters
     chapters_directory = "datasets/chapters/group_1"
     audio_dest_directory = "datasets/audio_segments"
     processor.combine_chapter_group_audios(chapters_directory, 
                                            audio_dest_directory,
                                            audio_length=30,
                                            verbose=True)
+    
+    # Create JSONL file for last method
+    jsonl_filepath = "datasets/texts.jsonl"
+    processor.get_texts_jsonl(jsonl_filepath, verbose=True)
     
 if __name__ == "__main__":
     main()
@@ -157,7 +161,7 @@ chapters_dest_directory = "datasets/chapters"
                                         verbose=True)
 ```
 
-### Step 2: Segment Audio + Generate Transcriptions
+### Step 2: Segment Audio + Generate Transcriptions + JSON
 
 ```python
 chapters_directory = "datasets/chapters/group_1"
@@ -169,6 +173,13 @@ processor.combine_chapter_group_audios(chapters_directory,
 ```
 
 Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
+
+### Step 3: Create JSONL file with specific amount of chapters
+
+```python
+# Create jsonl file with only amount_of_chapters
+processor.get_texts_jsonl(verbose=True)
+```
 
 ## ✨ Results
 
@@ -248,7 +259,7 @@ This function also generates the following files:
 ]
 ```
 
-- **hundred_segments.jsonl**:
+- **data.jsonl**:
   A JSON Lines file, where each line contains a single transcription extracted
   from a one chapter. The script collects one transcription per chapter,
   repeating across chapters until reaching 100 entries.

@@ -22,7 +22,9 @@ def main():
                                            audio_length=30,
                                            verbose=True)
     
-    processor.get_texts_jsonl(verbose=True)
+    # Create JSONL file
+    jsonl_filepath = "datasets/texts.jsonl"
+    processor.get_texts_jsonl(jsonl_filepath, verbose=True)
     
 if __name__ == "__main__":
     main()
