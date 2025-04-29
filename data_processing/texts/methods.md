@@ -184,7 +184,8 @@ Args:
     chapter_filepath (str): path to the chapter directory
     transcript_filepath (str): path to the transcription file
     dest_dir (str): path to the destination directory for the segments
-    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.   
+    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.  
+    verbose (bool): Indicator for terminal messages. Defaults to False. 
 ```
 
 The `combine_chapter_audios` function takes a chapter directory containing .flac audio files and a transcription file, and splits the audio into segments of up to 30 seconds. For each segment, it creates a .flac file and a corresponding .txt file with timestamped transcriptions. It also includes the book title (retrieved using the chapter_to_book dictionary) at the top of the transcription.
@@ -266,6 +267,17 @@ transcription .txt files
 - The resulting files will be stored in a new folder audio_segments/chap_001, audio_segments/chap_002, etc.
 
 ## get_texts_jsonl
+```text
+This function creates a JSONL file for a specified chapter directory with combined audio segments.
+
+Args:
+    json_file (str): Path to the json file generated for audio segments.
+    filepath (str): Path to save JSONL file. Defaults to `words.json`.
+    verbose (bool): Indicator for terminal messages. Defaults to False.
+            
+    Returns:
+    A JSONL file with the specified chapter information. 
+```
 
 The `get_texts_jsonl` function reads a JSON file containing multiple chapters, each with several transcripts. It iterates over all the chapters, selecting one transcript per chapter at a time. until it collects a total of 100 transcripts.
 

@@ -22,7 +22,7 @@ def main():
                                            audio_length=30,
                                            verbose=True)
     
-    # Create JSONL file
+    # Create JSONL file for specified chapter directory
     json_filepath = "datasets/chapters/group_1_audios/texts.json"
     jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
     processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)

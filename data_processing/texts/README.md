@@ -145,9 +145,10 @@ def main():
                                            audio_length=30,
                                            verbose=True)
     
-    # Create JSONL file for last method
-    jsonl_filepath = "datasets/texts.jsonl"
-    processor.get_texts_jsonl(jsonl_filepath, verbose=True)
+    # Create JSONL file for specified chapter directory
+    json_filepath = "datasets/chapters/group_1_audios/texts.json"
+    jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
+    processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)
     
 if __name__ == "__main__":
     main()
@@ -177,8 +178,10 @@ Each segment will contain up to 30 seconds of audio and a `.txt` file with align
 ### Step 3: Create JSONL file with specific amount of chapters
 
 ```python
-# Create jsonl file with only amount_of_chapters
-processor.get_texts_jsonl(verbose=True)
+# Create JSONL file for specified chapter directory
+json_filepath = "datasets/chapters/group_1_audios/texts.json"
+jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
+processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)
 ```
 
 ## ✨ Results
