@@ -15,7 +15,7 @@ This function takes a json object extracted when reading a non-empty line from t
 
 The final dictionary has the following structure:
 
-```text
+```python
 word_obj = {
         "word": word,
         "pos" : part_of_speech,
@@ -44,7 +44,7 @@ To avoid having multiple entries of the same word, this function groups differen
 
 The structure for the final dictionary is as follows:
 
-```text
+```python
 word_dict = {
     word: {
         "definitions": {

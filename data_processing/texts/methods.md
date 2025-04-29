@@ -184,24 +184,22 @@ Args:
     chapter_filepath (str): path to the chapter directory
     transcript_filepath (str): path to the transcription file
     dest_dir (str): path to the destination directory for the segments
-    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.   
+    audio_length (float): Duration in seconds of combined audio segments. Defaults to 30s.  
+    verbose (bool): Indicator for terminal messages. Defaults to False. 
 ```
 
-The `combine_chapter_audios` function takes a chapter directory containing .flac audio 
-files and a transcription file, and splits the audio into segments of up to 30 
-seconds. For each segment, it creates a .flac file and a corresponding .txt 
-file with timestamped transcriptions. It also includes the book title 
-(retrieved using the chapter_to_book dictionary) at the top of the 
-transcription.
+The `combine_chapter_audios` function takes a chapter directory containing .flac audio files and a transcription file, and splits the audio into segments of up to 30 seconds. For each segment, it creates a .flac file and a corresponding .txt file with timestamped transcriptions. It also includes the book title (retrieved using the chapter_to_book dictionary) at the top of the transcription.
 
-Suppose that you have:
-**A folder chap_001** with audio files like:
+Suppose that you have: A folder chap_001 with audio files like:
+
 ```text
 1272-128104-0000.flac
 1272-128104-0001.flac
 1272-128104-0002.flac
 ```
-A transcription file **chap_001.txt** like:
+
+A transcription file chap_001.txt like:
+
 ```text
 1272-128104-0000 THE QUICK BROWN FOX
 1272-128104-0001 JUMPS OVER THE LAZY DOG
@@ -209,25 +207,28 @@ A transcription file **chap_001.txt** like:
 ```
 
 A mapping dictionary:
-```text
+
+```python
 chapter_to_book = {
     "chap_001": "English Stories - (Chapter One)"
 }
 ```
-Calling `Segment_chapter_audios("chap_001", "chap_001.txt", "processed_chapters" chapter_to_book)` **would return:**
 
-* A new folder `audio_segments/chap_001` containing:
-- * segment_0.flac
-- * segment_0.txt
+Calling `process_chapter("chap_001", "chap_001.txt", "processed_chapters" chapter_to_book)` would return:
 
-Where the `.txt` might look like:
-```text
+A new folder audio_segments/chap_001 containing:
+- segment_0.flac
+- segment_0.txt
+Where the .txt might look like:
+
 Book title: English Stories - (Chapter One)
 
+```text
 0: 1272-128104-0000 [0.00s - 4.23s]: THE QUICK BROWN FOX
 1: 1272-128104-0001 [4.23s - 7.89s]: JUMPS OVER THE LAZY DOG
 2: 1272-128104-0002 [7.89s - 10.52s]: HELLO WORLD
 ```
+
 ## combine_chapter_group_audios
 
 ```text
@@ -264,3 +265,41 @@ Calling `combine_chapter_group_audios("root_dir", "processed")` **would result i
 - Then it will call process_chapter to generate audio segments and 
 transcription .txt files
 - The resulting files will be stored in a new folder audio_segments/chap_001, audio_segments/chap_002, etc.
+
+## get_texts_jsonl
+```text
+This function creates a JSONL file for a specified chapter directory with combined audio segments.
+
+Args:
+    json_file (str): Path to the json file generated for audio segments.
+    filepath (str): Path to save JSONL file. Defaults to `words.json`.
+    verbose (bool): Indicator for terminal messages. Defaults to False.
+            
+    Returns:
+    A JSONL file with the specified chapter information. 
+```
+
+The `get_texts_jsonl` function reads a JSON file containing multiple chapters, each with several transcripts. It iterates over all the chapters, selecting one transcript per chapter at a time. until it collects a total of 100 transcripts.
+
+Given a data.json file like this:
+```json
+[
+    {
+        "chapter_id": "chap_001",
+        "book_title": "Book One",
+        "transcript": ["line 1", "line 2", "line 3"]
+    },
+    {
+        "chapter_id": "chap_002",
+        "book_title": "Book Two",
+        "transcript": ["line 1", "line 2"]
+    }
+]
+```
+Calling `get_texts_jsonl("data.json", "output_dir")` will:
+
+- Read all chapters from data.json
+- Pick the first transcript from each chapter
+- Then the second one, and so on, looping through chapters
+- Stop once 100 total transcript have been added to the new JSON file
+- Save the output to new dir and new JSON file.

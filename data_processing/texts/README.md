@@ -69,7 +69,12 @@ The main metainfo about the speech is listed in the READERS and the CHAPTERS:
 
 ## 📜 Overview
 
-This module organizes LibriSpeech chapter folders into groups of N elements (e.g., 100 chapters per group) and moves them into a target directory.
+This module:
+- Organizes LibriSpeech chapter folders into groups of N elements (e.g., 100 chapters per group) and moves them into a target directory. 
+
+- Processes each chapter by combining all the audio files into larger audios of specific length and generating their transcription files.
+
+- Creates structured JSON and JSONL files with the information of the collected chapters in the form of dictionaries with the chapter id, english text, transcript, audio file name and book name.
 
 ## ⚙️⚙️ Requirements
 
@@ -132,13 +137,18 @@ def main():
                                         dest_directory=chapters_dest_directory,
                                         verbose=True)
     
-    # Create 30s audios for each chapter
+    # Create 30s audios for each chapter and json file for all chapters
     chapters_directory = "datasets/chapters/group_1"
     audio_dest_directory = "datasets/audio_segments"
     processor.combine_chapter_group_audios(chapters_directory, 
                                            audio_dest_directory,
                                            audio_length=30,
                                            verbose=True)
+    
+    # Create JSONL file for specified chapter directory
+    json_filepath = "datasets/chapters/group_1_audios/texts.json"
+    jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
+    processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)
     
 if __name__ == "__main__":
     main()
@@ -152,7 +162,7 @@ chapters_dest_directory = "datasets/chapters"
                                         verbose=True)
 ```
 
-### Step 2: Segment Audio + Generate Transcriptions
+### Step 2: Segment Audio + Generate Transcriptions + JSON
 
 ```python
 chapters_directory = "datasets/chapters/group_1"
@@ -165,7 +175,18 @@ processor.combine_chapter_group_audios(chapters_directory,
 
 Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
 
+### Step 3: Create JSONL file with specific amount of chapters
+
+```python
+# Create JSONL file for specified chapter directory
+json_filepath = "datasets/chapters/group_1_audios/texts.json"
+jsonl_filepath = "datasets/chapters/group_1_texts.jsonl"
+processor.get_texts_jsonl(json_filepath, jsonl_filepath, verbose=True)
+```
+
 ## ✨ Results
+
+### create_chapters_directory
 
 The first callable method `create_chapters_directory`:
 
@@ -173,7 +194,7 @@ The first callable method `create_chapters_directory`:
 - Groups them into chunks of specified size.
 - Moves them into `group_1`, `group_2`, etc., under a new parent folder.
 
-### Folder Structure
+This is the resulting file structure: 
 
 ```
 chapters/
@@ -186,15 +207,16 @@ chapters/
 │   ├── chapterid/
 │   └── ...
 ```
+### combine_chapter_group_audios
 
 The second callable method `combine_chapter_group_audios`:
 
-- Loads a transcription `.txt` file where each line is in the format `<AUDIO_ID> <TRANSCRIPTION>`.
-- Iterates through each audio file in a chapter.
-- Concatenates audio files until reaching a 30-second segment (max).
-- Saves each audio segment and its corresponding transcriptions into a new folder.
+- Reads a `.txt` transcription file in the format `<AUDIO_ID> <TRANSCRIPTION>`.
+- Iterates through all audio files in each chapter directory.
+- Concatenates short audio files into 30 seconds chunks (max).
+- Saves each audio segment and generates matching `.txt` transcription files with timestamps.
 
-### Folder Structure
+This is the resulting file structure: 
 
 ```
 audio_segments/
@@ -216,6 +238,41 @@ Example of a generated transcript.
 0: 84-121550-0000 [0.00s - 3.20s]: THE DOCTOR SEEMED DETERMINED TO MAKE HIMSELF DISAGREEABLE
 1: 84-121550-0001 [3.20s - 6.45s]: HE SHOWED NO CONCERN FOR MY SUFFERINGS
 ...
+```
+
+This function also generates the following files:
+
+- A `all_segments.json` file with full chapter data
+- A `hundred_segments.jsonl` file for sampling one transcription per chapter
+
+### Final JSONL file description
+
+- **all_segments.json**:
+  A full JSON file containing all chapter IDs, book titles, chapter names, and
+  their corresponding transcriptions.
+
+```json
+[
+  {
+    "chapter_id": "chap_001",
+    "book_title": "Treasure Island",
+    "transcript": "He was a fine old seaman", ...,
+  },
+  ...
+]
+```
+
+- **data.jsonl**:
+  A JSON Lines file, where each line contains a single transcription extracted
+  from a one chapter. The script collects one transcription per chapter,
+  repeating across chapters until reaching 100 entries.
+
+```json
+[
+{"chapter_id": "chap_001", "book_title": "Treasure Island", "transcript": "He was a fine old seaman..."},
+{"chapter_id": "chap_002", "book_title": "Dracula", "transcript": "I am writing this under great stress..."},
+...,
+]
 ```
 
 ## 📌 Notes
