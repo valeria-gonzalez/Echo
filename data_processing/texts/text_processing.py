@@ -10,10 +10,8 @@ class LibriSpeechProcessor:
         self.corpus_directory = corpus_directory
         self.books_txt_filepath = books_txt_filepath
         self.chapters_txt_filepath = chapters_txt_filepath
-        self.dest_directory = None
         self.chapter_to_book = None
         self.json_filepath = "texts.json"
-        self.audio_dest_directory = None
         self.amount_of_chapters = 0
         
     def extract_chapter_directories(self)->list[str]:
@@ -90,7 +88,6 @@ class LibriSpeechProcessor:
             
         """
         self.amount_of_chapters = amount_of_chapters
-        self.dest_directory = dest_directory
         chapters = self.extract_chapter_directories()
         chapter_groups = list(self.group_chapters(chapters))
         self.move_chapters(chapter_groups, dest_directory, verbose)
@@ -292,10 +289,9 @@ class LibriSpeechProcessor:
             
         Returns:
             Returns every processed chapter in a new directory named `dest_dir`
-            and a json file with the chapter information named `data.json`.
+            and a json file with the chapter information named `words.json`.
         """   
         os.makedirs(dest_dir, exist_ok=True) 
-        self.audio_dest_directory = dest_dir
         self.chapter_to_book = self.map_book_chapter(verbose)
         
         data = []
@@ -322,16 +318,19 @@ class LibriSpeechProcessor:
                   ) as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
             
-    def get_texts_jsonl(self, filepath:str="words.jsonl", 
+    def get_texts_jsonl(self, json_filepath:str, 
+                        jsonl_filepath:str="words.jsonl", 
                         verbose:bool=False)->None:
-        """ This function creates a JSONL file with `amount_of_chapters` chapters.
+        """ This function creates a JSONL file for a specified chapter directory
+        with combined audio segments.
 
         Args:
-            filepath (str): Path for generated JSONL file. Defaults to `words.json`.
+            json_file (str): Path to the json file generated for audio segments.
+            filepath (str): Path to save JSONL file. Defaults to `words.json`.
             verbose (bool): Indicator for terminal messages. Defaults to False.
             
         Returns:
-            A jsonl file with chapter information.
+            A JSONL file with the specified chapter information.
         """    
         segments_count = 0
         chapter_count = 0
@@ -340,11 +339,7 @@ class LibriSpeechProcessor:
         # List to store transcripts for the new JSON file
         all_chapters = []
         
-        with open(
-            os.path.join(self.audio_dest_directory, self.json_filepath),
-            "r", 
-            encoding="utf-8"
-            ) as file:
+        with open(json_filepath, "r", encoding="utf-8") as file:
             json_chapters = json.load(file)
             
         while segments_count < self.amount_of_chapters:
@@ -381,10 +376,6 @@ class LibriSpeechProcessor:
             
         # Serialize the data to JSON format
         json_object = json.dumps(all_chapters)
-        with open(
-            filepath, 
-            "w", 
-            encoding="utf-8"
-        )as file:
+        with open(jsonl_filepath, "w", encoding="utf-8") as file:
             # Write the JSON object to the file
             file.write(json_object + "\n")
