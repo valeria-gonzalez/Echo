@@ -46,7 +46,8 @@ Improve the pronunciation of passive English speakers through a system that uses
 ## 💡 Desing Vision?
 **Echo should look like a user-friendly, educational website.**
 
-![Diseño sin título (1)](https://github.com/user-attachments/assets/e49c5578-a939-4419-9c44-7ed38bbbe4df)
+![Diseño sin título (2)](https://github.com/user-attachments/assets/2b6531de-bc7e-4d36-b827-de508d042429)
+
 
 ## Tools And Technologies 🔧
 
