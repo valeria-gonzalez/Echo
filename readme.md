@@ -8,22 +8,9 @@
    <img src="https://img.shields.io/badge/Last%20Updated-April-blue" alt="Last Updated"/>
 </p>
 
-# Table of Contents 📑
-
-1. What is Echo?
-2. Why Echo?
-3. What does Echo do?
-4. List of Project Functions
-5. Moonshot
-6. Design Vision
-7. Tools and Technologies
-8. Authors
-9. Acknowledgements
-
-
 ##  🔊 What is echo?
 
-A web application is proposed for the evaluation and feedback of pronunciation of passive English speakers between 18 and 30 years old, using audio recordings of the speaker emulating audios and transcriptions in English used as didactic material. It will be developed as a web application, will make use of different artificial intelligence models to evaluate the audios and will store the didactic material and user information in a database.
+It is a web application for pronunciation assessment and feedback for passive English speakers between the ages of 18 and 30. This application uses audio recordings of the speaker that emulate English audio and transcripts as teaching material. It will be developed as a web application, will use different artificial intelligence models to evaluate the audio, and will store the teaching material and user information in a database.
 
 ## ❓ Why echo? 
 Nowadays, mastery of the English language has become essential to have better social and work opportunities. The project seeks to attack the problem in which thousands of people find themselves, which is to learn to pronounce well, so the passive speaker will be able to use this tool to improve in the language and discover their weaknesses 
@@ -46,8 +33,7 @@ Improve the pronunciation of passive English speakers through a system that uses
 ## 💡 Desing Vision?
 **Echo should look like a user-friendly, educational website.**
 
-![Diseño sin título (2)](https://github.com/user-attachments/assets/2b6531de-bc7e-4d36-b827-de508d042429)
-
+![Diseño sin título (3)](https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c)
 
 ## Tools And Technologies 🔧
 
@@ -69,6 +55,7 @@ Improve the pronunciation of passive English speakers through a system that uses
 
 ## 👥 Authors ✨
 
+<div align="center">
 <table>
   <tr>
     <td align="center">
@@ -88,6 +75,7 @@ Improve the pronunciation of passive English speakers through a system that uses
     </td>
   </tr>
 </table>
+</div>
 
 ## 🙏  Acknowledgements 🙏
 
