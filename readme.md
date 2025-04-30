@@ -1,44 +1,90 @@
-# Echo: English Pronunciation App
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/885011ba-f58a-429a-9f8b-db39b6f2d227" alt="Captura de pantalla" />
 
-Web application that evaluates english pronunciation using AI and provides practice resources such as words, sentences and texts with audio.
+</p>
 
-## Description
+<p align="center">
+   <img src="https://img.shields.io/badge/STATUS-%20Development-green" alt="Badge Development"/>
+   <img src="https://img.shields.io/badge/Last%20Updated-April-blue" alt="Last Updated"/>
+</p>
 
+##  🔊 What is echo?
 
+It is a web application for pronunciation assessment and feedback for passive English speakers between the ages of 18 and 30. This application uses audio recordings of the speaker that emulate English audio and transcripts as teaching material. It will be developed as a web application, will use different artificial intelligence models to evaluate the audio, and will store the teaching material and user information in a database.
 
-## Getting Started
+## ❓ Why echo? 
+Nowadays, mastery of the English language has become essential to have better social and work opportunities. The project seeks to attack the problem in which thousands of people find themselves, which is to learn to pronounce well, so the passive speaker will be able to use this tool to improve in the language and discover their weaknesses 
 
-### 1. Locate your issue.
-Navigate to the `Issues` tab and locate the issue you have been assigned.
+## 🚀 What does echo do? 
+Improve the pronunciation of passive English speakers through a system that uses Artificial Intelligence models to evaluate and feed back recordings of the speaker's pronunciation by emulating audios and transcriptions in English used as teaching material.
 
-### 2. Update its status and create your branch.
-Change the issue's status to let others know you're working on it. Also create your branch to start with your local development. You can create a branch directly in the lower right corner of the page. 
+## 🚀 List of Project Functions
+- `Functionality` 🎧 Provide audios and transcriptions of words, sentences, and texts as teaching materials.
+- `Functionality` 🎙️ Allow the user to create audio recordings of the teaching material.
+- `Functionality` 🤖 Provide AI feedback on the user's pronunciation.
+- `Functionality` 🧠 Filter words, sentences, and texts by difficulty level.
+- `Functionality` 🔍 Filter words, sentences and texts by usage situation.
 
-If you are creating your branch from your terminal, just remember to:
+### Moonshot:
+* Generate audios and transcriptions using AI from a free request from the user on any topic.
+* Generate audios and transcriptions using AI from text manually entered by the user.
+* Allow the exchange between users of messages translated into English and their audios to receive feedback.
 
-1. Make sure your situated at the main branch with `git checkout main`.
-2. Update your main branch with `git fetch origin`.
-3. Create your branch as `git checkout -b your_branch`.
+## 💡 Desing Vision?
+**Echo should look like a user-friendly, educational website.**
 
-   3.1 Name your branch with the following convention `IssueNumber-description-of-issue`. Example: `2-process-words`
+![Diseño sin título (3)](https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c)
 
-If you created your branch from github, use the following to make sure you're where you need to be:
+## Tools And Technologies 🔧
 
-```
-git checkout main
-git fetch origin
-git checkout your_branch
-git branch
-```
+### 👨‍💻 Programing Language
+- ![Python](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+- ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-###  3. Save all data to a folder named dataset
-Please save all of your data (such as .csv, .zip files) that aren't directly related to the data processing scripts in a folder named `datasets`. The `.gitignore` file will ignore it no matter where it is.
+### 📚 Framework
+- ![Flask](https://img.shields.io/badge/-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
 
-If you are creating a virtual environment for python (which is recommended), please name it `env` so it's ignored as well.
+### 🎨 Front-End
+- ![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
-If you are creating any other folder that isn't relevant to all of us, kindly add it to the `.gitignore` file and update it here so we're all aware of the changes.
+### ⚙️ Back-End
+- ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 
-```
-env
-**/datasets/*
-```
+### 🗄️ Database
+- ![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+
+## 👥 Authors ✨
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" width="100px;" alt="Nombre 1"/><br />
+      <sub><b>Valeria González Segura</b></sub><br />
+      code
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" width="100px;" alt="Nombre 2"/><br />
+      <sub><b>Diego Tristán Domínguez Dueñas</b></sub><br />
+      code
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" width="100px;" alt="Nombre 3"/><br />
+      <sub><b>Alan Josafat Ramos Preciado</b></sub><br />
+      code
+    </td>
+  </tr>
+</table>
+</div>
+
+## 🙏  Acknowledgements 🙏
+
+### 📚 *Wikiextract*
+🔍 Kaikki.org is a digital archive and a data mining group. 
+
+### 🌍 *Tatoeba*
+🗣️ Tatoeba is a collection of prayers and translations.
+🤝 It's collaborative, open, free, and even addictive.
+
+### 🎧 *LibriSpeech* OpenSLR 
+🌐 OpenSLR is a site devoted to hosting speech and language resources, such as training corpora for speech recognition, and software related to speech recognition. We intend to be a convenient place for anyone to put resources that they have created, so that they can be downloaded publicly.
