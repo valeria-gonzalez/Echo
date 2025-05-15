@@ -130,11 +130,13 @@ This is done so that the user can decide how large they want the resulting files
 
 The resulting files after execution will be named `words-{unique_identifier}.json`. It will contain the amount of specified english words with their definitions depending on the part of speech, a list of spanish translations and an audio file link.
 
-The file has the following keys:
+The file is comprised of a list of dictionaries containing each word and its information.
+
+Each dictionary in the file has the following keys:
 
 - `word` : (string) The english word
 
-- `definitions` : (list of dictionaries) A list of dictionaries with the definitions of a word according to its part of speech. It has the following keys:
+- `definitions` : (list of dictionaries) A list of dictionaries with the definitions of a word according to its part of speech. Each sub dictionary has the following keys:
 
   - `pos`: (string) Part of speech, such as "noun", "verb", "adj", "adv", "pron", "determiner", "prep" (preposition), "postp" (postposition), and many others.
 
@@ -145,3 +147,41 @@ The file has the following keys:
 - `mp3_url` : (string) URL for an MP3 format sound file
 
 - `translations` : (list of strings) Spanish translations of the word
+
+
+### Example of JSONL
+
+This is an example of a single word in the JSONL file.
+
+```JSON
+[
+    {
+        "word": "dictionary", 
+        "definitions": 
+        [
+            {
+                "pos": "noun", 
+                "definitions": 
+                [
+                    "An associative array, a data structure where each value is referenced by a particular key, analogous..", 
+                    "A synchronic dictionary of a standardised language held to only contain words that are properly part..", 
+                    "A reference work with a list of words from one or more languages, normally ordered alphabetically..", 
+                    "Any work that has a list of material organized alphabetically; e.g., biographical dictionary.."
+                ]
+            }, 
+            {
+                "pos": "verb", 
+                "definitions": 
+                [
+                    "To look up in a dictionary.", 
+                    "To add to a dictionary.", 
+                    "To compile a dictionary."
+                ]
+            }
+        ], 
+        "ipa": "/\u02c8d\u026ak.\u0283\u0259.n\u0259.\u0279i/", 
+        "mp3_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/En-uk-dictionary.ogg/En-uk-dictionary.ogg.mp3", 
+        "translations": ["diccionario"]
+    }
+]
+```
