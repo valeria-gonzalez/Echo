@@ -52,7 +52,7 @@ Many non-native English speakers struggle to find a place to practice speaking E
 
 ## Contributors
 
-<table>
+<table style="border: none;">
   <tr>
     <td align="center">
       <img src="https://avatars.githubusercontent.com/u/71797910?v=4" style="border-radius: 50%;" width="100" alt="Valeria González Segura"/><br />
