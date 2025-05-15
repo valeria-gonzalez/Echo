@@ -50,28 +50,6 @@ Many non-native English speakers struggle to find a place to practice speaking E
 ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 
-## Contributors
-
-<table style="border: none;">
-  <tr>
-    <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" style="border-radius: 50%;" width="100" alt="Valeria González Segura"/><br />
-      <sub><b>Valeria González Segura</b></sub><br />
-      <a href="https://github.com/valeria-gonzalez" style="color: gray;">Profile</a>
-    </td>
-    <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" style="border-radius: 50%;" width="100" alt="Diego Tristán Domínguez Dueñas"/><br />
-      <sub><b>Diego Tristán Domínguez Dueñas</b></sub><br />
-      <a href="https://github.com/DiegoDominguez25" style="color: gray;">Profile</a>
-    </td>
-    <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" style="border-radius: 50%;" width="100" alt="Alan Josafat Ramos Preciado"/><br />
-      <sub><b>Alan Josafat Ramos Preciado</b></sub><br />
-      <a href="https://github.com/Alan-codigo" style="color: gray;">Profile</a>
-    </td>
-  </tr>
-</table>
-
 ## Acknowledgements
 
 - 📚 [Wikiextract](https://github.com/tatuylonen/wiktextract)  
