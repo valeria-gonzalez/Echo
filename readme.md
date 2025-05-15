@@ -1,66 +1,49 @@
-<style>
-    .rounded {
-        border-radius: 50%;
-        width: 100px;
-    }
-    .link {
-        color: gray;
-    }
-    .tbl {
-        border-radius: 1%;
-    }
-</style>
-
 <p align="center">
    <img src="https://img.shields.io/badge/STATUS-%20Development-green" alt="Badge Development"/>
    <img src="https://img.shields.io/badge/Last%20Updated-April-blue" alt="Last Updated"/>
 </p>
-<br />
-<div align="center">
+
+<p align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="https://github.com/user-attachments/assets/885011ba-f58a-429a-9f8b-db39b6f2d227" alt="Logo" width="400" height="">
+    <img src="https://github.com/user-attachments/assets/885011ba-f58a-429a-9f8b-db39b6f2d227" alt="Logo" width="400" />
   </a>
+</p>
 
-  <h3 align="center">Echo</h3>
+<h3 align="center">Echo</h3>
 
-  <p align="center">
-    English pronunciation improvement web app.
-    <br />
-    <a href="#"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="#">View Demo</a>
-    &middot;
-  </p>
-</div>
+<p align="center">
+  English pronunciation improvement web app.
+  <br />
+  <a href="#"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
+  <a href="#">View Demo</a>
+</p>
 
-## About the project
+## About the Project
 
+Echo is a web application that aims to improve English pronunciation for passive English speakers by using AI to evaluate and give feedback on self-recorded audios and by providing words, sentences, and texts as practice material.
 
-Echo is a web application that aims to improve english pronunciation of passive english speakers by using AI to evaluate and give feedback on self recorded audios and providing words, sentences and texts as practice material.
+### What Does Echo Do?
 
-### What does echo do? 
-Many non native english speakers struggle finding a place to practice speaking english with others for many reasons. Echo aims to provide a safe space to improve english pronunciation by:
+Many non-native English speakers struggle to find a place to practice speaking English. Echo provides a safe space to improve pronunciation by:
 
-**1.** Providing words, sentences and texts with american accent voice recordings as practice material.
+1. Providing words, sentences, and texts with American-accent voice recordings.
+2. Allowing users to follow along and emulate the recordings.
+3. Using AI to evaluate and give feedback on users' pronunciation.
 
-**2.** Allowing the user to follow along the audio recordings, trying to emulate the accent as closely as possible.
+### Moonshot Goals
 
-**3.** Providing evaluations and feedback of the recordings of the speaker's pronunciation by using AI.
-
-### Moonshot goals
-
-**1.** Generate audios and transcriptions about any topic using AI based on user request.
-
-**2.** Generate audios using AI based on user provided text.
-
-**3.** Allow users to evaluate eachother's english pronunciation by exchanging messages and audios.
+1. Generate audio and transcriptions on any topic using AI, based on user requests.  
+2. Generate audio from user-provided text using AI.  
+3. Enable peer-to-peer evaluation through audio message exchange.
 
 ### Mockups
 
-<img src="https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c" alt="Mockups" class="tbl"/>
+<img src="https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c" alt="Mockups" style="border-radius: 8px;" width="600"/>
 
-### Built with
+### Built With
+
 ![Python](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -68,32 +51,29 @@ Many non native english speakers struggle finding a place to practice speaking e
 ![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 
 ## Contributors
-<div align="center">
-<table border="0">
+
+<table>
   <tr>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" class="rounded" alt="Nombre 1"/><br />
+      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" style="border-radius: 50%;" width="100" alt="Valeria González Segura"/><br />
       <sub><b>Valeria González Segura</b></sub><br />
-      <a href="https://github.com/valeria-gonzalez" class="link">Profile</a>
+      <a href="https://github.com/valeria-gonzalez" style="color: gray;">Profile</a>
     </td>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" class="rounded" alt="Nombre 2"/><br />
+      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" style="border-radius: 50%;" width="100" alt="Diego Tristán Domínguez Dueñas"/><br />
       <sub><b>Diego Tristán Domínguez Dueñas</b></sub><br />
-      <a href="https://github.com/DiegoDominguez25" class="link">Profile</a>
+      <a href="https://github.com/DiegoDominguez25" style="color: gray;">Profile</a>
     </td>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" class="rounded" alt="Nombre 3"/><br />
+      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" style="border-radius: 50%;" width="100" alt="Alan Josafat Ramos Preciado"/><br />
       <sub><b>Alan Josafat Ramos Preciado</b></sub><br />
-      <a href="https://github.com/Alan-codigo" class="link">Profile</a>
+      <a href="https://github.com/Alan-codigo" style="color: gray;">Profile</a>
     </td>
   </tr>
 </table>
-</div>
 
 ## Acknowledgements
 
-- 📚 [Wikiextract](https://github.com/tatuylonen/wiktextract)
-
-- 🌍 [Tatoeba](https://tatoeba.org/en/about)
-
-- 🎧 [LibriSpeech OpenSLR](http://www.openslr.org/12) 
+- 📚 [Wikiextract](https://github.com/tatuylonen/wiktextract)  
+- 🌍 [Tatoeba](https://tatoeba.org/en/about)  
+- 🎧 [LibriSpeech OpenSLR](http://www.openslr.org/12)
