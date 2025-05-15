@@ -1,90 +1,99 @@
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/885011ba-f58a-429a-9f8b-db39b6f2d227" alt="Captura de pantalla" />
-
-</p>
+<style>
+    .rounded {
+        border-radius: 50%;
+        width: 100px;
+    }
+    .link {
+        color: gray;
+    }
+    .tbl {
+        border-radius: 1%;
+    }
+</style>
 
 <p align="center">
    <img src="https://img.shields.io/badge/STATUS-%20Development-green" alt="Badge Development"/>
    <img src="https://img.shields.io/badge/Last%20Updated-April-blue" alt="Last Updated"/>
 </p>
-
-##  🔊 What is echo?
-
-It is a web application for pronunciation assessment and feedback for passive English speakers between the ages of 18 and 30. This application uses audio recordings of the speaker that emulate English audio and transcripts as teaching material. It will be developed as a web application, will use different artificial intelligence models to evaluate the audio, and will store the teaching material and user information in a database.
-
-## ❓ Why echo? 
-Nowadays, mastery of the English language has become essential to have better social and work opportunities. The project seeks to attack the problem in which thousands of people find themselves, which is to learn to pronounce well, so the passive speaker will be able to use this tool to improve in the language and discover their weaknesses 
-
-## 🚀 What does echo do? 
-Improve the pronunciation of passive English speakers through a system that uses Artificial Intelligence models to evaluate and feed back recordings of the speaker's pronunciation by emulating audios and transcriptions in English used as teaching material.
-
-## 🚀 List of Project Functions
-- `Functionality` 🎧 Provide audios and transcriptions of words, sentences, and texts as teaching materials.
-- `Functionality` 🎙️ Allow the user to create audio recordings of the teaching material.
-- `Functionality` 🤖 Provide AI feedback on the user's pronunciation.
-- `Functionality` 🧠 Filter words, sentences, and texts by difficulty level.
-- `Functionality` 🔍 Filter words, sentences and texts by usage situation.
-
-### Moonshot:
-* Generate audios and transcriptions using AI from a free request from the user on any topic.
-* Generate audios and transcriptions using AI from text manually entered by the user.
-* Allow the exchange between users of messages translated into English and their audios to receive feedback.
-
-## 💡 Desing Vision?
-**Echo should look like a user-friendly, educational website.**
-
-![Diseño sin título (3)](https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c)
-
-## Tools And Technologies 🔧
-
-### 👨‍💻 Programing Language
-- ![Python](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-- ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-
-### 📚 Framework
-- ![Flask](https://img.shields.io/badge/-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
-
-### 🎨 Front-End
-- ![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-
-### ⚙️ Back-End
-- ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-
-### 🗄️ Database
-- ![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-
-## 👥 Authors ✨
-
+<br />
 <div align="center">
-<table>
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="https://github.com/user-attachments/assets/885011ba-f58a-429a-9f8b-db39b6f2d227" alt="Logo" width="400" height="">
+  </a>
+
+  <h3 align="center">Echo</h3>
+
+  <p align="center">
+    English pronunciation improvement web app.
+    <br />
+    <a href="#"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="#">View Demo</a>
+    &middot;
+  </p>
+</div>
+
+## About the project
+
+
+Echo is a web application that aims to improve english pronunciation of passive english speakers by using AI to evaluate and give feedback on self recorded audios and providing words, sentences and texts as practice material.
+
+### What does echo do? 
+Many non native english speakers struggle finding a place to practice speaking english with others for many reasons. Echo aims to provide a safe space to improve english pronunciation by:
+
+**1.** Providing words, sentences and texts with american accent voice recordings as practice material.
+
+**2.** Allowing the user to follow along the audio recordings, trying to emulate the accent as closely as possible.
+
+**3.** Providing evaluations and feedback of the recordings of the speaker's pronunciation by using AI.
+
+### Moonshot goals
+
+**1.** Generate audios and transcriptions about any topic using AI based on user request.
+
+**2.** Generate audios using AI based on user provided text.
+
+**3.** Allow users to evaluate eachother's english pronunciation by exchanging messages and audios.
+
+### Mockups
+
+<img src="https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c" alt="Mockups" class="tbl"/>
+
+### Built with
+![Python](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+
+## Contributors
+<div align="center">
+<table border="0">
   <tr>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" width="100px;" alt="Nombre 1"/><br />
+      <img src="https://avatars.githubusercontent.com/u/71797910?v=4" class="rounded" alt="Nombre 1"/><br />
       <sub><b>Valeria González Segura</b></sub><br />
-      code
+      <a href="https://github.com/valeria-gonzalez" class="link">Profile</a>
     </td>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" width="100px;" alt="Nombre 2"/><br />
+      <img src="https://avatars.githubusercontent.com/u/99103747?v=4" class="rounded" alt="Nombre 2"/><br />
       <sub><b>Diego Tristán Domínguez Dueñas</b></sub><br />
-      code
+      <a href="https://github.com/DiegoDominguez25" class="link">Profile</a>
     </td>
     <td align="center">
-      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" width="100px;" alt="Nombre 3"/><br />
+      <img src="https://avatars.githubusercontent.com/u/87654321?v=4" class="rounded" alt="Nombre 3"/><br />
       <sub><b>Alan Josafat Ramos Preciado</b></sub><br />
-      code
+      <a href="https://github.com/Alan-codigo" class="link">Profile</a>
     </td>
   </tr>
 </table>
 </div>
 
-## 🙏  Acknowledgements 🙏
+## Acknowledgements
 
-### 📚 *Wikiextract*
-🔍 Kaikki.org is a digital archive and a data mining group. 
+- 📚 [Wikiextract](https://github.com/tatuylonen/wiktextract)
 
-### 🌍 *Tatoeba*
-🗣️ Tatoeba is a collection of prayers and translations.
-🤝 It's collaborative, open, free, and even addictive.
+- 🌍 [Tatoeba](https://tatoeba.org/en/about)
 
-### 🎧 *LibriSpeech* OpenSLR 
-🌐 OpenSLR is a site devoted to hosting speech and language resources, such as training corpora for speech recognition, and software related to speech recognition. We intend to be a convenient place for anyone to put resources that they have created, so that they can be downloaded publicly.
+- 🎧 [LibriSpeech OpenSLR](http://www.openslr.org/12) 
