@@ -1,6 +1,7 @@
 import json
 import uuid
 from collections import defaultdict
+from typing import List
 
 class WikiExtractProcessor:
     def __init__(self, word_dump_filepath:str):
@@ -107,7 +108,7 @@ class WikiExtractProcessor:
         for word in incomplete_words:
             self.accumulated_words.pop(word)
             
-    def save_words_to_JSONL(self)->None:
+    def save_words_to_JSONL(self, processed_dict:list)->None:
         """ 
         Write the accumulated words dictionary to a JSONL file. 
         """
@@ -115,7 +116,7 @@ class WikiExtractProcessor:
         filename = f"datasets/words-{uuid.uuid4().hex}.jsonl"
         
         # Serializing json
-        json_object = json.dumps(self.accumulated_words)
+        json_object = json.dumps(processed_dict)
         
         # Writing to sample.jsonl
         with open(filename, "w") as outfile:
@@ -224,7 +225,8 @@ class WikiExtractProcessor:
                                 self.remove_incomplete_words() 
                                 
                                 if self.reached_words_per_file():
-                                    self.save_words_to_JSONL()
+                                    processed_dict = self.prepare_words()
+                                    self.save_words_to_JSONL(processed_dict)
                                     self.total_words += len(self.accumulated_words)
                                     self.accumulated_words.clear()
                             
@@ -240,8 +242,31 @@ class WikiExtractProcessor:
             self.remove_incomplete_words()
             
             if(len(self.accumulated_words) > 0):
-                self.save_words_to_JSONL()
+                processed_dict = self.prepare_words()
+                self.save_words_to_JSONL(processed_dict)
                 self.total_words += len(self.accumulated_words)
                 self.accumulated_words.clear()
             
         return self.total_words
+    
+    def prepare_words(self)->List[dict]:
+        """Turn the accumulated words dictonary into a list of dictionaries where
+        each dictionary has the information for a single word.
+
+        Returns:
+            List[dict]: A list of dictionaries.
+        """
+        processed_dict = list()
+        
+        for word, info in self.accumulated_words.items():
+            word_dict = {
+                "word" : word,
+                "definitions": info["definitions"],
+                "ipa": info["ipa"],
+                "mp3_url": info["mp3_url"],
+                "translations": info["translations"]
+            }
+            processed_dict.append(word_dict)
+            
+        return processed_dict
+            
