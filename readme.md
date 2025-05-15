@@ -40,7 +40,7 @@ Many non-native English speakers struggle to find a place to practice speaking E
 
 ### Mockups
 
-<img src="https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c" alt="Mockups" style="border-radius: 8px;" width="600"/>
+<img src="https://github.com/user-attachments/assets/5ec0c31f-e833-49ac-bbbc-11a4136e832c" alt="Mockups" style="border-radius: 8px;" width="800"/>
 
 ### Built With
 
