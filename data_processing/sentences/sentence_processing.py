@@ -21,7 +21,7 @@ class TatoebaProcessor:
         self.eng_spa_pairs_filepath = eng_spa_pairs
         self.json_filepath = None
     
-    def load_datasets(self)->List[pd.DataFrame]:
+    def _load_datasets(self)->List[pd.DataFrame]:
         """Load the datasets for english sentences, senteces with audio and
         english spanish pairs (respectively) as pandas Dataframes.  
 
@@ -48,7 +48,7 @@ class TatoebaProcessor:
         
         return [eng_sen, audio_sen, engspa_trans]
     
-    def sentences_with_audio(self, eng_sen:pd.DataFrame, 
+    def _sentences_with_audio(self, eng_sen:pd.DataFrame, 
                              audio_sen:pd.DataFrame)->pd.DataFrame:
         """Extract sentences in english that also have audio.
 
@@ -70,7 +70,7 @@ class TatoebaProcessor:
         
         return eng_audio_sen
     
-    def english_spanish_pairs_with_audio(self, engspa_pairs:pd.DataFrame, 
+    def _english_spanish_pairs_with_audio(self, engspa_pairs:pd.DataFrame, 
                                          eng_audio_sen:pd.DataFrame)->pd.DataFrame:
         """Extract english - spanish sentence pairs that also have audio.
 
@@ -95,7 +95,7 @@ class TatoebaProcessor:
         
         return engspa_pairs
     
-    def unite_datasets(self, engspa_pairs:pd.DataFrame, 
+    def _unite_datasets(self, engspa_pairs:pd.DataFrame, 
                        eng_audio_sen:pd.DataFrame)->pd.DataFrame:
         """Create a final dataframe with sentences in english, their spanish
         translation and audio id.
@@ -121,16 +121,14 @@ class TatoebaProcessor:
         
         # Create a new dataframe with sentence, translation and audio link
         data = {
-            'eng_id': engspa_pairs['eng_id'].values,
             'eng_sen': engspa_pairs['eng_text'].values,
-            'spa_id': engspa_pairs['spa_id'].values,
             'spa_sen': engspa_pairs['spa_text'].values,
             'audio_id': engspa_audios['audio_id'].values
         }
         
         return pd.DataFrame(data=data)
     
-    def df_to_jsonl(self, df:pd.DataFrame)->None:
+    def _df_to_jsonl(self, df:pd.DataFrame)->None:
         """Write every row in a dataframe as its own json object to a JSONL file.
 
         Args:
@@ -156,7 +154,7 @@ class TatoebaProcessor:
         with open(self.json_filepath, "w") as outfile:
             outfile.write(json_object + "\n")
     
-    def get_sentences_df(self)->pd.DataFrame:
+    def _get_sentences_df(self)->pd.DataFrame:
         """Retrieve english sentences with spanish translation and audio. The
         datframe has the following data (in this order):
         - `eng_id`: English sentence Tatoeba id.
@@ -168,11 +166,11 @@ class TatoebaProcessor:
         Returns:
             pd.DataFrame
         """
-        eng_sen, audio_sen, engspa_pairs = self.load_datasets()
-        eng_audio_sen = self.sentences_with_audio(eng_sen, audio_sen)
-        engspa_audio = self.english_spanish_pairs_with_audio(engspa_pairs, 
+        eng_sen, audio_sen, engspa_pairs = self._load_datasets()
+        eng_audio_sen = self._sentences_with_audio(eng_sen, audio_sen)
+        engspa_audio = self._english_spanish_pairs_with_audio(engspa_pairs, 
                                                              eng_audio_sen)
-        united_dataset = self.unite_datasets(engspa_audio, eng_audio_sen)
+        united_dataset = self._unite_datasets(engspa_audio, eng_audio_sen)
         return united_dataset
     
     def get_sentences_csv(self, filepath:str="tatoeba_sentences.csv")->None:
@@ -184,7 +182,7 @@ class TatoebaProcessor:
             "`tatoeba_sentences.csv`".
         """
         
-        clean_sentences = self.get_sentences_df()
+        clean_sentences = self._get_sentences_df()
         clean_sentences.to_csv(filepath, index=False)
         
     def get_sentences_jsonl(self, filepath:str="tatoeba_sentences.jsonl")->None:
@@ -196,5 +194,5 @@ class TatoebaProcessor:
             "`tatoeba_sentences.jsonl`".
         """
         self.json_filepath = filepath
-        clean_sentences = self.get_sentences_df()
-        self.df_to_jsonl(clean_sentences)
+        clean_sentences = self._get_sentences_df()
+        self._df_to_jsonl(clean_sentences)

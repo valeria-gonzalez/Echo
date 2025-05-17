@@ -13,7 +13,7 @@ class LibriSpeechProcessor:
         self.chapter_to_book = None
         self.json_filepath = "texts.json"
         
-    def extract_chapter_directories(self)->list[str]:
+    def _extract_chapter_directories(self)->list[str]:
         """ Get all chapters from the root directory. 
 
         Args:
@@ -30,7 +30,7 @@ class LibriSpeechProcessor:
                 
         return chapters
     
-    def group_chapters(self, list_of_chapters:List[str])->Generator[List, None, None]:
+    def _group_chapters(self, list_of_chapters:List[str])->Generator[List, None, None]:
         
         """Splits the list of chapters into groups of a specified length.
 
@@ -44,7 +44,7 @@ class LibriSpeechProcessor:
         for i in range(0, len(list_of_chapters), self.amount_of_chapters):
             yield list_of_chapters[i:i + self.amount_of_chapters]
             
-    def move_chapters(self, groups:list[str], dest_directory:str,
+    def _move_chapters(self, groups:list[str], dest_directory:str,
                       verbose:bool=False)->None:
         """ Moves each chapter into a new directory structure under a
         destination path.
@@ -90,11 +90,11 @@ class LibriSpeechProcessor:
             print(f"Grouping chapters for: {dest_directory} ...", end="")
             
         self.amount_of_chapters = amount_of_chapters
-        chapters = self.extract_chapter_directories()
-        chapter_groups = list(self.group_chapters(chapters))
-        self.move_chapters(chapter_groups, dest_directory, verbose)
+        chapters = self._extract_chapter_directories()
+        chapter_groups = list(self._group_chapters(chapters))
+        self._move_chapters(chapter_groups, dest_directory, verbose)
         
-    def map_book_chapter(self, verbose:bool=False)->dict:
+    def _map_book_chapter(self, verbose:bool=False)->dict:
         """ A function to create a mapping between chapter IDs and book titles.
 
         Returns:
@@ -127,7 +127,7 @@ class LibriSpeechProcessor:
                         
         return chapter_to_book
     
-    def map_audio_transcript(self, transcript_filepath:str)->dict:
+    def _map_audio_transcript(self, transcript_filepath:str)->dict:
         """ This function converts a transcription file into a dictionary.
 
         Args:
@@ -149,7 +149,7 @@ class LibriSpeechProcessor:
                         
         return trans
     
-    def combine_chapter_audios(self, chapter_filepath:str, transcript_filepath:str, 
+    def _combine_chapter_audios(self, chapter_filepath:str, transcript_filepath:str, 
                                dest_dir:str, audio_length:float=30,
                                verbose:bool=False)->dict:
         """ Combine all audio files in a chapter directory into `audio_lenght`
@@ -167,7 +167,7 @@ class LibriSpeechProcessor:
             dict: JSON structure containing the chapter ID, book name, and a list 
             of segments with their audio files, durations, and transcriptions.
         """    
-        trans = self.map_audio_transcript(transcript_filepath)
+        trans = self._map_audio_transcript(transcript_filepath)
         # sorting the audio files to ensure they are processed in order
         audios = sorted([f for f in os.listdir(chapter_filepath) if f.endswith(".flac")])
         
@@ -299,7 +299,7 @@ class LibriSpeechProcessor:
             print(f"Combining audio files for {chapter_group_dir} ...")
             
         os.makedirs(dest_dir, exist_ok=True) 
-        self.chapter_to_book = self.map_book_chapter(verbose)
+        self.chapter_to_book = self._map_book_chapter(verbose)
         
         data = []
         for chapter in os.listdir(chapter_group_dir):
@@ -311,7 +311,7 @@ class LibriSpeechProcessor:
                     if verbose: print(f"Chapter: {chapter} ", end="")
                     transcript_txt = os.path.join(chapter_path, file_txt[0])
                     # Process each chapter
-                    chapter_data = self.combine_chapter_audios(chapter_path,
+                    chapter_data = self._combine_chapter_audios(chapter_path,
                                                                transcript_txt, 
                                                                dest_dir,
                                                                audio_length,

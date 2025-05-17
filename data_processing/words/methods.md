@@ -1,6 +1,6 @@
 # Wikiextract Processor methods descriptions
 
-## extract_word_from_json
+## _extract_word_from_json
 ```text
 Extract the relevant keys for a word from a JSON object. The keys are: word, pos (part of speech), definitions, ipa, mp3_url, and translation.  
 
@@ -26,7 +26,7 @@ word_obj = {
     }
 ```
 
-## accumulate_word
+## _accumulate_word
 
 ```text
 Add an extracted word to the accumulated words dictonary.
@@ -57,7 +57,7 @@ word_dict = {
 }
 ```
 
-## save_words_to_JSONL
+## _save_words_to_JSONL
 This functions writes the accumulated words without repetition to a JSONL file.
 
 ```text
@@ -70,7 +70,7 @@ Returns:
     None
 ```
 
-## remove_incomplete_words
+## _remove_incomplete_words
 
 This function takes the accumulated words dictionaries and eliminates all words that are missing any field.
 
