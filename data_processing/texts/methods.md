@@ -116,7 +116,7 @@ Returns:
     verbose (bool): Indicator for terminal messages. Defaults to False.
 ```
 
-The `map_book_chapter` function reads two text files: one containing book information and another with chapter metadata. It creates a mapping between each chapter ID and its corresponding book title.
+The `_map_book_chapter` function reads two text files: one containing book information and another with chapter metadata. It creates a mapping between each chapter ID and its corresponding book title.
 
 **Given:**
 `books.txt`
@@ -141,7 +141,7 @@ Calling `map_book_to_chapter("books.txt", "chapters.txt")` **would return:**
 }
 ```
 
-## map_audio_transcript
+## _map_audio_transcript
 
 ```text
 This function converts a transcription file into a dictionary.
@@ -153,7 +153,7 @@ Returns:
     dict: Dictionary with audio IDs as keys and their corresponding text as values  
 ```
 
-The `map_audio_transcript` function reads a transcription text file 
+The `_map_audio_transcript` function reads a transcription text file 
 where each line starts with an audio ID followed by its corresponding 
 transcription. It returns a dictionary that maps each audio ID to its 
 transcription text.
@@ -166,7 +166,7 @@ transcription text.
 1272-128104-0002 THIS IS A TEST
 ```
 
-Calling `map_audio_transcript("transcript.txt")` **would return:**
+Calling `_map_audio_transcript("transcript.txt")` **would return:**
 ```text
 {
     "1272-128104-0000": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
@@ -175,7 +175,7 @@ Calling `map_audio_transcript("transcript.txt")` **would return:**
 }
 ```
 
-## combine_chapter_audios
+## _combine_chapter_audios
 
 ```text
 Combine all audio files in a chapter into 30 second audio files and creating their corresponding transcription files.
@@ -188,7 +188,7 @@ Args:
     verbose (bool): Indicator for terminal messages. Defaults to False. 
 ```
 
-The `combine_chapter_audios` function takes a chapter directory containing .flac audio files and a transcription file, and splits the audio into segments of up to 30 seconds. For each segment, it creates a .flac file and a corresponding .txt file with timestamped transcriptions. It also includes the book title (retrieved using the chapter_to_book dictionary) at the top of the transcription.
+The `_combine_chapter_audios` function takes a chapter directory containing .flac audio files and a transcription file, and splits the audio into segments of up to 30 seconds. For each segment, it creates a .flac file and a corresponding .txt file with timestamped transcriptions. It also includes the book title (retrieved using the chapter_to_book dictionary) at the top of the transcription.
 
 Suppose that you have: A folder chap_001 with audio files like:
 

@@ -15,7 +15,7 @@ class WikiExtractProcessor:
         self.total_words = 0
         self.words_per_file = 5000
     
-    def extract_word_from_json(self, obj:dict)->dict:
+    def _extract_word_from_json(self, obj:dict)->dict:
         """Extract the relevant keys for a word from a JSON object. The keys
         are: `word`, `pos` (part of speech), `definitions`, `ipa`, `mp3_url`, 
         and `translation`.  
@@ -92,7 +92,7 @@ class WikiExtractProcessor:
         
         return word_obj
     
-    def remove_incomplete_words(self)->None:
+    def _remove_incomplete_words(self)->None:
         """ 
         Eliminate words that have empty keys from the accumulated words 
         dictionary.
@@ -108,7 +108,7 @@ class WikiExtractProcessor:
         for word in incomplete_words:
             self.accumulated_words.pop(word)
             
-    def save_words_to_JSONL(self, processed_dict:list)->None:
+    def _save_words_to_JSONL(self, processed_dict:list)->None:
         """ 
         Write the accumulated words dictionary to a JSONL file. 
         """
@@ -122,7 +122,7 @@ class WikiExtractProcessor:
         with open(filename, "w") as outfile:
             outfile.write(json_object + "\n")
 
-    def accumulate_word(self, word_obj:dict)->None:
+    def _accumulate_word(self, word_obj:dict)->None:
         """
         Add an extracted word to the accumulated words dictonary.
 
@@ -182,10 +182,10 @@ class WikiExtractProcessor:
                 if not self.accumulated_words[word][key] and word_obj[key]:
                     self.accumulated_words[word][key] = word_obj[key]
                     
-    def is_new_word(self, word:str)->bool:
+    def _is_new_word(self, word:str)->bool:
         return word not in self.accumulated_words
     
-    def reached_words_per_file(self)->bool:
+    def _reached_words_per_file(self)->bool:
         return len(self.accumulated_words) >= self.words_per_file
     
     def get_words_JSONL(self, max_words:int=-1, words_per_file:int=10000)->int:
@@ -214,23 +214,23 @@ class WikiExtractProcessor:
                 if line.strip(): 
                     try:
                         obj = json.loads(line) # Read line as json object
-                        word_obj = self.extract_word_from_json(obj) 
+                        word_obj = self._extract_word_from_json(obj) 
                         
                         if word_obj != None: 
                             word = word_obj["word"]
                             
                             # Check that there's no new info for existing word
                             # and write accumulated words to JSONL
-                            if self.is_new_word(word) and self.reached_words_per_file():
-                                self.remove_incomplete_words() 
+                            if self._is_new_word(word) and self._reached_words_per_file():
+                                self._remove_incomplete_words() 
                                 
-                                if self.reached_words_per_file():
-                                    processed_dict = self.prepare_words()
-                                    self.save_words_to_JSONL(processed_dict)
+                                if self._reached_words_per_file():
+                                    processed_dict = self._prepare_words()
+                                    self._save_words_to_JSONL(processed_dict)
                                     self.total_words += len(self.accumulated_words)
                                     self.accumulated_words.clear()
                             
-                            self.accumulate_word(word_obj)
+                            self._accumulate_word(word_obj)
                         
                     except json.JSONDecodeError as e:
                         print(f"Error decoding line {i + 1}: {e}")
@@ -239,17 +239,17 @@ class WikiExtractProcessor:
         
         # Check for remaining words          
         if(len(self.accumulated_words) > 0):
-            self.remove_incomplete_words()
+            self._remove_incomplete_words()
             
             if(len(self.accumulated_words) > 0):
-                processed_dict = self.prepare_words()
-                self.save_words_to_JSONL(processed_dict)
+                processed_dict = self._prepare_words()
+                self._save_words_to_JSONL(processed_dict)
                 self.total_words += len(self.accumulated_words)
                 self.accumulated_words.clear()
             
         return self.total_words
     
-    def prepare_words(self)->List[dict]:
+    def _prepare_words(self)->List[dict]:
         """Turn the accumulated words dictonary into a list of dictionaries where
         each dictionary has the information for a single word.
 

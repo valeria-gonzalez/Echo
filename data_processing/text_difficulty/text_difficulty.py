@@ -32,7 +32,7 @@ class TextDifficultyEvaluator:
         # Object to extract phonemes
         self.phoney = BigPhoney()
         
-    def count_words(self, str:str)->int:
+    def _count_words(self, str:str)->int:
         """Count words in a string using texstat module.
 
         Args:
@@ -43,7 +43,7 @@ class TextDifficultyEvaluator:
         """
         return textstat.lexicon_count(str, removepunct=True)
     
-    def count_syllables(self, str:str)->int:
+    def _count_syllables(self, str:str)->int:
         """Count syllables in a string using Big Phoney module.
 
         Args:
@@ -54,7 +54,7 @@ class TextDifficultyEvaluator:
         """
         return self.phoney.count_syllables(str)
     
-    def difficulty_threshold(self, thresholds:dict, value:int)->int:
+    def _difficulty_threshold(self, thresholds:dict, value:int)->int:
         """Return the class according to the difficulty threshold.
 
         Args:
@@ -80,8 +80,8 @@ class TextDifficultyEvaluator:
             int: Difficulty of the word.
         """
         phonemes = self.phoney.phonize(word)
-        phoneme_count = self.count_words(phonemes)
-        syllable_count = self.count_syllables(word)
+        phoneme_count = self._count_words(phonemes)
+        syllable_count = self._count_syllables(word)
         frequency = zipf_frequency(word, lang="en")
         
         # Normalize values between [0,1]
@@ -100,7 +100,7 @@ class TextDifficultyEvaluator:
         
         # Obtain final difficulty
         thresholds = { 0.45 : 0, 0.64: 1, 1:2 }
-        return self.difficulty_threshold(thresholds, difficulty)
+        return self._difficulty_threshold(thresholds, difficulty)
         
     def sentence_difficulty(self, sentence:str)->int:
         """Classify english sentences by difficulty based on grade level 
@@ -114,8 +114,8 @@ class TextDifficultyEvaluator:
             int: Difficulty of the sentence.
         """
         grade_level = max(textstat.text_standard(sentence, float_output=True),1.0)
-        word_count = self.count_words(sentence)
-        syllable_count = self.count_syllables(sentence)
+        word_count = self._count_words(sentence)
+        syllable_count = self._count_syllables(sentence)
         
         # Normalize values between [0,1]
         grade_score = min(grade_level / self.MAX_GRADE, 1) 
@@ -133,4 +133,4 @@ class TextDifficultyEvaluator:
         
         # Obtain final difficulty
         thresholds = { 0.4 : 0, 0.6: 1, 1:2 }
-        return self.difficulty_threshold(thresholds, difficulty)
+        return self._difficulty_threshold(thresholds, difficulty)
