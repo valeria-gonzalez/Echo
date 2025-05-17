@@ -2,3 +2,4 @@ env
 **/datasets/*
 .DS_Store
 venv
+.vs
