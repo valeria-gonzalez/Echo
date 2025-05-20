@@ -173,7 +173,7 @@ processor.combine_chapter_group_audios(chapters_directory,
                                         verbose=True)
 ```
 
-Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
+Each segment will contain up to `audio_length` seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
 
 ### Step 3: Create JSONL file with specific amount of chapters
 
@@ -247,18 +247,39 @@ This function also generates the following files:
 
 ### Final JSONL file description
 
+The following examples are for 20 second audios.
+
 - **all_segments.json**:
   A full JSON file containing all chapter IDs, book titles, chapter names, and
   their corresponding transcriptions.
 
 ```json
 [
-  {
-    "chapter_id": "chap_001",
-    "book_title": "Treasure Island",
-    "transcript": "He was a fine old seaman", ...,
-  },
-  ...
+    {
+        "chapter_id": "141231",
+        "book_name": "Planet of the Damned - (Chapter 01)",
+        "transcript": [
+            {
+                "audio_file": "segment_0.flac",
+                "duration": 11.19,
+                "text_lines": [
+                    "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST",
+                    "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+                ],
+                "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+            },
+            {
+                "audio_file": "segment_1.flac",
+                "duration": 18.75,
+                "text_lines": [
+                    "1272-141231-0002 [0.00s - 13.34s]: THE CUT ON HIS CHEST STILL DRIPPING BLOOD THE ACHE OF HIS OVERSTRAINED EYES EVEN THE SOARING ARENA AROUND HIM WITH THE THOUSANDS OF SPECTATORS WERE TRIVIALITIES NOT WORTH THINKING ABOUT",
+                    "1272-141231-0003 [13.34s - 18.75s]: HIS INSTANT OF PANIC WAS FOLLOWED BY A SMALL SHARP BLOW HIGH ON HIS CHEST"
+                ],
+                "full_text": "THE CUT ON HIS CHEST STILL DRIPPING BLOOD THE ACHE OF HIS OVERSTRAINED EYES EVEN THE SOARING ARENA AROUND HIM WITH THE THOUSANDS OF SPECTATORS WERE TRIVIALITIES NOT WORTH THINKING ABOUT HIS INSTANT OF PANIC WAS FOLLOWED BY A SMALL SHARP BLOW HIGH ON HIS CHEST"
+            },
+            ...
+        ]
+    }
 ]
 ```
 
@@ -269,10 +290,40 @@ This function also generates the following files:
 
 ```json
 [
-{"chapter_id": "chap_001", "book_title": "Treasure Island", "transcript": "He was a fine old seaman..."},
-{"chapter_id": "chap_002", "book_title": "Dracula", "transcript": "I am writing this under great stress..."},
-...,
+    {
+        "chapter_id": "141231", 
+        "book_title": "Planet of the Damned - (Chapter 01)", 
+        "transcript": {
+            "audio_file": "segment_0.flac", 
+            "duration": 11.19, 
+            "text_lines": [
+                "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", 
+                "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+            ], 
+            "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+        }
+    }, 
+    {
+        "chapter_id": "4943", 
+        "book_title": "For the Term of His Natural Life - (Book 03  Port Arthur. 1838. Chapter 13  The Commandant's Butler)",
+        "transcript": {
+            "audio_file": "segment_0.flac", 
+            "duration": 19.91, 
+            "text_lines": [
+                "3752-4943-0000 [0.00s - 8.83s]: HE HAD BEEN A CLERK IN A BANKING HOUSE AND WAS TRANSPORTED FOR EMBEZZLEMENT THOUGH BY SOME GRAVE DOUBTS AS TO HIS GUILT WERE ENTERTAINED", 
+                "3752-4943-0001 [8.83s - 19.91s]: WHEN THE MUSTER BELL RANG AND THE GANG BROKE UP RUFUS DAWES ON HIS SILENT WAY TO HIS SEPARATE CELL OBSERVED A NOTABLE CHANGE OF CUSTOM IN THE DISPOSITION OF THE NEW CONVICT"
+            ], 
+            "full_text": "HE HAD BEEN A CLERK IN A BANKING HOUSE AND WAS TRANSPORTED FOR EMBEZZLEMENT THOUGH BY SOME GRAVE DOUBTS AS TO HIS GUILT WERE ENTERTAINED WHEN THE MUSTER BELL RANG AND THE GANG BROKE UP RUFUS DAWES ON HIS SILENT WAY TO HIS SEPARATE CELL OBSERVED A NOTABLE CHANGE OF CUSTOM IN THE DISPOSITION OF THE NEW CONVICT"
+        }
+    },
+    ...
 ]
+```
+
+Example of the file as a `JSONL`:
+
+```jsonl
+[{"chapter_id": "141231", "book_title": "Planet of the Damned - (Chapter 01)", "transcript": {"audio_file": "segment_0.flac", "duration": 11.19, "text_lines": ["1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"], "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"}}]
 ```
 
 ## 📌 Notes
