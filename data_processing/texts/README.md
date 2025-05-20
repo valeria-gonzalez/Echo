@@ -286,6 +286,16 @@ The following examples are for 20 second audios.
 - **data.jsonl**:
   A JSON Lines file, that is a list of dictionaries where each dicitonary contains the information for an audio extracted from a chapter. The script collects one audio per chapter, repeating across chapters until reaching 100 entries.
 
+The json file is an array of json objects with the following keys.
+
+- `chapter_id`: (int) Id of the chapter being read in the LibriSpeech database.
+- `book_title`: (str) Title of the chapter being read corresponding to the text.
+- `transcript`: (dict) Dictionary that contains the transcript information for the text. It has the following sub keys:
+  - `audio_file`: (str) Name of the `.flac` file containing the audio reading of the text.
+  - `duration`: (float) Duration in seconds of the audio.
+  - `text_lines`: (array of str) Contains an array of strings corresponding to the transcript by time for the audio. It contains the audio file id, the seconds timestamp and the text line.
+  - `full_text`: (str) Contains the full text being read.
+
 This is an example of the JSON object:
 
 ```json

@@ -266,6 +266,7 @@ Calling `combine_chapter_group_audios("root_dir", "processed")` **would result i
 transcription .txt files
 - The resulting files will be stored in a new folder audio_segments/chap_001, audio_segments/chap_002, etc.
 
+
 ## get_texts_jsonl
 ```text
 This function creates a JSONL file for a specified chapter directory with combined audio segments.
