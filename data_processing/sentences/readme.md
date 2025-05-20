@@ -132,9 +132,7 @@ It will contain all the english sentences under the Creative Commons Zero (CCO) 
 
 The json file is an array of json objects with the following keys.
 
-- `eng_id`:  (int) Id of the english sentence in Tatoeba
 - `eng_sentence`: (str) Text of english sentence
-- `spa_id`: (int) Id of the spanish translation of the sentence in Tatoeba
 - `spa_sentence`: (str) Text of spanish translation sentence
 - `audio_id`: (int) Id of the audio pronunciation file of the english sentence
 
@@ -142,9 +140,7 @@ This is the format of the json object:
 
 ```json 
 {
-    "eng_id": 403859, 
     "eng_sen": "If I could rearrange the alphabet, I would put U and I together.", 
-    "spa_id": 690143, 
     "spa_sen": "Si pudiera reordenar el alfabeto, pondr\u00eda la T y la Q juntas.",
     "audio_id": 1123747
 }
@@ -153,5 +149,5 @@ This is the format of the json object:
 This is the format of the jsonl file:
 
 ```jsonl
-[{"eng_id": 403859, "eng_sen": "If I could rearrange the alphabet, I would put U and I together.", "spa_id": 690143, "spa_sen": "Si pudiera reordenar el alfabeto, pondr\u00eda la T y la Q juntas.", "audio_id": 1123747}, {"eng_id": 403860, "eng_sen": "I'm not good at multitasking.", "spa_id": 1612871, "spa_sen": "No soy bueno para hacer varias cosas a la vez.", "audio_id": 32210}]
+[{"eng_sen": "If I could rearrange the alphabet, I would put U and I together.", "spa_sen": "Si pudiera reordenar el alfabeto, pondr\u00eda la T y la Q juntas.", "audio_id": 1123747}]
 ```
