@@ -284,40 +284,24 @@ The following examples are for 20 second audios.
 ```
 
 - **data.jsonl**:
-  A JSON Lines file, where each line contains a single transcription extracted
-  from a one chapter. The script collects one transcription per chapter,
-  repeating across chapters until reaching 100 entries.
+  A JSON Lines file, that is a list of dictionaries where each dicitonary contains the information for an audio extracted from a chapter. The script collects one audio per chapter, repeating across chapters until reaching 100 entries.
+
+This is an example of the JSON object:
 
 ```json
-[
-    {
-        "chapter_id": "141231", 
-        "book_title": "Planet of the Damned - (Chapter 01)", 
-        "transcript": {
-            "audio_file": "segment_0.flac", 
-            "duration": 11.19, 
-            "text_lines": [
-                "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", 
-                "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
-            ], 
-            "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
-        }
-    }, 
-    {
-        "chapter_id": "4943", 
-        "book_title": "For the Term of His Natural Life - (Book 03  Port Arthur. 1838. Chapter 13  The Commandant's Butler)",
-        "transcript": {
-            "audio_file": "segment_0.flac", 
-            "duration": 19.91, 
-            "text_lines": [
-                "3752-4943-0000 [0.00s - 8.83s]: HE HAD BEEN A CLERK IN A BANKING HOUSE AND WAS TRANSPORTED FOR EMBEZZLEMENT THOUGH BY SOME GRAVE DOUBTS AS TO HIS GUILT WERE ENTERTAINED", 
-                "3752-4943-0001 [8.83s - 19.91s]: WHEN THE MUSTER BELL RANG AND THE GANG BROKE UP RUFUS DAWES ON HIS SILENT WAY TO HIS SEPARATE CELL OBSERVED A NOTABLE CHANGE OF CUSTOM IN THE DISPOSITION OF THE NEW CONVICT"
-            ], 
-            "full_text": "HE HAD BEEN A CLERK IN A BANKING HOUSE AND WAS TRANSPORTED FOR EMBEZZLEMENT THOUGH BY SOME GRAVE DOUBTS AS TO HIS GUILT WERE ENTERTAINED WHEN THE MUSTER BELL RANG AND THE GANG BROKE UP RUFUS DAWES ON HIS SILENT WAY TO HIS SEPARATE CELL OBSERVED A NOTABLE CHANGE OF CUSTOM IN THE DISPOSITION OF THE NEW CONVICT"
-        }
-    },
-    ...
-]
+{
+    "chapter_id": "141231", 
+    "book_title": "Planet of the Damned - (Chapter 01)", 
+    "transcript": {
+        "audio_file": "segment_0.flac", 
+        "duration": 11.19, 
+        "text_lines": [
+            "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", 
+            "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+        ], 
+        "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+    }
+}
 ```
 
 Example of the file as a `JSONL`:
