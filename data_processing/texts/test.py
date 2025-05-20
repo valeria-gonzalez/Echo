@@ -19,7 +19,7 @@ def main():
     audio_dest_directory = "datasets/chapters/group_1_audios"
     processor.combine_chapter_group_audios(chapters_directory, 
                                            audio_dest_directory,
-                                           audio_length=30,
+                                           audio_length=20,
                                            verbose=True)
     
     # Create JSONL file for specified chapter directory

@@ -1,5 +1,9 @@
 from text_difficulty import TextDifficultyEvaluator
 import warnings
+import json
+import textstat
+import syllables
+from collections import Counter
 
 def ignore_warnings():
     # Ignore warnings that contain this specific message
@@ -8,44 +12,62 @@ def ignore_warnings():
         message="Argument `input_length` is deprecated",
         category=UserWarning
     )
+    
+def get_avg_text():
+    evaluator = TextDifficultyEvaluator()
+    with open('../texts/datasets/chapters/group_1_texts.jsonl') as f:
+        obj = json.load(f)
+        wrd_cnt = []
+        syl_cnt = []
+        dif_cnt = []
+        for i,entry in enumerate(obj):
+            text = entry.get("transcript").get("full_text")
+            text = text.lower()
+            words = textstat.lexicon_count(text, removepunct=True)
+            syl = syllables.estimate(text)
+            grade = textstat.dale_chall_readability_score(text)
+            print("\n------------------------------------------------------")
+            print(f"Text: {text}")
+            print(f"Grade: {round(grade)}")
+            print(f"Words: {words}")
+            print(f"Syl: {syl}")
+            print(f"Calculated dif: {evaluator.text_difficulty(text)}")
+            wrd_cnt.append(words)
+            syl_cnt.append(syl)
+            dif_cnt.append(round(grade))
+            
+        counter_syl = Counter(syl_cnt)
+        mode_syl = max(counter_syl, key=counter_syl.get)
+        counter_wrd = Counter(wrd_cnt)
+        mode_wrd = max(counter_wrd, key=counter_wrd.get)
+        counter_dif = Counter(dif_cnt)
+        mode_dif = max(counter_dif, key=counter_dif.get)
+        
+        print("\n------------------------------------------------------")
+        print(f"avg syl: {sum(syl_cnt)/len(syl_cnt)}")
+        print(f"mx syl: {max(syl_cnt)}")
+        print(f"mode syl: {mode_syl}\n")
+        print(f"avg wrd: {sum(wrd_cnt)/len(syl_cnt)}")
+        print(f"mx wrd: {max(wrd_cnt)}")   
+        print(f"mode wrd: {mode_wrd}\n")
+        print(f"avg dif: {sum(dif_cnt)/len(dif_cnt)}")
+        print(f"mx dif: {max(dif_cnt)}")   
+        print(f"mode dif: {mode_dif}")
 
 def main():
     ignore_warnings()
+    
     sentence = "I'm not good at multitasking nor running, but I can swim."
     word = "dog"
-    text = ("HE HAD BEEN A CLERK IN A BANKING HOUSE AND WAS TRANSPORTED FOR "
-            "EMBEZZLEMENT THOUGH BY SOME GRAVE DOUBTS AS TO HIS GUILT WERE "
-            "ENTERTAINED WHEN THE MUSTER BELL RANG AND THE GANG BROKE UP RUFUS "
-            "DAWES ON HIS SILENT WAY TO HIS SEPARATE CELL OBSERVED A NOTABLE "
-            "CHANGE OF CUSTOM IN THE DISPOSITION OF THE NEW CONVICT I'M NOT TO "
-            "GO IN THERE SAYS THE EX BANK CLERK DRAWING BACK IN DISMAY FROM THE "
-            "CLOUD OF FOUL FACES WHICH LOWERED UPON HIM"
-    )
-    text2 = ("THEREAFTER THIS SONNET BRED IN ME DESIRE TO WRITE DOWN IN VERSE "
-             "FOUR OTHER THINGS TOUCHING MY CONDITION THE WHICH THINGS IT "
-             "SEEMED TO ME THAT I HAD NOT YET MADE MANIFEST WHICH THING BEING "
-             "THUS THERE CAME A DAY WHEN CERTAIN LADIES TO WHOM IT WAS WELL "
-             "KNOWN THEY HAVING BEEN WITH ME AT DIVERS TIMES IN MY TROUBLE "
-             "WERE MET TOGETHER FOR THE PLEASURE OF GENTLE COMPANY BUT WHEN I "
-             "STILL SPAKE NOT ONE OF THEM WHO BEFORE HAD BEEN TALKING WITH "
-             "ANOTHER ADDRESSED ME BY MY NAME SAYING TO WHAT END LOVEST THOU "
-             "THIS LADY SEEING THAT THOU CANST NOT SUPPORT HER PRESENCE"
-    )
-    
-    text3 = ("A PERSON WOULD THINK THAT AFTER A FAMILY HAD LIVED SO LONG IN A "
-             "PLACE ALL THE NEIGHBORS WOULD BE FOND OF THEM YET IT IS NOT SO "
-             "IT IS DISGRACEFUL THEY THOUGHT THE TROUBLE CAME FROM BAD "
-             "BRINGING UP OR NO BRINGING UP AT ALL THEY ALWAYS ATE PLAIN FOOD "
-             "AND PLENTY OF IT AND THEY NEVER ATE BETWEEN MEALS"
+    text = (
+        "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY "
+        "TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
     )
     
     evaluator = TextDifficultyEvaluator()
-    # print(f"word: {evaluator.word_difficulty(word)}")
-    # print(f"sentence: {evaluator.sentence_difficulty(sentence)}")
-    print(f"text: {evaluator.text_difficulty(text)}")
-    print(f"text2: {evaluator.text_difficulty(text2)}")
-    print(f"text3: {evaluator.text_difficulty(text3)}")
-    
+    print(f"word difficulty: {evaluator.word_difficulty(word)}")
+    print(f"sentence difficulty: {evaluator.sentence_difficulty(sentence)}")
+    print(f"text difficulty: {evaluator.text_difficulty(text)}")  
 
 if __name__ == "__main__":
     main()
