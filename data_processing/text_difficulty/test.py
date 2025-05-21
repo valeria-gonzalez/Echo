@@ -5,7 +5,13 @@ import textstat
 import syllables
 from collections import Counter
 
-
+def ignore_warnings():
+    # Ignore warnings that contain this specific message
+    warnings.filterwarnings(
+        "ignore",
+        message="Argument `input_length` is deprecated",
+        category=UserWarning
+    )
     
 def get_avg_text():
     evaluator = TextDifficultyEvaluator()
