@@ -1,32 +1,63 @@
 import textstat
 from big_phoney import BigPhoney
 from wordfreq import zipf_frequency
-
+import syllables
+import warnings
 class TextDifficultyEvaluator:
+    """Evaluate difficulty of words, sentences and texts."""
     def __init__(self):
+        # Ignore warnings that contain this specific message
+        warnings.filterwarnings(
+            "ignore",
+            message="Argument `input_length` is deprecated",
+            category=UserWarning
+        )
+        
         """ Initialize the TextDifficultyEvaluator with predefined thresholds,
         weights, and tools for evaluating word and text complexity."""
         # Threshold constants per word 
-        self.MAX_FREQ = 8
-        self.MAX_PHONEMES = 15
-        self.MAX_SYLL_WORD = 6  
+        self.WRD_CONST = {
+            "MAX_FREQ": 8,
+            "MAX_PHONEMES": 15,
+            "MAX_SYLL": 6 
+        } 
         
-        # Threshold constants per sentence 
-        self.MAX_WORDS = 15
-        self.MAX_GRADE = 9
-        self.MAX_SYLL_SEN = 17 
+        # Threshold constants per sentence
+        self.SEN_CONST = {
+            "MAX_WORDS": 15,
+            "MAX_GRADE": 9,
+            "MAX_SYLL": 17
+        } 
+        
+        # Threshold constants per sentence
+        self.TXT_CONST = {
+            "MAX_WORDS": 60,
+            "MAX_GRADE": 11,
+            "MAX_SYLL": 100
+        } 
+        
+        # Evaluation weights for words
+        self.WRD_WEIGHTS = {
+            "FREQ": 0.2,
+            "PHONEME": 0.3,
+            "SYLL": 0.5
+        }
+        
+        # Evaluation weights for sentences
+        self.SEN_WEIGHTS = {
+            "GRADE": 0.25,
+            "WORD": 0.5,
+            "SYLL": 0.25
+        }
+        
+        # Evaluation weights for sentences
+        self.TXT_WEIGHTS = {
+            "GRADE": 0.4,
+            "WORD": 0.4,
+            "SYLL": 0.2
+        }
 
-        # Evaluation weights for words
-        self.FREQ_WEIGHT = 0.2
-        self.PHONEME_WEIGHT = 0.3
-        self.SYLL_WORD_WEIGHT = 0.5
-        
-        # Evaluation weights for words
-        self.GRADE_WEIGHT = 0.25
-        self.WORD_WEIGHT = 0.5
-        self.SYLL_SEN_WEIGHT = 0.25
-        
-        # Scale for difficulty
+        # Scale for difficulty (0,2)
         self.DIFFICULTY_SCALE = 2
         
         # Object to extract phonemes
@@ -42,9 +73,9 @@ class TextDifficultyEvaluator:
             int: Number of words in a string.
         """
         return textstat.lexicon_count(str, removepunct=True)
-    
+        
     def _count_syllables(self, str:str)->int:
-        """Count syllables in a string using Big Phoney module.
+        """Estimate syllables in a string using Syllables module.
 
         Args:
             str (str): A string containing one or more words.
@@ -52,7 +83,7 @@ class TextDifficultyEvaluator:
         Returns:
             int: Number of syllables in a string.
         """
-        return self.phoney.count_syllables(str)
+        return syllables.estimate(str)
     
     def _difficulty_threshold(self, thresholds:dict, value:int)->int:
         """Return the class according to the difficulty threshold.
@@ -79,27 +110,28 @@ class TextDifficultyEvaluator:
         Returns:
             int: Difficulty of the word.
         """
+        word = word.lower()
         phonemes = self.phoney.phonize(word)
         phoneme_count = self._count_words(phonemes)
         syllable_count = self._count_syllables(word)
         frequency = zipf_frequency(word, lang="en")
         
         # Normalize values between [0,1]
-        freq_score = 1 - (frequency / self.MAX_FREQ) 
-        phoneme_score = min(phoneme_count / self.MAX_PHONEMES, 1)
-        syllable_score = min(syllable_count / self.MAX_SYLL_WORD, 1)
+        freq_score = 1 - (frequency / self.WRD_CONST["MAX_FREQ"]) 
+        phoneme_score = min(phoneme_count / self.WRD_CONST["MAX_PHONEMES"], 1)
+        syllable_score = min(syllable_count / self.WRD_CONST["MAX_SYLL"], 1)
 
         # Calculate difficulty with weighted sum
         difficulty = (
-            self.FREQ_WEIGHT * freq_score +
-            self.PHONEME_WEIGHT * phoneme_score +
-            self.SYLL_WORD_WEIGHT * syllable_score
+            self.WRD_WEIGHTS["FREQ"] * freq_score +
+            self.WRD_WEIGHTS["PHONEME"] * phoneme_score +
+            self.WRD_WEIGHTS["SYLL"] * syllable_score
         )
 
         difficulty = min(difficulty, 1.0)
         
         # Obtain final difficulty
-        thresholds = { 0.45 : 0, 0.64: 1, 1:2 }
+        thresholds = { 0.45 : 0, 0.64: 1, 1.1:2 }
         return self._difficulty_threshold(thresholds, difficulty)
         
     def sentence_difficulty(self, sentence:str)->int:
@@ -113,24 +145,59 @@ class TextDifficultyEvaluator:
         Returns:
             int: Difficulty of the sentence.
         """
+        sentence = sentence.lower()
         grade_level = max(textstat.text_standard(sentence, float_output=True),1.0)
         word_count = self._count_words(sentence)
         syllable_count = self._count_syllables(sentence)
         
         # Normalize values between [0,1]
-        grade_score = min(grade_level / self.MAX_GRADE, 1) 
-        word_score = min(word_count / self.MAX_WORDS, 1)
-        syllable_score = min(syllable_count / self.MAX_SYLL_SEN, 1)
+        grade_score = min(grade_level / self.SEN_CONST["MAX_GRADE"], 1) 
+        word_score = min(word_count / self.SEN_CONST["MAX_WORDS"], 1)
+        syllable_score = min(syllable_count / self.SEN_CONST["MAX_SYLL"], 1)
         
         # Calculate difficulty with weighted sum
         difficulty = (
-            self.GRADE_WEIGHT * grade_score +
-            self.WORD_WEIGHT * word_score +
-            self.SYLL_SEN_WEIGHT * syllable_score
+            self.SEN_WEIGHTS["GRADE"] * grade_score +
+            self.SEN_WEIGHTS["WORD"] * word_score +
+            self.SEN_WEIGHTS["SYLL"] * syllable_score
         )
         
         difficulty = min(difficulty, 1.0)
         
         # Obtain final difficulty
-        thresholds = { 0.4 : 0, 0.6: 1, 1:2 }
+        thresholds = { 0.4 : 0, 0.6: 1, 1.1:2 }
+        return self._difficulty_threshold(thresholds, difficulty)
+    
+    def text_difficulty(self, text:str)->int:
+        """Classify short english texts by difficulty based on grade level 
+        comprehension, word count and syllable count on a cateogrical scale 
+        from 0 to 2 (0 - Easy, 1 - Medium, 2 - Hard).
+
+        Args:
+            sentence (str): Sentence to classify.
+
+        Returns:
+            int: Difficulty of the sentence.
+        """
+        text = text.lower()
+        grade_level = round(textstat.dale_chall_readability_score(text))
+        word_count = self._count_words(text)
+        syllable_count = self._count_syllables(text)
+        
+        # Normalize values between [0,1]
+        grade_score = min(grade_level / self.TXT_CONST["MAX_GRADE"], 1) 
+        word_score = min(word_count / self.TXT_CONST["MAX_WORDS"], 1)
+        syllable_score = min(syllable_count / self.TXT_CONST["MAX_SYLL"], 1)
+        
+        # Calculate difficulty with weighted sum
+        difficulty = (
+            self.TXT_WEIGHTS["GRADE"] * grade_score +
+            self.TXT_WEIGHTS["WORD"] * word_score +
+            self.TXT_WEIGHTS["SYLL"] * syllable_score
+        )
+        difficulty = min(difficulty, 1.0)
+        print(f"grade: {difficulty}")
+        
+        # Obtain final difficulty
+        thresholds = { 0.7 : 0, 0.8: 1, 1.1:2 }
         return self._difficulty_threshold(thresholds, difficulty)

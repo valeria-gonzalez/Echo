@@ -5,25 +5,24 @@ class TextCategoryEvaluator:
     """Zero-shot classification for categorizing text into predefined 
     categories.
     """    
-
     def __init__(self):
         self.classifier = pipeline("zero-shot-classification", 
         model="facebook/bart-large-mnli")
         
         self.category_labels = {
-    "daily life": "Situations related to everyday routines like eating, "
-    "sleeping, shopping, hygiene, and home activities.",
-    "work": "Concepts involving employment, jobs, office tasks, careers, "
-    "or professional environments.",
-    "social life": "Scenarios involving friends, communication, entertainment,"
-    "community, and social interaction.",
-    "education": "Topics involving learning, studying, schools, teaching, "
-    "or acquiring knowledge.",
-    "travel": "Experiences involving transportation, visiting places, "
-    "vacations, tourism, and moving between locations.",
-    "health": "Concepts related to physical or mental well-being, medicine, "
-    "fitness, nutrition, and medical care."
-}
+            "daily life": "Situations related to everyday routines like eating, "
+            "sleeping, shopping, hygiene, and home activities.",
+            "work": "Concepts involving employment, jobs, office tasks, careers, "
+            "or professional environments.",
+            "social life": "Scenarios involving friends, communication, entertainment,"
+            "community, and social interaction.",
+            "education": "Topics involving learning, studying, schools, teaching, "
+            "or acquiring knowledge.",
+            "travel": "Experiences involving transportation, visiting places, "
+            "vacations, tourism, and moving between locations.",
+            "health": "Concepts related to physical or mental well-being, medicine, "
+            "fitness, nutrition, and medical care."
+        }
         
     def classify_words(self, text_data:str) -> dict:
         """This function classifies the input text into predefined categories
