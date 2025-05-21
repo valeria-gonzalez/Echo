@@ -1,4 +1,4 @@
-from TextCategoryEvaluator import TextCategoryEvaluator
+from Echo.data_processing.texts_by_category.text_category_evaluator import TextCategoryEvaluator
 
 def main():
     evaluator = TextCategoryEvaluator()
