@@ -173,7 +173,7 @@ processor.combine_chapter_group_audios(chapters_directory,
                                         verbose=True)
 ```
 
-Each segment will contain up to 30 seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
+Each segment will contain up to `audio_length` seconds of audio and a `.txt` file with aligned transcriptions and timestamps.
 
 ### Step 3: Create JSONL file with specific amount of chapters
 
@@ -247,32 +247,77 @@ This function also generates the following files:
 
 ### Final JSONL file description
 
+The following examples are for 20 second audios.
+
 - **all_segments.json**:
   A full JSON file containing all chapter IDs, book titles, chapter names, and
   their corresponding transcriptions.
 
 ```json
 [
-  {
-    "chapter_id": "chap_001",
-    "book_title": "Treasure Island",
-    "transcript": "He was a fine old seaman", ...,
-  },
-  ...
+    {
+        "chapter_id": "141231",
+        "book_name": "Planet of the Damned - (Chapter 01)",
+        "transcript": [
+            {
+                "audio_file": "segment_0.flac",
+                "duration": 11.19,
+                "text_lines": [
+                    "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST",
+                    "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+                ],
+                "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+            },
+            {
+                "audio_file": "segment_1.flac",
+                "duration": 18.75,
+                "text_lines": [
+                    "1272-141231-0002 [0.00s - 13.34s]: THE CUT ON HIS CHEST STILL DRIPPING BLOOD THE ACHE OF HIS OVERSTRAINED EYES EVEN THE SOARING ARENA AROUND HIM WITH THE THOUSANDS OF SPECTATORS WERE TRIVIALITIES NOT WORTH THINKING ABOUT",
+                    "1272-141231-0003 [13.34s - 18.75s]: HIS INSTANT OF PANIC WAS FOLLOWED BY A SMALL SHARP BLOW HIGH ON HIS CHEST"
+                ],
+                "full_text": "THE CUT ON HIS CHEST STILL DRIPPING BLOOD THE ACHE OF HIS OVERSTRAINED EYES EVEN THE SOARING ARENA AROUND HIM WITH THE THOUSANDS OF SPECTATORS WERE TRIVIALITIES NOT WORTH THINKING ABOUT HIS INSTANT OF PANIC WAS FOLLOWED BY A SMALL SHARP BLOW HIGH ON HIS CHEST"
+            },
+            ...
+        ]
+    }
 ]
 ```
 
 - **data.jsonl**:
-  A JSON Lines file, where each line contains a single transcription extracted
-  from a one chapter. The script collects one transcription per chapter,
-  repeating across chapters until reaching 100 entries.
+  A JSON Lines file, that is a list of dictionaries where each dicitonary contains the information for an audio extracted from a chapter. The script collects one audio per chapter, repeating across chapters until reaching 100 entries.
+
+The json file is an array of json objects with the following keys.
+
+- `chapter_id`: (int) Id of the chapter being read in the LibriSpeech database.
+- `book_title`: (str) Title of the chapter being read corresponding to the text.
+- `transcript`: (dict) Dictionary that contains the transcript information for the text. It has the following sub keys:
+  - `audio_file`: (str) Name of the `.flac` file containing the audio reading of the text.
+  - `duration`: (float) Duration in seconds of the audio.
+  - `text_lines`: (array of str) Contains an array of strings corresponding to the transcript by time for the audio. It contains the audio file id, the seconds timestamp and the text line.
+  - `full_text`: (str) Contains the full text being read.
+
+This is an example of the JSON object:
 
 ```json
-[
-{"chapter_id": "chap_001", "book_title": "Treasure Island", "transcript": "He was a fine old seaman..."},
-{"chapter_id": "chap_002", "book_title": "Dracula", "transcript": "I am writing this under great stress..."},
-...,
-]
+{
+    "chapter_id": "141231", 
+    "book_title": "Planet of the Damned - (Chapter 01)", 
+    "transcript": {
+        "audio_file": "segment_0.flac", 
+        "duration": 11.19, 
+        "text_lines": [
+            "1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", 
+            "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+        ], 
+        "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"
+    }
+}
+```
+
+Example of the file as a `JSONL`:
+
+```jsonl
+[{"chapter_id": "141231", "book_title": "Planet of the Damned - (Chapter 01)", "transcript": {"audio_file": "segment_0.flac", "duration": 11.19, "text_lines": ["1272-141231-0000 [0.00s - 4.65s]: A MAN SAID TO THE UNIVERSE SIR I EXIST", "1272-141231-0001 [4.65s - 11.19s]: SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"], "full_text": "A MAN SAID TO THE UNIVERSE SIR I EXIST SWEAT COVERED BRION'S BODY TRICKLING INTO THE TIGHT LOINCLOTH THAT WAS THE ONLY GARMENT HE WORE"}}]
 ```
 
 ## 📌 Notes

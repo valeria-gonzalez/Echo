@@ -68,7 +68,7 @@ def main():
     print(f"word difficulty: {evaluator.word_difficulty(word)}")
     print(f"sentence difficulty: {evaluator.sentence_difficulty(sentence)}")
     print(f"text difficulty: {evaluator.text_difficulty(text)}")  
-    get_avg_text()
+
 
 if __name__ == "__main__":
     main()

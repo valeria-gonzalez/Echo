@@ -3,6 +3,7 @@ from big_phoney import BigPhoney
 from wordfreq import zipf_frequency
 import syllables
 import warnings
+
 class TextDifficultyEvaluator:
     """Evaluate difficulty of words, sentences and texts."""
     def __init__(self):
