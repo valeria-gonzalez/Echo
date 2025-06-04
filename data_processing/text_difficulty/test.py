@@ -69,6 +69,7 @@ def main():
     print(f"sentence difficulty: {evaluator.sentence_difficulty(sentence)}")
     print(f"text difficulty: {evaluator.text_difficulty(text)}")  
 
+
 if __name__ == "__main__":
     main()
     

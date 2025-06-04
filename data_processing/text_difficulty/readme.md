@@ -66,4 +66,3 @@ understand the sentence (calculated as the average of many text readability scor
 amount of syllables, words and the estimated grade level comprehension needed to
 understand the text (calculated with frequency of words using the Dale Chall Readability Score).
 
-

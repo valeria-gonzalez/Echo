@@ -2,9 +2,18 @@ import textstat
 from big_phoney import BigPhoney
 from wordfreq import zipf_frequency
 import syllables
+import warnings
+
 class TextDifficultyEvaluator:
     """Evaluate difficulty of words, sentences and texts."""
     def __init__(self):
+        # Ignore warnings that contain this specific message
+        warnings.filterwarnings(
+            "ignore",
+            message="Argument `input_length` is deprecated",
+            category=UserWarning
+        )
+        
         """ Initialize the TextDifficultyEvaluator with predefined thresholds,
         weights, and tools for evaluating word and text complexity."""
         # Threshold constants per word 
@@ -193,6 +202,3 @@ class TextDifficultyEvaluator:
         # Obtain final difficulty
         thresholds = { 0.7 : 0, 0.8: 1, 1.1:2 }
         return self._difficulty_threshold(thresholds, difficulty)
-        
-        
-    

@@ -1,4 +1,4 @@
-from TextCategoryEvaluator import TextCategoryEvaluator
+from text_category_evaluator import TextCategoryEvaluator
 
 def main():
     evaluator = TextCategoryEvaluator()

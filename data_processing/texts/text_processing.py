@@ -202,7 +202,7 @@ class LibriSpeechProcessor:
             actual_audio = AudioSegment.from_file(audio_route)
             duration = len(actual_audio)
             
-            if len(act_segment) + len(actual_audio) > max_duration:
+            if len(act_segment) + len(actual_audio) > max_duration and len(act_segment) > 0:
                 name = f"segment_{count}"
                 new_file_route = os.path.join(dir_chapter, name + ".flac")
                 new_txt_route = os.path.join(dir_chapter, name + ".txt")
