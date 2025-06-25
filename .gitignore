@@ -3,4 +3,4 @@ env
 .DS_Store
 venv
 .vs
-__pycache__/
+__pycache__
