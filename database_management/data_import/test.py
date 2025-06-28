@@ -20,7 +20,7 @@ def main():
     importSentences = ImportSentences(api_direction_sentences, jsonl_direction_sentences)
     importTexts = ImportTexts(api_direction_texts,jsonl_direction_texts)
 
-    print(importWords.jsonlImport())
+    importWords.jsonlImport()
     importSentences.jsonImport()
     importTexts.jsonlImport()
 
