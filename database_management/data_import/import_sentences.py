@@ -4,7 +4,7 @@ from pathlib import Path
 import requests
 
 class ImportSentences:
-
+    
     def __init__(self, api_direction_url_sentences:str, direction_sentences_jsonl:str):
        self.api_direction_url_sentences = api_direction_url_sentences
        self.direction_sentences_jsonl = Path(direction_sentences_jsonl)

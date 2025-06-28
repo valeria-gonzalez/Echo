@@ -13,7 +13,7 @@ def main():
     jsonl_direction_sentences = "../../data_processing/dataset_manager/processed_datasets/sentences_processed.jsonl"
 
     #texts
-    api_direction_texts = "http://127.0.0.1:8000/text"
+    api_direction_texts = "http://127.0.0.1:8000/texts"
     jsonl_direction_texts = "../../data_processing/dataset_manager/processed_datasets/texts_processed.jsonl"
 
     importWords = ImportWords(api_direction_words, jsonl_direction_words)

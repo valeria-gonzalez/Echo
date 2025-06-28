@@ -22,7 +22,5 @@ class ImportTexts:
                     content["id"] = str(contid)
                     print(requests.post(self.api_direction_url_texts, json = content))
                     contid = contid + 1
-
-            
         else:
             return "file not found"
