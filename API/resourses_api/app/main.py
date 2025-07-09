@@ -1,13 +1,6 @@
 from fastapi import FastAPI
-from fastapi import HTTPException
-from routers.resourses_router import router
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-from google.cloud.firestore_v1 import FieldFilter
-from pydantic import BaseModel
-from datetime import datetime
-from typing import List
+from app.routers.resourses_router import router 
+
 
 
 app = FastAPI(title="Resourses API",version = "1.0.0")
