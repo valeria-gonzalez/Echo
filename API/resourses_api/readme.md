@@ -5,31 +5,37 @@ The Resources API provides endpoints for managin
 API resources includes the following endpoints: 🧠
 
 *This endpoint returns all resources in a JSON object.*
+
 Method GET | /texts
 Method GET | /sentences
 Method GET | /words
 
 *The endpoints returns a JSON response with the data associated with the specified ID.*
+
 Method GET | /texts/{id}
 Method GET | /sentences/{id}
 Method GET | /words/{id}
 
 *The endpoints returns a List of JSON response with the data associated with the specified dificulty.*
+
 Method GET | /texts/difficulty/{difficulty}
 Method GET | /sentences/difficulty/{difficulty}
 Method GET | /words/difficulty/{difficulty}
 
 *The endpoints returns a List of JSON response with the data associated with the specified categorie.*
+
 Method GET | /texts/categories/{categories}
 Method GET | /words/categories/{categories}
 Method GET | /sentences/categories/{categories}
 
 *The endpoints removes the collection corresponding to the specified ID*
+
 Method DELETE | /texts/{document_id}
 Method DELETE | /sentences/{document_id}
 Method DELETE | /words/{document_id}
 
 *The following endpoints inserts a collection using the provided data*
+
 Method POST | /sentences
 Method POST | /texts
 Method POST | /words
