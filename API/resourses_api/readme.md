@@ -75,25 +75,25 @@ The resourses_api directory serves as the root for our API, the app folder conta
 
 here directories within app:
 routers: 
-    This is where you.ll find the API endpoint(routes)
+- This is where you.ll find the API endpoint(routes)
 
 schemas:
-    Contains the data structures for our resourses
+- Contains the data structures for our resourses
 
 service:
-    Manage our resources and accting as an intermediary between the routers and the database
+- Manage our resources and accting as an intermediary between the routers and the database
 
 db.py:
-    contain the conexion to the database
+- contain the conexion to the database
 
 main.py:
-    The primary file thatt initializes and run
+- The primary file thatt initializes and run
 
 ## To use the API, Follow these two steps:
 
-1 - Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
+- 1 Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
 
-2 - open app /db.py, locate the line cred = credentials.certificate and replace the path
+- 2 open app /db.py, locate the line cred = credentials.certificate and replace the path
 
 
 db.py file should look similar to this example
