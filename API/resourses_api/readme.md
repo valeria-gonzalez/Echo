@@ -84,7 +84,8 @@ db.py:
 main.py:
     The primary file thatt initializes and run
 
-To use the API, Follow these two steps:
+## To use the API, Follow these two steps:
+
 1 - Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
 
 2 - open app /db.py, locate the line cred = credentials.certificate and replace the path
