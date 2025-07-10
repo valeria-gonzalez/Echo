@@ -1,6 +1,6 @@
 from pydub import AudioSegment
 import os
-
+from jiwer import wer
 class AudioNormalizationError(Exception):
     """Custom exception for audio normalization errors."""
     pass
@@ -52,3 +52,20 @@ def normalize_audio(audio_filename: str, audio_dir: str, frame_rate: int = 44100
         output_path = os.path.join(audio_dir, f"{output_filename}.wav")
         converted.export(output_path, format="wav")
         return output_filename
+
+def compare_transcripts(reference:str, hypothesis:str, 
+                             tolerance:float=0.10)->float:
+        """Compare two transcriptions using Word Error Rate and subtract a 
+        tolerance margin.
+
+        Args:
+            reference (str): Ground truth transcription.
+            hypothesis (str): Predicted transcription.
+            tolerance (float): Acceptable WER threshold (e.g. 0.10 for 10%).
+
+        Returns:
+            float: Adjusted WER (WER - tolerance). If negative, the WER is within tolerance.
+        """
+        error_rate = wer(reference, hypothesis)
+        adjusted_error = error_rate - tolerance
+        return max(0.0, adjusted_error)

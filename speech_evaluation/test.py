@@ -31,7 +31,7 @@ def main():
     
     original_overview = analyze_audio("audio5", audio_dir, analyzer, transcriber)
     user_overview = analyze_audio("audioval", audio_dir, analyzer, transcriber)
-    error = evaluator.compare_transcripts(original_overview["transcription"], 
+    error = atool.compare_transcripts(original_overview["transcription"], 
                                           user_overview["transcription"])
     
      # Display results
@@ -39,6 +39,9 @@ def main():
     print(f"User overview:\n{user_overview}\n")
     print(f"Transcription error: {error}\n")
     
+    prompt = evaluator._create_prompt(user_overview, original_overview, error)
+    print(prompt + "\n\n")
+    request = evaluator._make_api_request(prompt)
     
     
 if __name__ == "__main__":
