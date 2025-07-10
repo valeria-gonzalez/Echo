@@ -48,6 +48,7 @@ async def get_one_texts_service(id_object: int):
     ref = db.collection("texts").document(id_object)
     docs = ref.get()
     if not docs.exists:
+        
         raise HTTPException(status_code=404, detail= "file not found")
         
     return docs.to_dict()
