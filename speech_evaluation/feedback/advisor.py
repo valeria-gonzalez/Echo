@@ -147,7 +147,7 @@ class SpeechAdvisor:
             wer (float): Word error rate between the two transcriptions.
 
         Returns:
-            dict: User-friendly feedback grouped under Speed, Clarity, Tone, and Phonetic Precision.
+            dict: Feedback grouped under Speed, Clarity, Tone, and Phonetic Precision.
         """
         prompt = self._create_prompt(user_audio_analysis, 
                                      reference_audio_analysis, 
