@@ -11,14 +11,13 @@ We need the following directory structure to properly run the project
 ```
 \---Echo
     |
-    +---database_management
-    |   \---data_import
-    |           import_sentences.py
-    |           import_texts.py
-    |           import_words.py
-    |           readme.md
-    |           requirements.txt
-    |           test.py
+    |data_import
+    |    import_sentences.py
+    |    import_texts.py
+    |    import_words.py
+    |    readme.md
+    |    requirements.txt
+    |    test.py
     |
     \---data_processing
         +---dataset_manager
@@ -68,7 +67,7 @@ It import words, sentences and texts using the JSONLs by creating instances `imp
 
 ### the endpoints used
 make sure to update the endpoints when the APIs are deployed to a different server o domain
-- words = "http://127.0.0.1:8000/words"
-- sentences = "http://127.0.0.1:8000/sentences"
-- texts = "http://127.0.0.1:8000/texts"
+- words = "http://127.0.0.1:8000/resourses/words"
+- sentences = "http://127.0.0.1:8000/resourses/sentences"
+- texts = "http://127.0.0.1:8000/resourses/texts"
 
