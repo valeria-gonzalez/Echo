@@ -17,6 +17,7 @@ class ImportWords:
                 data = json.load(file)
                 
                 for word, content in data.items():
+                    content["word"] = word
                     print(json.dumps(content, indent=4, sort_keys=True))
                     print(requests.post(self.api_direction_url, json = content))
         else:

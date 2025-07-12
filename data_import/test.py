@@ -5,16 +5,16 @@ from import_sentences import ImportSentences
 def main():
 
     #words
-    api_direction_words = "http://127.0.0.1:8000/words"
-    jsonl_direction_words = "../../data_processing/dataset_manager/processed_datasets/words_processed.jsonl"
+    api_direction_words = "http://127.0.0.1:8000/resourses/words"
+    jsonl_direction_words = "../data_processing/dataset_manager/processed_datasets/words_processed.jsonl"
 
     #sentences
-    api_direction_sentences = "http://127.0.0.1:8000/sentences"
-    jsonl_direction_sentences = "../../data_processing/dataset_manager/processed_datasets/sentences_processed.jsonl"
+    api_direction_sentences = "http://127.0.0.1:8000/resourses/sentences"
+    jsonl_direction_sentences = "../data_processing/dataset_manager/processed_datasets/sentences_processed.jsonl"
 
     #texts
-    api_direction_texts = "http://127.0.0.1:8000/texts"
-    jsonl_direction_texts = "../../data_processing/dataset_manager/processed_datasets/texts_processed.jsonl"
+    api_direction_texts = "http://127.0.0.1:8000/resourses/texts"
+    jsonl_direction_texts = "../data_processing/dataset_manager/processed_datasets/texts_processed.jsonl"
 
     importWords = ImportWords(api_direction_words, jsonl_direction_words)
     importSentences = ImportSentences(api_direction_sentences, jsonl_direction_sentences)
