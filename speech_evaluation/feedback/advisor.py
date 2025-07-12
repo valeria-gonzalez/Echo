@@ -1,5 +1,8 @@
 import requests
 import json
+import re
+from collections import defaultdict
+
 from config import ARLI_API_KEY
 class SpeechAdvisor:
     """Class that takes two audio analysis and returns recommendations."""
@@ -9,31 +12,40 @@ class SpeechAdvisor:
         self.API_URL = "https://api.arliai.com/v1/completions"
         
     def _load_api_key(self):
+        """Load the API key from the config file."""
         self.API_KEY = ARLI_API_KEY
         
     def _create_prompt(self, user_audio_analysis:dict, 
-                       reference_audio_analysis:dict, wer:float)->str:
-        
+                       reference_audio_analysis:dict, wer:float)->str: 
+        """Generate a structured prompt for the speech coaching LLM.
+
+        Args:
+            user_audio_analysis (dict): Analysis data from the user's audio.
+            reference_audio_analysis (dict): Analysis data from the original audio.
+            wer (float): Word error rate between the user and reference transcription.
+
+        Returns:
+            str: Formatted prompt text for the LLM.
+        """       
         prompt = f"""You are a friendly and supportive speech coach helping an
-        English learner improve their pronunciation and speaking style. 
+        English learner improve their pronunciation and speaking style.
 
         Compare the user's delivery with the reference speaker using the data 
-        provided. Based on the differences, give helpful, non-technical feedback
+        provided. Based on the differences, give helpful, plain-language feedback 
         that feels personal and encouraging.
         
-        Focus on key aspects like:
-        - Rhythm and pacing
-        - Clarity and articulation
-        - Confidence and flow
+        Your response must be grouped under these four categories:
+        - **Speed**
+        - **Clarity**
+        - **Tone**
+        - **Phonetic Precision**
         
-        Avoid using technical terms (e.g., “syllables per second” or 
-        “articulation rate”). Instead, explain in simple language how the user
-        sounds and how they can sound more like the reference.
-
-        Please return your response in this format only:
-        - What you're doing well
-        - What to improve
-        - How to improve
+        Under each category:
+        - Start with a short bullet point on what the user is doing well (if anything).
+        - Then list any improvements needed and how to improve, also as bullet points.
+        - Use simple, friendly, first-person language.
+        - Do NOT use the technical terms provided in the overview (like “syllables per second” or “articulation rate”, "transcription error rate".).
+        - Refer to the reference audio strictly as "original audio", do NOT refer to it as "reference" or "original".
 
         Respond ONLY with the bullet points. 
         Do NOT explain what you are doing, do NOT include any introductory 
@@ -63,21 +75,26 @@ class SpeechAdvisor:
 
         return prompt
     
-    def _make_api_request(self, prompt:str)->None:
+    def _make_api_request(self, prompt:str)-> None:
+        """Send a prompt to the Arli AI API and retrieve the generated response.
+        Args:
+            prompt (str): Prompt text to send to the LLM.
+
+        Returns:
+            str: Raw generated text from the API response.
+        """
         payload = json.dumps({
             "model": "Qwen3-14B",
-            
             "prompt": prompt,
-
             # Most important parameters
             "repetition_penalty": 1.1,
             "temperature": 0.5,
             "top_p": 0.9,
             "top_k": 40,
-            "max_tokens": 256,
+            "max_tokens": 1000,
             "stream": False,
             "n": 1,
-            "min_tokens": 20,
+            "min_tokens": 100,
         })
 
         headers = {
@@ -88,7 +105,56 @@ class SpeechAdvisor:
         response = requests.post(self.API_URL, headers=headers, data=payload)
         response_json = response.json()
         generated_text = response_json["choices"][0]["text"]
-        print(generated_text)
+        return generated_text
+    
+    def _parse_response(self, text: str) -> dict:
+        """Parse the LLM response into a structured dictionary format.
+
+        Args:
+            text (str): Raw text output from the LLM.
+
+        Returns:
+            dict: Parsed feedback grouped by category (e.g., Speed, Clarity).
+        """
+        feedback = defaultdict(list)
+        current_category = None
+
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            # Detect category titles like "**Speed**"
+            match = re.match(r"- \*\*(.+?)\*\*", line)
+            if match:
+                current_category = match.group(1)
+                feedback[current_category] = []
+            elif line.startswith("-") and current_category:
+                # Remove leading dash and space
+                cleaned_line = line.lstrip("- ").strip()
+                feedback[current_category].append(cleaned_line)
+
+        return dict(feedback)
+
+    
+    def get_feedback(self, user_audio_analysis:dict, 
+                       reference_audio_analysis:dict, wer:float)->dict:
+        """Generate structured speech feedback comparing user and reference audio.
+
+        Args:
+            user_audio_analysis (dict): Analysis data from the user's audio.
+            reference_audio_analysis (dict): Analysis data from the original audio.
+            wer (float): Word error rate between the two transcriptions.
+
+        Returns:
+            dict: User-friendly feedback grouped under Speed, Clarity, Tone, and Phonetic Precision.
+        """
+        prompt = self._create_prompt(user_audio_analysis, 
+                                     reference_audio_analysis, 
+                                     wer)
+        response = self._make_api_request(prompt)
+        recommendations = self._parse_response(response)
+        return recommendations
         
         
         

@@ -39,9 +39,8 @@ def main():
     print(f"User overview:\n{user_overview}\n")
     print(f"Transcription error: {error}\n")
     
-    prompt = evaluator._create_prompt(user_overview, original_overview, error)
-    print(prompt + "\n\n")
-    request = evaluator._make_api_request(prompt)
+    rec = evaluator.get_feedback(user_overview, original_overview, error)
+    print(rec)
     
     
 if __name__ == "__main__":
