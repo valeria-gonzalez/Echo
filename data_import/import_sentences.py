@@ -17,7 +17,6 @@ class ImportSentences:
                 data = json.load(file)
 
                 for content in data:
-                    content["id"] = content["audio_id"]
                     print(json.dumps(content, indent=4, sort_keys=True))
                     print(requests.post(self.api_direction_url_sentences, json = content))
 
