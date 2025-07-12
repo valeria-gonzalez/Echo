@@ -2,6 +2,7 @@ import os
 from analysis.analyzer import SpeechAnalyzer
 from transcription.transcriber import SpeechTranscriber
 from feedback.advisor import SpeechAdvisor
+from evaluation.evaluator import SpeechEvaluator
 import utils.audio_tools as atool
 
 def analyze_audio(audio_name:str, audio_dir:str, analyzer, transcriber)-> dict:
@@ -17,7 +18,7 @@ def analyze_audio(audio_name:str, audio_dir:str, analyzer, transcriber)-> dict:
     full_overview["transcription"] = transcription
     return full_overview
     
-def main():
+def test1():
     # Define audio file details
     audio_dir = os.getcwd()
     
@@ -41,6 +42,16 @@ def main():
     
     rec = evaluator.get_feedback(user_overview, original_overview, error)
     print(rec)
+
+def main():
+    # Define audio file details
+    audio_dir = os.getcwd()
+    evaluator = SpeechEvaluator()
+    score = evaluator.get_analysis("audioval", "audio5", audio_dir)
+    feedback = evaluator.get_feedback("audioval", "audio5", audio_dir)
+    print(score)
+    print(feedback)
+    
     
     
 if __name__ == "__main__":
