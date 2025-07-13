@@ -4,10 +4,8 @@ from fastapi import UploadFile, HTTPException
 import tempfile
 import os
 from typing import Dict, Any
-
 class PraatService:
     async def analyze_audio(self, audio_file: UploadFile) -> Dict[str, Any]:
-        
         tmp_audio_file_path = None
         try:
             with tempfile.NamedTemporaryFile(delete=False, 
@@ -19,6 +17,7 @@ class PraatService:
                                             detail="Audio file is empty.")
                 tmp_file.write(content)
                 tmp_audio_file_path = tmp_file.name
+                
             print(f"Attempting to load sound from: {tmp_audio_file_path}")
             sound = parselmouth.Sound(tmp_audio_file_path)
             duration_s = sound.duration
