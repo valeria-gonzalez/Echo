@@ -10,13 +10,14 @@ from text_difficulty.text_difficulty import TextDifficultyEvaluator
 from texts_by_category.text_category_evaluator import TextCategoryEvaluator
 
 class DatasetManager:
-    def __init__(self):
+    def __init__(self, filepath_dataset_texts:str, filepath_dataset_sentences:str, 
+                 filepath_dataset_words:str, destination_path:str):
         self.difficulty_evaluator = TextDifficultyEvaluator()
         self.category_evaluator = TextCategoryEvaluator()
-        self.filepath_dataset_texts = "datasets/group_1_texts.jsonl"
-        self.destination_path = "datasets/processed_datasets/"
-        self.filepath_dataset_sentences = "datasets/tatoeba_sentences.jsonl"
-        self.filepath_dataset_words = "datasets/words-de02e1507605431abd5d829d7e868af5.jsonl"
+        self.filepath_dataset_texts = filepath_dataset_texts
+        self.destination_path = destination_path
+        self.filepath_dataset_sentences = filepath_dataset_sentences
+        self.filepath_dataset_words = filepath_dataset_words
         
     def _process_texts(self) -> None:
         texts = []
@@ -34,6 +35,7 @@ class DatasetManager:
                 item["difficulty"] = self.difficulty_evaluator.text_difficulty(text)
                 categories = self.category_evaluator.classify_words(text)
                 three_keys = list(categories.keys())[:3]
+                item["word_count"] = self.difficulty_evaluator._count_words(formatted_text)
                 item["categories"] = three_keys
                 
                 texts.append(item)
@@ -59,6 +61,7 @@ class DatasetManager:
                 categories = self.category_evaluator.classify_words(text)
                 three_keys = list(categories.keys())[:3]
                 item["categories"] = three_keys
+                item["word_count"] = self.difficulty_evaluator._count_words(text)
                 
                 sentences.append(item)
                 
@@ -70,27 +73,25 @@ class DatasetManager:
                 out_file.write(json_object + "\n")
                 
     def _process_words(self) -> None:
+        words = []
         with open(self.filepath_dataset_words, "r",
             encoding="utf-8") as file:
             
+            data = json.load(file)
             print("Working on processing words...")
             
-            for line in file:
-                word_entry = json.loads(line)
-                for word, word_data in word_entry.items():
-                    word_data["difficulty"] = self.difficulty_evaluator.word_difficulty(word)
-                    all_texts = []
-                    text = " "
-                    definitions = word_data.get("definitions", [])
-                    definition_texts = definitions[0].get("definitions", [])
-                    all_texts.extend(definition_texts)
-                    text = " ".join(all_texts)
-                    categories = self.category_evaluator.classify_words(text)
-                    three_keys = list(categories.keys())[:3]
-                    word_data["categories"] = three_keys
-                    
+            for item in data:
+                text = item.get("word", "")
+                item["difficulty"] = self.difficulty_evaluator.word_difficulty(text)
+                categories = self.category_evaluator.classify_words(text)
+                three_keys = list(categories.keys())[:3]
+                item["categories"] = three_keys
+                item["syllable_count"] = self.difficulty_evaluator._count_syllables(text)
+                
+                words.append(item)
+                
             os.makedirs(self.destination_path, exist_ok=True)
-            json_object = json.dumps(word_entry)
+            json_object = json.dumps(words)
             with open(os.path.join(self.destination_path, 
             "words_processed.jsonl"), 
             "w", encoding="utf-8") as out_file:
