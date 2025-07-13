@@ -5,10 +5,9 @@ import os
 
 class SpeechTranscriber:
     """Class for the transcription of audios."""
-    def __init__(self, model_size: str = "small.en", verbose: bool = False):
+    def __init__(self, model_size: str = "small.en"):
         self.model = None
         self.model_size = model_size
-        self.verbose = verbose
         self._load_model()
         
     def _load_model(self):
@@ -32,7 +31,7 @@ class SpeechTranscriber:
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            result = self.model.transcribe(full_audio_path, verbose=self.verbose)
+            result = self.model.transcribe(full_audio_path)
             transcription = result["text"]
             clean_transcription = transcription.translate(
                 str.maketrans('', '', string.punctuation)

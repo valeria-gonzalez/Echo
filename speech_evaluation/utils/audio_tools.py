@@ -36,7 +36,6 @@ def normalize_audio(audio_filename: str, audio_dir: str, frame_rate: int = 44100
 
     # If already normalized
     if audio.frame_rate == frame_rate and audio.sample_width == resolution:
-        print("File already meets requirements. No changes needed.")
         return audio_filename
 
     # Convert

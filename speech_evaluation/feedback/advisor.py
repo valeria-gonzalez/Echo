@@ -37,8 +37,8 @@ class SpeechAdvisor:
         Your response must be grouped under these four categories:
         - **Speed**
         - **Clarity**
-        - **Tone**
-        - **Phonetic Precision**
+        - **Articulation**
+        - **Rythm**
         
         Under each category:
         - Start with a short bullet point on what the user is doing well (if anything).
@@ -127,7 +127,7 @@ class SpeechAdvisor:
             # Detect category titles like "**Speed**"
             match = re.match(r"- \*\*(.+?)\*\*", line)
             if match:
-                current_category = match.group(1)
+                current_category = match.group(1).lower() + "_tip"
                 feedback[current_category] = []
             elif line.startswith("-") and current_category:
                 # Remove leading dash and space

@@ -27,8 +27,17 @@ class SpeechEvaluator():
         return max(0.0, adjusted_error)
     
     def _get_audio_analysis(self, audio_name:str, audio_dir:str)->dict:
-        
-        
+        """Get the audio analysis for an audio file.
+
+        Args:
+            audio_name (str): Audio file name.
+            audio_dir (str): Audio file directory.
+
+        Returns:
+            dict: An analysis of the audio file with number_of_syllables, 
+            number_of_pauses, speech_rate, articulation_rate, speaking_duration, 
+            total_duration, ratio and transcription.
+        """
         try:
             normalized_audio_name = atool.normalize_audio(audio_name, 
                                                           audio_dir, 
@@ -47,6 +56,17 @@ class SpeechEvaluator():
     
     def _get_analysis_score(self, user_analysis:dict, 
                        reference_analysis:dict)->dict:
+        """Score the user audio analysis based on a reference audio analysis.
+        The scoring will be over 10 points each and a total of 40 points.
+
+        Args:
+            user_analysis (dict): Analysis of user's audio.
+            reference_analysis (dict): Analysis of reference's audio.
+
+        Returns:
+            dict: Scoring of each aspect with clarity_score, speed_score, 
+            articulation_score, rythm_score, and total_score.
+        """
         GRADING_THRESHOLD = 10
         TOTAL_GRADE_THRESHOLD = 40
         PERCENTAGE = 100
@@ -66,32 +86,43 @@ class SpeechEvaluator():
         speed_diff = abs(1 - speed_ratio)
         speed_score = max(0, round((1 - min(speed_diff, 1)) * GRADING_THRESHOLD))
 
-        # Tone
-        tone_ratio = safe_divide(user_analysis["articulation_rate"], reference_analysis["articulation_rate"])
-        tone_diff = abs(1 - tone_ratio)
-        tone_score = max(0, round((1 - min(tone_diff, 1)) * GRADING_THRESHOLD))
+        # Articulation
+        articulation_ratio = safe_divide(user_analysis["articulation_rate"], reference_analysis["articulation_rate"])
+        articulation_diff = abs(1 - articulation_ratio)
+        articulation_score = max(0, round((1 - min(articulation_diff, 1)) * GRADING_THRESHOLD))
 
         # Phonetic Precision
-        reference_ratio = reference_analysis["ratio"]
-        user_ratio = user_analysis["ratio"]
-        ratio_diff = abs(reference_ratio - user_ratio)
-        phonetic_score = max(0, round((1 - min(ratio_diff, 1)) * GRADING_THRESHOLD))
+        rythm_ratio = safe_divide(user_analysis["speaking_duration"], reference_analysis["speaking_duration"])
+        rythm_diff = abs(1 - rythm_ratio)
+        rythm_score = max(0, round((1 - min(rythm_diff, 1)) * GRADING_THRESHOLD))
 
         # Total Score
-        total_score = clarity_score + speed_score + tone_score + phonetic_score
+        total_score = clarity_score + speed_score + articulation_score + rythm_score
         total_score = round(total_score / TOTAL_GRADE_THRESHOLD, 2) * PERCENTAGE
 
         return {
             "total_score" : total_score,
             "clarity_score" : clarity_score,
             "speed_score" : speed_score,
-            "tone_score" : tone_score,
-            "phonetic_score" : phonetic_score
+            "articulation_score" : articulation_score,
+            "rythm_score" : rythm_score
         }
         
     def get_analysis(self, user_audio_name:str, 
                      reference_audio_name:str, 
                      audio_dir:str) -> dict:
+        """Get the score of the user's audio based on a reference audio.
+        Both audios must be in the same directory.
+
+        Args:
+            user_audio_name (str): User audio file name.
+            reference_audio_name (str): Reference audio file name.
+            audio_dir (str): Audio directory.
+
+        Returns:
+            dict: User's audio score with clarity_score, speed_score, 
+            articulation_score, rythm_score, and total_score.
+        """
         reference_analysis = self._get_audio_analysis(reference_audio_name, audio_dir)
         user_analysis = self._get_audio_analysis(user_audio_name, audio_dir)
         analysis_score = self._get_analysis_score(user_analysis, 
@@ -100,7 +131,17 @@ class SpeechEvaluator():
     
     def get_feedback(self, user_audio_name:str, 
                      reference_audio_name:str, 
-                     audio_dir:str):
+                     audio_dir:str)->dict:
+        """Get feedback of a user's audio based on a reference audio.
+
+        Args:
+            user_audio_name (str): User audio file name.
+            reference_audio_name (str): Reference audio file name.
+            audio_dir (str): Audio directory.
+
+        Returns:
+            dict: _description_
+        """
         reference_analysis = self._get_audio_analysis(reference_audio_name, audio_dir)
         user_analysis = self._get_audio_analysis(user_audio_name, audio_dir)
         clarity = self._compare_transcripts(
