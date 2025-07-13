@@ -2,7 +2,6 @@ import requests
 import json
 import re
 from collections import defaultdict
-
 from config import ARLI_API_KEY
 class SpeechAdvisor:
     """Class that takes two audio analysis and returns recommendations."""

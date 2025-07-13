@@ -91,7 +91,7 @@ class SpeechEvaluator():
         articulation_diff = abs(1 - articulation_ratio)
         articulation_score = max(0, round((1 - min(articulation_diff, 1)) * GRADING_THRESHOLD))
 
-        # Phonetic Precision
+        # Rythm
         rythm_ratio = safe_divide(user_analysis["speaking_duration"], reference_analysis["speaking_duration"])
         rythm_diff = abs(1 - rythm_ratio)
         rythm_score = max(0, round((1 - min(rythm_diff, 1)) * GRADING_THRESHOLD))
@@ -125,6 +125,11 @@ class SpeechEvaluator():
         """
         reference_analysis = self._get_audio_analysis(reference_audio_name, audio_dir)
         user_analysis = self._get_audio_analysis(user_audio_name, audio_dir)
+        print()
+        print(reference_analysis)
+        print(user_analysis)
+        print()
+        
         analysis_score = self._get_analysis_score(user_analysis, 
                                                   reference_analysis)
         return analysis_score
