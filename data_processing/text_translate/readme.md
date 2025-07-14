@@ -35,6 +35,8 @@ pip install -r requirements.txt
 
 ###  3. Setting up 
 
+> If the `ftapi` is used, there is no need for setting up.
+
 If the `libre translate api` will be used to generate translations, after installation, make sure to run the following command:
 
 Make sure you have Python 3.8, 3.9 or 3.10 installed, then from a terminal run:
@@ -54,8 +56,6 @@ rm -rf ~/.local/share/argos-translate
 rm -rf ~/.local/cache/argos-translate
 ```
 
-> If the `ftapi` is used, there is no need for setting up.
-
 ###  4. Example usage
 
 All that's necessary is to call the method `translate_text` with the text to translate.
@@ -68,8 +68,13 @@ def main():
 
     # Declare translator object
     translator = TextTranslator()
-    # Translate text
+
+    # Translate text with ftapi (web server)
     translation = translator.translate_text(text, "ftapi")
+
+    # Translate text with libre (local server)
+    translation = translator.translate_text(text)
+
     print(translation)
 
 if __name__ == "__main__":
