@@ -16,6 +16,8 @@ isn't.
 
 Libre translate will be the API used by default because it yields better results.
 
+## Usage
+
 ### 1. Install needed libraries
 
 For this section, the following modules were used:
