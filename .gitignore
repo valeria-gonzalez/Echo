@@ -1,6 +1,7 @@
 env
-**/datasets/*
+**/datasets/** 
 .DS_Store
 venv
 .vs
 __pycache__
+**/db/**
