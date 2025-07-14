@@ -8,12 +8,14 @@ sys.path.append(parent_dir)
 
 from text_difficulty.text_difficulty import TextDifficultyEvaluator
 from texts_by_category.text_category_evaluator import TextCategoryEvaluator
+from text_translate.text_translate import TextTranslator
 
 class DatasetManager:
     def __init__(self, filepath_dataset_texts:str, filepath_dataset_sentences:str, 
                  filepath_dataset_words:str, destination_path:str):
         self.difficulty_evaluator = TextDifficultyEvaluator()
         self.category_evaluator = TextCategoryEvaluator()
+        self.translator = TextTranslator()
         self.filepath_dataset_texts = filepath_dataset_texts
         self.destination_path = destination_path
         self.filepath_dataset_sentences = filepath_dataset_sentences
@@ -37,6 +39,7 @@ class DatasetManager:
                 three_keys = list(categories.keys())[:3]
                 item["word_count"] = self.difficulty_evaluator._count_words(formatted_text)
                 item["categories"] = three_keys
+                item["translation"] = self.translator.translate_text(formatted_text)
                 
                 texts.append(item)
                 

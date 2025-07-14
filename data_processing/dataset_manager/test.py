@@ -7,6 +7,7 @@ def main():
         filepath_dataset_sentences = "datasets/tatoeba_sentences.jsonl",
         filepath_dataset_words = "datasets/words_dataset.jsonl"
     )
+    
     manager.get_final_datasets()
         
     
