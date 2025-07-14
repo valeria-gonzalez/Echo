@@ -11,8 +11,17 @@ from texts_by_category.text_category_evaluator import TextCategoryEvaluator
 from text_translate.text_translate import TextTranslator
 
 class DatasetManager:
+    """Class to add difficulty, category, word_count and translation to resources."""
     def __init__(self, filepath_dataset_texts:str, filepath_dataset_sentences:str, 
                  filepath_dataset_words:str, destination_path:str):
+        """Create an object to process datasets.
+
+        Args:
+            filepath_dataset_texts (str): JSONL with text information.
+            filepath_dataset_sentences (str): JSONL with sentence information.
+            filepath_dataset_words (str): JSONL with word information.
+            destination_path (str): Directory where the datasets are.
+        """
         self.difficulty_evaluator = TextDifficultyEvaluator()
         self.category_evaluator = TextCategoryEvaluator()
         self.translator = TextTranslator()
@@ -22,6 +31,11 @@ class DatasetManager:
         self.filepath_dataset_words = filepath_dataset_words
         
     def _process_texts(self) -> None:
+        """Add difficulty, category, translation and word count to texts.
+
+        Returns:
+        (file): A new file called `texts_processed.jsonl`.
+        """
         texts = []
         with open(self.filepath_dataset_texts, "r",
             encoding="utf-8") as file:
@@ -51,6 +65,11 @@ class DatasetManager:
                 out_file.write(json_object + "\n")
                 
     def _process_sentences(self) -> None:
+        """Add difficulty, category and word count to sentences.
+
+        Returns:
+        (file): A new file called `sentences_processed.jsonl`.
+        """
         sentences = []
         with open(self.filepath_dataset_sentences, "r",
             encoding="utf-8") as file:
@@ -76,6 +95,11 @@ class DatasetManager:
                 out_file.write(json_object + "\n")
                 
     def _process_words(self) -> None:
+        """Add difficulty, category and syllable count to words.
+
+        Returns:
+        (file): A new file called `words_processed.jsonl`.
+        """
         words = []
         with open(self.filepath_dataset_words, "r",
             encoding="utf-8") as file:
@@ -101,6 +125,16 @@ class DatasetManager:
                 out_file.write(json_object + "\n")
                 
     def get_final_datasets(self) -> None:
+        """Process texts, sentences and words by adding:
+        - Difficulty (texts, sentences and words), 
+        - Category (texts, sentences and words), 
+        - Translation (texts),
+        - Word count (texts, sentences),
+        - Syllable count (words)
+        Returns:
+            (file) Three files: `words_processed.jsonl`, `sentences_processed.jsonl`,
+            and `texts_processed.jsonl` in the specified directory.
+        """
         self._process_texts()
         self._process_sentences()
         self._process_words()
