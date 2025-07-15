@@ -1,20 +1,24 @@
-from fastapi import APIRouter, File, UploadFile, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, Depends, HTTPException, Form
 from typing import Dict, Any
-from schemas.evaluation_schema import FeedbackResponse, TipsResponse
-from services.feedback_service import FeedbackService, get_feedback_service
-from services.praat_service import PraatService, get_praat_service
-import parselmouth
+from schemas.evaluation_schema import AnalysisResponse, FeedbackResponse
+from services.analysis_service import AnalysisService, get_analysis_service
 
 router = APIRouter(
     prefix="/evaluation",
     tags=["Audio Evaluation"],
 )
 
-@router.post("/analyze_audio", response_model=Dict[str, Any])
+@router.get("/")
+async def root():
+    return {"message": "Welcome to the Audio Evaluation API prefix!"}
+
+@router.post("/analyze_audio", response_model=AnalysisResponse)
 async def analyze_audio(
-    audio_file: UploadFile = File(...),
-    praat_service: PraatService = Depends(get_praat_service)
-):
+    audio_file: UploadFile,
+    audio_id: str = Form(...),
+    analysis_service: AnalysisService = Depends(get_analysis_service)
+): 
+    # Make sure an audio file was passed
     if not audio_file.content_type.startswith("audio/"):
         raise HTTPException(
             status_code=400,
@@ -22,15 +26,10 @@ async def analyze_audio(
         )
         
     try:
-        analysis_results = await praat_service.analyze_audio(audio_file)
+        # Call the audio analysis function
+        analysis_results = await analysis_service.analyze_audio(audio_file, audio_id)
         return analysis_results
-    except parselmouth.PraatError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Praat analysis failed: {str(e)}"
-        )
-    except HTTPException as e:
-        raise e
+    
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         raise HTTPException(
@@ -39,14 +38,12 @@ async def analyze_audio(
         )
         
 @router.post("/feedback", response_model=FeedbackResponse)
-async def get_pronunciation_feedback(
-    audio_file: UploadFile = File(...),
-    praat_service: PraatService = Depends(get_praat_service),
-    feedback_service: FeedbackService = Depends(get_feedback_service)
-):
-    """
-    Analyze audio and provide AI-generated feedback for English pronunciation.
-    """
+async def analyze_audio(
+    audio_file: UploadFile,
+    audio_id: str = Form(...),
+    analysis_service: AnalysisService = Depends(get_analysis_service)
+): 
+    # Make sure an audio file was passed
     if not audio_file.content_type.startswith("audio/"):
         raise HTTPException(
             status_code=400,
@@ -54,61 +51,13 @@ async def get_pronunciation_feedback(
         )
         
     try:
-        
-        praat_results = await praat_service.analyze_audio(audio_file)
-        
+        # Call the audio analysis function
+        analysis_results = await analysis_service.analyze_audio(audio_file, audio_id)
+        return analysis_results
     
-        feedback_response = await feedback_service.generate_feedback(praat_results)
-        
-        return feedback_response
-        
-    except parselmouth.PraatError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Praat analysis failed: {str(e)}"
-        )
-    except HTTPException as e:
-        raise e
     except Exception as e:
-        print(f"Unexpected error during feedback generation: {str(e)}")
+        print(f"Unexpected error: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred during feedback generation."
-        )
-
-@router.post("/tips", response_model=TipsResponse)
-async def get_pronunciation_tips(
-    audio_file: UploadFile = File(...),
-    praat_service: PraatService = Depends(get_praat_service),
-    feedback_service: FeedbackService = Depends(get_feedback_service)
-):
-    """
-    Analyze audio and provide personalized AI-generated tips for English 
-    pronunciation improvement.
-    """
-    if not audio_file.content_type.startswith("audio/"):
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid file type. Please upload an audio file."
-        )
-        
-    try:
-        praat_results = await praat_service.analyze_audio(audio_file)
-        
-        tips_response = await feedback_service.generate_tips(praat_results)
-        
-        return tips_response
-        
-    except parselmouth.PraatError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Praat analysis failed: {str(e)}"
-        )
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        print(f"Unexpected error during tips generation: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="An unexpected error occurred during tips generation."
+            detail="An unexpected error occurred during audio analysis."
         )
