@@ -15,8 +15,7 @@ class SpeechAdvisor:
         """Load the API key from the config file."""
         self.API_KEY = ARLI_API_KEY
         
-    def _create_prompt(self, user_audio_analysis:dict, 
-                       reference_audio_analysis:dict, wer:float)->str: 
+    def _create_prompt(self, difference_analysis:dict, wer:float)->str: 
         """Generate a structured prompt for the speech coaching LLM.
 
         Args:
@@ -27,52 +26,46 @@ class SpeechAdvisor:
         Returns:
             str: Formatted prompt text for the LLM.
         """       
-        prompt = f"""You are a supportive speech coach helping an English learner 
-        improve their pronunciation and speaking style.
+        prompt = f"""You're a supportive speech coach helping an English learner improve their pronunciation.
 
-        Compare the user's delivery to the original audio based on the data 
-        below, and give personal, plain-language feedback.
+        Your task is to provide **friendly, easy-to-understand feedback** comparing the user's delivery to the original audio.
 
-        Structure your response into these four categories (in this order):
+        Organize the feedback into exactly four sections:
         - **Speed**
         - **Clarity**
         - **Articulation**
         - **Rythm**
 
-        In each:
-        - Start with a positive bullet point (even if no improvements are needed).
-        - Then two bullet points on how to improve.
-        - Avoid technical terms like "articulation rate", "speech rate", "transcription", "speaking ratio".
-        - Avoid refering to the categories in the feedback.
-        - Refer to the reference strictly as "original audio".
+        In each section:
+        - Start with a positive bullet point (even if no improvement is needed).
+        - Then give two tips for improvement, based on the data below.
+        - Do not use technical terms like "speech rate", "transcription", etc.
+        - Do not mention these categories in your feedback — only include the actual bullet points.
+        - Refer to the reference as "original audio".
 
-        If no improvements are needed for a category, still include it with a bullet like:
-        - "You're doing great with [category]. Keep it up!"
-
-        **Do not skip any category. Respond only with bullet points. No introductions, summaries, or extra explanation.**
+        Always give feedback for all four sections. Use bullet points only. 
+        Do NOT include introductions, summaries, or extra explanation.
         ---
+        Here are the **differences between the user and the original audio**:
 
-        **Original Audio**:
-        - Syllables: {reference_audio_analysis["number_of_syllables"]}
-        - Pauses: {reference_audio_analysis["number_of_pauses"]}
-        - Speech rate: {reference_audio_analysis["speech_rate"]}
-        - Articulation rate: {reference_audio_analysis["articulation_rate"]}
-        - Speaking time (no pauses): {reference_audio_analysis["speaking_duration"]}
-        - Total time: {reference_audio_analysis["total_duration"]}
-        - Speaking ratio: {reference_audio_analysis["ratio"]}
+        - Syllables: {difference_analysis["number_of_syllables"]}
+        - Pauses: {difference_analysis["number_of_pauses"]}
+        - Speech rate: {difference_analysis["speech_rate"]}
+        - Articulation rate: {difference_analysis["articulation_rate"]}
+        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
+        - Total time: {difference_analysis["total_duration"]}
+        - Speaking ratio: {difference_analysis["ratio"]}
 
-        **User Audio**:
-        - Syllables: {user_audio_analysis["number_of_syllables"]}
-        - Pauses: {user_audio_analysis["number_of_pauses"]}
-        - Speech rate: {user_audio_analysis["speech_rate"]}
-        - Articulation rate: {user_audio_analysis["articulation_rate"]}
-        - Speaking time (no pauses): {user_audio_analysis["speaking_duration"]}
-        - Total time: {user_audio_analysis["total_duration"]}
-        - Speaking ratio: {user_audio_analysis["ratio"]}
+        **Use this to guide your feedback**:
+        - Small differences (less than ±0.1 for rates/times or ±1 for counts) = “very similar” → use a positive bullet.
+        - Moderate differences (±0.1 - 0.5 or ±1 - 2) → suggest mild improvements.
+        - Large differences (above ±0.5 or ±2) → suggest more direct improvement.
+        - If a value is exactly 0 → say the user matched the original well.
 
         **Transcription Error Rate (WER)**: {wer}
+        Use the transcription error rate only to judge *clarity*, and give gentle feedback if it's higher than 0.
         """
-
+        
         return prompt
     
     def _make_api_request(self, prompt:str)-> None:
@@ -88,7 +81,7 @@ class SpeechAdvisor:
             "prompt": prompt,
             # Most important parameters
             "repetition_penalty": 1.1,
-            "temperature": 0.5,
+            "temperature": 0.3,
             "top_p": 0.9,
             "top_k": 40,
             "max_tokens": 1000,
@@ -152,8 +145,7 @@ class SpeechAdvisor:
         return dict(feedback)
 
     
-    def get_feedback(self, user_audio_analysis:dict, 
-                       reference_audio_analysis:dict, wer:float)->dict:
+    def get_feedback(self, difference_analysis:dict, wer:float)->dict:
         """Generate structured speech feedback comparing user and reference audio.
         It includes speed_tip, clarity_tip, articulation_tip, rythm_tip.
 
@@ -165,12 +157,12 @@ class SpeechAdvisor:
         Returns:
             dict: Feedback grouped under Speed, Clarity, Tone, and Phonetic Precision.
         """
-        prompt = self._create_prompt(user_audio_analysis, 
-                                     reference_audio_analysis, 
-                                     wer)
+        prompt = self._create_prompt(difference_analysis, wer)
+        
         MAX_RETRIES = 3
         for attempt in range(1, MAX_RETRIES + 1):
             response = self._make_api_request(prompt)
+            print(response)
             if response.strip():
                 break
             print(f"Retry attempt {attempt} failed. Retrying...")

@@ -78,6 +78,17 @@ class SpeechEvaluator():
             "rythm_score" : rythm_score
         }
         
+    def _get_difference_analysis(self, user_analysis:dict, reference_analysis:dict) -> dict:
+        categories = user_analysis.keys()
+        difference_analysis = dict()
+        for category in categories:
+            if category != "transcription":
+                difference = round(reference_analysis[category] - user_analysis[category], 2)
+                if difference != 0:
+                    difference = difference * -1
+                difference_analysis[category] =  difference 
+        return difference_analysis
+        
     def get_score(self, user_analysis:dict, reference_analysis:dict) -> dict:
         """Get the score of the user's audio based on a reference audio.
         Both audios must be in the same directory.
@@ -111,6 +122,12 @@ class SpeechEvaluator():
             user_analysis["transcription"],
             reference_analysis["transcription"]
         )
-        feedback = self.advisor.get_feedback(user_analysis, reference_analysis, clarity)
+        difference_analysis = self._get_difference_analysis(user_analysis, reference_analysis)
+        
+        print(reference_analysis)
+        print(user_analysis)
+        print(difference_analysis)
+        
+        feedback = self.advisor.get_feedback(difference_analysis, clarity)
         return feedback
         
