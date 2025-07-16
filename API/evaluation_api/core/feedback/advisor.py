@@ -27,44 +27,44 @@ class SpeechAdvisor:
         Returns:
             str: Formatted prompt text for the LLM.
         """       
-        prompt = f"""You are a friendly and supportive speech coach helping an
-        English learner improve their pronunciation and speaking style.
+        prompt = f"""You are a supportive speech coach helping an English learner 
+        improve their pronunciation and speaking style.
 
-        Compare the user's delivery with the reference speaker using the data 
-        provided. Based on the differences, give helpful, plain-language feedback 
-        that feels personal and encouraging.
-        
-        Your response must be grouped under these four categories:
+        Compare the user's delivery to the original audio based on the data 
+        below, and give personal, plain-language feedback.
+
+        Structure your response into these four categories (in this order):
         - **Speed**
         - **Clarity**
         - **Articulation**
         - **Rythm**
-        
-        Under each category:
-        - Start with a short bullet point on what the user is doing well (if anything).
-        - Then list any improvements needed and how to improve, also as bullet points.
-        - Use simple, friendly, first-person language.
-        - Do NOT use the technical terms provided in the overview (like “syllables per second” or “articulation rate”, "transcription error rate".).
-        - Refer to the reference audio strictly as "original audio", do NOT refer to it as "reference" or "original".
 
-        Respond ONLY with the bullet points. 
-        Do NOT explain what you are doing, do NOT include any introductory 
-        phrases, and do NOT repeat or summarize the prompt.
+        In each:
+        - Start with a positive bullet point (even if no improvements are needed).
+        - Then two bullet points on how to improve.
+        - Avoid technical terms like "articulation rate", "speech rate", "transcription", "speaking ratio".
+        - Avoid refering to the categories in the feedback.
+        - Refer to the reference strictly as "original audio".
+
+        If no improvements are needed for a category, still include it with a bullet like:
+        - "You're doing great with [category]. Keep it up!"
+
+        **Do not skip any category. Respond only with bullet points. No introductions, summaries, or extra explanation.**
         ---
 
-        **Reference Speaker Overview**:
+        **Original Audio**:
         - Syllables: {reference_audio_analysis["number_of_syllables"]}
         - Pauses: {reference_audio_analysis["number_of_pauses"]}
-        - Speech rate: {reference_audio_analysis["speech_rate"]} 
+        - Speech rate: {reference_audio_analysis["speech_rate"]}
         - Articulation rate: {reference_audio_analysis["articulation_rate"]}
         - Speaking time (no pauses): {reference_audio_analysis["speaking_duration"]}
         - Total time: {reference_audio_analysis["total_duration"]}
         - Speaking ratio: {reference_audio_analysis["ratio"]}
 
-        **User Overview**:
+        **User Audio**:
         - Syllables: {user_audio_analysis["number_of_syllables"]}
         - Pauses: {user_audio_analysis["number_of_pauses"]}
-        - Speech rate: {user_audio_analysis["speech_rate"]} 
+        - Speech rate: {user_audio_analysis["speech_rate"]}
         - Articulation rate: {user_audio_analysis["articulation_rate"]}
         - Speaking time (no pauses): {user_audio_analysis["speaking_duration"]}
         - Total time: {user_audio_analysis["total_duration"]}
@@ -105,8 +105,19 @@ class SpeechAdvisor:
         try:
             response = requests.post(self.API_URL, headers=headers, data=payload)
             response_json = response.json()
-            generated_text = response_json["choices"][0]["text"]
-            return generated_text
+            
+            if (
+            isinstance(response_json, dict)
+            and "choices" in response_json
+            and isinstance(response_json["choices"], list)
+            and response_json["choices"]
+            and "text" in response_json["choices"][0]
+            ):
+                return response_json["choices"][0]["text"]
+
+            print("Warning: Unexpected API response structure")
+            return ""
+        
         except Exception as e:
             print(f"Error obtaining feedback: {e}")
             return ""
@@ -144,6 +155,7 @@ class SpeechAdvisor:
     def get_feedback(self, user_audio_analysis:dict, 
                        reference_audio_analysis:dict, wer:float)->dict:
         """Generate structured speech feedback comparing user and reference audio.
+        It includes speed_tip, clarity_tip, articulation_tip, rythm_tip.
 
         Args:
             user_audio_analysis (dict): Analysis data from the user's audio.
@@ -156,8 +168,35 @@ class SpeechAdvisor:
         prompt = self._create_prompt(user_audio_analysis, 
                                      reference_audio_analysis, 
                                      wer)
-        response = self._make_api_request(prompt)
+        MAX_RETRIES = 3
+        for attempt in range(1, MAX_RETRIES + 1):
+            response = self._make_api_request(prompt)
+            if response.strip():
+                break
+            print(f"Retry attempt {attempt} failed. Retrying...")
+        
+        if not response.strip():
+            return {
+                "speed_tip": ["We're sorry, no feedback was generated."],
+                "clarity_tip": ["Please try again later."],
+                "articulation_tip": [],
+                "rythm_tip": []
+            }
+            
         recommendations = self._parse_response(response)
+        
+        if not recommendations:
+            return {
+                "speed_tip": ["We're sorry, no useful feedback was found in the response."],
+                "clarity_tip": ["Please try again later."],
+                "articulation_tip": [],
+                "rythm_tip": []
+            }
+            
+        for key in ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]:
+            if key not in recommendations:
+                recommendations[key] = ["No feedback available."]
+        
         return recommendations
         
         

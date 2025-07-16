@@ -7,20 +7,27 @@ from schemas.evaluation_schema import AnalysisResponse
 from core.utils import audio_tools as atools
 from core.analysis.analyzer import SpeechAnalyzer
 from core.transcription.transcriber import SpeechTranscriber
-from core.evaluation.evaluator import SpeechEvaluator
-
 class AnalysisService:
+    """Service to analyze an audio based on a reference audio."""
     def __init__(self):
         self.analyzer = SpeechAnalyzer()
         self.transcriber = SpeechTranscriber()
-        self.evaluator = SpeechEvaluator()
         self.tmp_audio_filepath = None
         self.base_name = None
         self.base_dir = None
         self.normalized_filepath = None
         self.normalized_filename = None
 
-    async def _create_temporary_audio(self, audio_file: UploadFile):
+    async def _create_temporary_audio(self, audio_file: UploadFile) -> None:
+        """Create a temporary .wav file in disk from the uploaded file.
+
+        Args:
+            audio_file (UploadFile): A file uploaded in a request.
+
+        Raises:
+            HTTPException: The audio file is empty.
+            HTTPException: The file could not be created.
+        """
         try:
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
                 content = await audio_file.read()
@@ -41,7 +48,9 @@ class AnalysisService:
             print(f"Error creating temporary file: {e}")
             raise HTTPException(status_code=500, detail="Internal server error while handling audio file.")
 
-    def _remove_temporary_audio(self):
+    def _remove_temporary_audio(self) -> None:
+        """Remove the temporary audio file from disk.
+        """
         if self.tmp_audio_filepath and os.path.exists(self.tmp_audio_filepath):
             try:
                 os.remove(self.tmp_audio_filepath)
@@ -50,7 +59,9 @@ class AnalysisService:
             except Exception as e:
                 print(f"Error removing temporary file: {e}")
                 
-    def _normalize_audio(self):
+    def _normalize_audio(self) -> None:
+        """Normalize the temporary audio file to 44100 Hz and 16 bits resolution.
+        """
         try:
             self.normalized_filename = atools.normalize_audio(
                 audio_filename=self.base_name,
@@ -63,22 +74,21 @@ class AnalysisService:
             
         except Exception as e:
             print(f"Error normalizing file: {e}")
-    
-    def _get_source_analysis(self, audio_id:str="")->Dict[str, Any]:
-        # Get the actual analysis from firebase
-        temporary_analysis = {
-                'number_of_syllables': 10, 
-                'number_of_pauses': 0, 
-                'speech_rate': 3.0, 
-                'articulation_rate': 5.0, 
-                'speaking_duration': 2.6, 
-                'total_duration': 3.5, 
-                'ratio': 0.5,
-                'transcription': 'life is not an exact science it is an art'
-            }
-        return temporary_analysis
 
-    async def analyze_audio(self, audio_file: UploadFile, audio_id:str) -> AnalysisResponse:
+    async def analyze_audio(self, audio_file: UploadFile) -> AnalysisResponse:
+        """Get the analysis of an audio file, including number of syllables,
+        number of pauses, speech rate, articulation rate, speaking duration, 
+        total duration, speaking to pause ratio and transcription.
+
+        Args:
+            audio_file (UploadFile): File uploaded from request.
+
+        Raises:
+            HTTPException: Error normalizing audio.
+
+        Returns:
+            AnalysisResponse: Schema for audio analysis.
+        """
         await self._create_temporary_audio(audio_file)
 
         try:
@@ -95,23 +105,20 @@ class AnalysisService:
                 self.normalized_filepath
             )
             
-            # Get reference analysis
-            reference_analysis = self._get_source_analysis()
-            
-            # Get final score
-            score = self.evaluator.get_score(audio_analysis, reference_analysis)
-            
             return AnalysisResponse(
-                total_score=score["total_score"],
-                clarity_score=score["clarity_score"],
-                speed_score=score["speed_score"],
-                articulation_score=score["articulation_score"],
-                rythm_score=score["rythm_score"]
+                number_of_syllables=audio_analysis["number_of_syllables"],
+                number_of_pauses=audio_analysis["number_of_pauses"],
+                speech_rate=audio_analysis["speech_rate"],
+                articulation_rate=audio_analysis["articulation_rate"],
+                speaking_duration=audio_analysis["speaking_duration"],
+                total_duration=audio_analysis["total_duration"],
+                ratio=audio_analysis["ratio"],
+                transcription=audio_analysis["transcription"]
             )
 
         except Exception as e:
             print(f"Error normalizing file: {e}")
-            raise HTTPException(status_code=500, detail="Audio normalization failed.")
+            raise HTTPException(status_code=500, detail="Audio analysis failed.")
         
         finally:
             self._remove_temporary_audio()

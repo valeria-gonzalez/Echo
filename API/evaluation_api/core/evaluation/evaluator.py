@@ -97,6 +97,7 @@ class SpeechEvaluator():
     
     def get_feedback(self, user_analysis:dict, reference_analysis:dict) -> dict:
         """Get feedback of a user's audio based on a reference audio.
+        It includes speed_tip, clarity_tip, articulation_tip, rythm_tip.
 
         Args:
             user_audio_name (str): User audio file name.
