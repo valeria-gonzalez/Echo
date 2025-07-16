@@ -25,7 +25,6 @@ class FeedbackService():
         try:
             # Get feedback
             feedback = self.evaluator.get_feedback(audio_analysis, reference_analysis)
-            print(feedback)
             
             return FeedbackResponse(
                 clarity_tip = feedback["clarity_tip"],

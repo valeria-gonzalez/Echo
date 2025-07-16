@@ -28,22 +28,21 @@ class SpeechAdvisor:
         """       
         prompt = f"""You are a supportive speech coach helping an English learner improve their pronunciation.
 
-        You must respond ONLY with friendly, easy-to-understand bullet-point feedback comparing the user's delivery to the original audio.
+        Your job is to compare the user's delivery to the original audio and return friendly, easy-to-understand feedback.
 
-        Respond in EXACTLY four sections titled:
-        - **Speed**
-        - **Clarity**
-        - **Articulation**
-        - **Rythm**
+        Return exactly three items for each of these:
+        - speed_tip
+        - clarity_tip
+        - articulation_tip
+        - rythm_tip
 
-        In each section:
-        - Start with a positive bullet point (even if no improvement is needed).
-        - Then give two clear, plain-language tips for improvement.
-        - Do not use technical terms (like "speech rate", "transcription", etc).
-        - Do not refer to the category names within the feedback.
-        - Refer to the original speaker as "original audio" — never say "reference".
+        Each list must:
+        - Start with one positive comment (even if nothing needs improvement).
+        - Follow with two plain-language tips for improvement.
+        - Avoid technical terms like "transcription", "speech rate", etc.
+        - Never refer to category names in the tips.
+        - Refer to the original speaker as "original audio" (not "reference").
 
-        **ONLY respond in bullet points.**
         ---
 
         Here are the differences between the user and the original audio:
@@ -59,11 +58,10 @@ class SpeechAdvisor:
         Transcription Error Rate (WER): {wer}
 
         Use this to guide your feedback:
-        - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive bullet and mild tips.
-        - Moderate differences (±0.1 - 0.5 or ±1 - 2) → give gentle suggestions.
-        - Large differences (above ±0.5 or ±2) → give stronger improvement tips.
-        - If WER > 0 → mention it in Clarity only.
-        
+        - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
+        - Moderate differences (±0.1 to 0.5 or ±1 to 2) → give gentle suggestions.
+        - Large differences (above ±0.5 or ±2) → give direct improvement tips.
+        - If WER > 0 → address that in *clarity* only.
         """
         
         return prompt
@@ -107,13 +105,15 @@ class SpeechAdvisor:
         payload = {
             "model": "Qwen3-14B",
             "prompt": prompt,
-            "temperature": 0.3,
-            "top_p": 0.9,
-            "top_k": 40,
-            "max_tokens": 1000,
-            "min_tokens": 100,
-            "repetition_penalty": 1.1,
-            "guided_json": guided_schema
+            "temperature": 0.2, # Lower temperature = faster + more deterministic
+            "top_p": 0.85, #  Cumulative probability of the top tokens to consider
+            "top_k": 20, # Number of top tokens to consider
+            "max_tokens": 300, # Maximum number of tokens to generate per output sequence
+            "min_tokens": 50, # Minimum number of tokens to generate per output sequence
+            "n" : 1, # Number of output sequences to return
+            "repetition_penalty": 1.05, # Penalizes new tokens based on their frequency in the generated text so far
+            "no_repeat_ngram_size": 3,  # Avoid repetitive phrasing (helps speed indirectly)
+            "guided_json": guided_schema,
         }
 
         headers = {
@@ -123,7 +123,7 @@ class SpeechAdvisor:
 
         try:
             response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
-            print("RAW RESPONSE:", response.text)
+            print(f"Raw response: {response.text}")
             response_json = response.json()
 
             # Expect structured JSON response under choices[0].text
@@ -149,7 +149,7 @@ class SpeechAdvisor:
         Generate structured speech feedback comparing user and reference audio.
         Returns speed_tip, clarity_tip, articulation_tip, rythm_tip.
         """
-        MAX_RETRIES = 3
+        MAX_RETRIES = 2
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         prompt = self._create_prompt(difference_analysis, wer)

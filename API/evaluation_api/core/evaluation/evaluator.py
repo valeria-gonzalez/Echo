@@ -123,11 +123,6 @@ class SpeechEvaluator():
             reference_analysis["transcription"]
         )
         difference_analysis = self._get_difference_analysis(user_analysis, reference_analysis)
-        
-        print(reference_analysis)
-        print(user_analysis)
-        print(difference_analysis)
-        
         feedback = self.advisor.get_feedback(difference_analysis, clarity)
         return feedback
         
