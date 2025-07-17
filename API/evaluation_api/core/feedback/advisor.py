@@ -1,6 +1,6 @@
 import requests
+from json.decoder import JSONDecodeError
 import json
-import re
 from collections import defaultdict
 from config import ARLI_API_KEY
 
@@ -30,19 +30,22 @@ class SpeechAdvisor:
 
         Your job is to compare the user's delivery to the original audio and return friendly, easy-to-understand feedback.
 
-        Return exactly three items for each of these:
-        - speed_tip
-        - clarity_tip
-        - articulation_tip
-        - rythm_tip
+        Return your answer in **valid JSON format**, exactly like this:
+
+        "speed_tip": ["...", "..."],
+        "clarity_tip": ["...", "..."],
+        "articulation_tip": ["...", "..."],
+        "rythm_tip": ["...", "..."]
 
         Each list must:
-        - Start with one positive comment (even if nothing needs improvement).
-        - Follow with two plain-language tips for improvement.
+        - Be written in second person and a warm, friendly tone.
+        - Each item should be a full, descriptive sentence.
+        - Start with one comment describing how the user performed compared to the original audio. 
+        - Follow with one tip on what to improve and how to improve it.
         - Avoid technical terms like "transcription", "speech rate", etc.
         - Never refer to category names in the tips.
         - Refer to the original speaker as "original audio" (not "reference").
-
+        - Do not mention reading aloud, recording or listening to native speakers.
         ---
 
         Here are the differences between the user and the original audio:
@@ -59,8 +62,8 @@ class SpeechAdvisor:
 
         Use this to guide your feedback:
         - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
-        - Moderate differences (±0.1 to 0.5 or ±1 to 2) → give gentle suggestions.
-        - Large differences (above ±0.5 or ±2) → give direct improvement tips.
+        - Moderate differences (±0.1 to 0.5 or ±1 to 2) = "close" → give gentle suggestions.
+        - Large differences (above ±0.5 or ±2) = "varied" → give direct improvement tips.
         - If WER > 0 → address that in *clarity* only.
         """
         
@@ -76,26 +79,26 @@ class SpeechAdvisor:
                 "speed_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 3,
-                    "maxItems": 3
+                    "minItems": 2,
+                    "maxItems": 2
                 },
                 "clarity_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 3,
-                    "maxItems": 3
+                    "minItems": 2,
+                    "maxItems": 2
                 },
                 "articulation_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 3,
-                    "maxItems": 3
+                    "minItems": 2,
+                    "maxItems": 2
                 },
                 "rythm_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 3,
-                    "maxItems": 3
+                    "minItems": 2,
+                    "maxItems": 2
                 }
             },
             "required": ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
@@ -103,7 +106,7 @@ class SpeechAdvisor:
 
         # Payload for ArliAI
         payload = {
-            "model": "Qwen3-14B",
+            "model": "Qwen3-14B-ArliAI-RpR-v5-Small",
             "prompt": prompt,
             "temperature": 0.2, # Lower temperature = faster + more deterministic
             "top_p": 0.85, #  Cumulative probability of the top tokens to consider
@@ -134,8 +137,17 @@ class SpeechAdvisor:
                 and response_json["choices"]
                 and "text" in response_json["choices"][0]
             ):
-                # The model is guided to return a valid JSON string
-                return json.loads(response_json["choices"][0]["text"])
+                try:
+                    response_text = response_json["choices"][0]["text"]
+                    return json.loads(response_text)
+                except JSONDecodeError as e:
+                    # Try to fix common problems: truncate at last full }
+                    fixed = response_text.rsplit("}", 1)[0] + "}"
+                    try:
+                        return json.loads(fixed)
+                    except JSONDecodeError as inner_e:
+                        print(f"JSON decode failed after fix: {inner_e}")
+                        return {}
 
             print("Warning: Unexpected API response structure")
             return {}
@@ -155,7 +167,6 @@ class SpeechAdvisor:
         prompt = self._create_prompt(difference_analysis, wer)
         for attempt in range(1, MAX_RETRIES + 1):
             response = self._make_api_request(prompt)
-            print(response)
             if (
                 isinstance(response, dict) and 
                 all(key in response for key in response_keys)

@@ -24,13 +24,13 @@ class DatabaseService:
         """
         # Get the actual analysis from firebase
         query = {
-                'number_of_syllables': 10, 
+                'number_of_syllables': 6, 
                 'number_of_pauses': 0, 
-                'speech_rate': 3.0, 
-                'articulation_rate': 5.0, 
-                'speaking_duration': 2.6, 
-                'total_duration': 3.5, 
-                'ratio': 0.5,
+                'speech_rate': 2.0, 
+                'articulation_rate': 2.0, 
+                'speaking_duration': 5.6, 
+                'total_duration': 6.0, 
+                'ratio': 0.9,
                 'transcription': 'life is not an exact science it is an art'
             }
         
