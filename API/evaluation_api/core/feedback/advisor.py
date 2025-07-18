@@ -26,9 +26,9 @@ class SpeechAdvisor:
         Returns:
             str: Formatted prompt text for the LLM.
         """       
-        prompt = f"""You are a supportive speech coach helping an English learner improve their pronunciation.
+        prompt = f"""You are a speech coach helping an English learner improve their pronunciation.
 
-        Your job is to compare the user's delivery to the original audio and return friendly, easy-to-understand feedback.
+        Your job is to compare the user's delivery to the original audio and return feedback.
 
         Return your answer in **valid JSON format**, exactly like this:
 
@@ -64,7 +64,7 @@ class SpeechAdvisor:
         - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
         - Moderate differences (±0.1 to 0.5 or ±1 to 2) = "close" → give gentle suggestions.
         - Large differences (above ±0.5 or ±2) = "varied" → give direct improvement tips.
-        - If WER > 0 → address that in *clarity* only.
+        - If WER > 0 → address that in *clarity_tip* only.
         """
         
         return prompt

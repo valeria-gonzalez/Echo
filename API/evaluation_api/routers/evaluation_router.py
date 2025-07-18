@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, Form
 from typing import Dict, Any
+import json
 
 from schemas.evaluation_schema import AnalysisResponse, EvaluationResponse, FeedbackResponse
 from services.analysis_service import AnalysisService, get_analysis_service
@@ -81,11 +82,9 @@ async def evaluate_audio(
 @router.post("/feedback", response_model=FeedbackResponse)
 async def feedback(
     audio_file: UploadFile,
-    audio_id: str = Form(...),
-    resource_type:int = Form(...),
+    reference_analysis: str = Form(...),
     feedback_service: FeedbackService = Depends(get_feedback_service),
     analysis_service: AnalysisService = Depends(get_analysis_service),
-    database_service:DatabaseService = Depends(get_database_service)
 ): 
     # Make sure an audio file was passed
     if not audio_file.content_type.startswith("audio/"):
@@ -95,16 +94,22 @@ async def feedback(
         )
         
     try:
+        reference_dict = json.loads(reference_analysis)
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid reference_analysis format. Must be a valid JSON."
+        )
+        
+    try:
         # Get audio analysis
         audio_analysis = await analysis_service.analyze_audio(audio_file)
         
-        # Get reference analysis
-        reference_analysis = await database_service.get_reference_analysis(audio_id,
-                                                                           resource_type)
-        
         # Call the audio feedback function
-        feedback_response = await feedback_service.generate_feedback(audio_analysis.model_dump(),
-                                                                     reference_analysis.model_dump())
+        feedback_response = await feedback_service.generate_feedback(
+            audio_analysis.model_dump(),
+            reference_dict
+        )
         
         return feedback_response
     
