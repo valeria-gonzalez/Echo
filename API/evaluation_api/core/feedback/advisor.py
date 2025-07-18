@@ -32,16 +32,18 @@ class SpeechAdvisor:
 
         Return your answer in **valid JSON format**, exactly like this:
 
-        "speed_tip": ["...", "..."],
-        "clarity_tip": ["...", "..."],
-        "articulation_tip": ["...", "..."],
-        "rythm_tip": ["...", "..."]
+        "speed_tip": ["...", "...", "..." ],
+        "clarity_tip": ["...", "...", "..."],
+        "articulation_tip": ["...", "...", "..."],
+        "rythm_tip": ["...", "...", "..."]
 
         Each list must:
         - Be written in second person and a warm, friendly tone.
-        - Each item should be a full, descriptive sentence.
-        - Start with one comment describing how the user performed compared to the original audio. 
+        - Do not be brief. Each item should be a full, descriptive sentence.
+        - Each item should be different.
+        - Start with one comment ONLY describing how the user performed compared to the original audio.
         - Follow with one tip on what to improve and how to improve it.
+        - End with one tip on how to improve in the future.
         - Avoid technical terms like "transcription", "speech rate", etc.
         - Never refer to category names in the tips.
         - Refer to the original speaker as "original audio" (not "reference").
@@ -79,26 +81,26 @@ class SpeechAdvisor:
                 "speed_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 2,
-                    "maxItems": 2
+                    "minItems": 3,
+                    "maxItems": 3
                 },
                 "clarity_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 2,
-                    "maxItems": 2
+                    "minItems": 3,
+                    "maxItems": 3
                 },
                 "articulation_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 2,
-                    "maxItems": 2
+                    "minItems": 3,
+                    "maxItems": 3
                 },
                 "rythm_tip": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 2,
-                    "maxItems": 2
+                    "minItems": 3,
+                    "maxItems": 3
                 }
             },
             "required": ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
@@ -110,12 +112,12 @@ class SpeechAdvisor:
             "prompt": prompt,
             "temperature": 0.2, # Lower temperature = faster + more deterministic
             "top_p": 0.85, #  Cumulative probability of the top tokens to consider
-            "top_k": 20, # Number of top tokens to consider
-            "max_tokens": 300, # Maximum number of tokens to generate per output sequence
+            "top_k": 10, # Number of top tokens to consider
+            "max_tokens": 800, # Maximum number of tokens to generate per output sequence
             "min_tokens": 50, # Minimum number of tokens to generate per output sequence
             "n" : 1, # Number of output sequences to return
-            "repetition_penalty": 1.05, # Penalizes new tokens based on their frequency in the generated text so far
-            "no_repeat_ngram_size": 3,  # Avoid repetitive phrasing (helps speed indirectly)
+            "repetition_penalty": 1.2, # Penalizes new tokens based on their frequency in the generated text so far
+            "no_repeat_ngram_size": 4,  # Avoid repetitive phrasing (helps speed indirectly)
             "guided_json": guided_schema,
         }
 
