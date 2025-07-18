@@ -43,31 +43,32 @@ async def analyze_audio(
 
 @router.post("/evaluate_audio", response_model=EvaluationResponse)
 async def evaluate_audio(
-    audio_file: UploadFile,
-    audio_id: str = Form(...),
-    resource_type:int = Form(...),
+    reference_analysis: str = Form(...),
+    user_analysis: str = Form(...),
     evaluation_service: EvaluationService = Depends(get_evaluation_service),
-    analysis_service: AnalysisService = Depends(get_analysis_service),
-    database_service:DatabaseService = Depends(get_database_service)
 ): 
-    # Make sure an audio file was passed
-    if not audio_file.content_type.startswith("audio/"):
+    try:
+        reference_dict = json.loads(reference_analysis)
+    except json.JSONDecodeError:
         raise HTTPException(
-            status_code=400,
-            detail="Invalid file type. Please upload an audio file."
+            status_code=400, 
+            detail="Invalid reference_analysis format. Must be a valid JSON."
         )
         
     try:
-        # Get audio analysis
-        audio_analysis = await analysis_service.analyze_audio(audio_file)
+        user_dict = json.loads(user_analysis)
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid user_analysis format. Must be a valid JSON."
+        )
         
-        # Get reference analysis
-        reference_analysis = await database_service.get_reference_analysis(audio_id,
-                                                                           resource_type)
-        
+    try:
         # Call the audio evaluation service
-        evaluation_response = await evaluation_service.evaluate_audio(audio_analysis.model_dump(),
-                                                                      reference_analysis.model_dump())
+        evaluation_response = await evaluation_service.evaluate_audio(
+            reference_dict,
+            user_dict
+        )
         
         return evaluation_response
     
@@ -81,18 +82,10 @@ async def evaluate_audio(
 
 @router.post("/feedback", response_model=FeedbackResponse)
 async def feedback(
-    audio_file: UploadFile,
     reference_analysis: str = Form(...),
+    user_analysis: str = Form(...),
     feedback_service: FeedbackService = Depends(get_feedback_service),
-    analysis_service: AnalysisService = Depends(get_analysis_service),
-): 
-    # Make sure an audio file was passed
-    if not audio_file.content_type.startswith("audio/"):
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid file type. Please upload an audio file."
-        )
-        
+):      
     try:
         reference_dict = json.loads(reference_analysis)
     except json.JSONDecodeError:
@@ -102,12 +95,17 @@ async def feedback(
         )
         
     try:
-        # Get audio analysis
-        audio_analysis = await analysis_service.analyze_audio(audio_file)
+        user_dict = json.loads(user_analysis)
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid user_analysis format. Must be a valid JSON."
+        )
         
+    try:
         # Call the audio feedback function
         feedback_response = await feedback_service.generate_feedback(
-            audio_analysis.model_dump(),
+            user_dict,
             reference_dict
         )
         
