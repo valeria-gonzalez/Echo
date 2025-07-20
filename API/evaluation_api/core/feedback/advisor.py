@@ -19,8 +19,7 @@ class SpeechAdvisor:
         """Generate a structured prompt for the speech coaching LLM.
 
         Args:
-            user_audio_analysis (dict): Analysis data from the user's audio.
-            reference_audio_analysis (dict): Analysis data from the original audio.
+            difference_analysis (dict): Analysis of differences between user and reference analysis.
             wer (float): Word error rate between the user and reference transcription.
 
         Returns:
@@ -72,7 +71,14 @@ class SpeechAdvisor:
         return prompt
     
     def _make_api_request(self, prompt: str) -> dict:
-        """Send a prompt to the Arli AI API and retrieve the structured response."""
+        """Send a prompt to the Arli AI API and retrieve the structured response.
+
+        Args:
+            prompt (str): Prompt for the LLM model.
+
+        Returns:
+            dict: Dictionary with speed_tip, clarity_tip, articulation_tip, rythm_tip.
+        """
 
         # JSON schema to enforce format
         guided_schema = {
@@ -158,9 +164,14 @@ class SpeechAdvisor:
             return {}
 
     def get_feedback(self, difference_analysis: dict, wer: float) -> dict:
-        """
-        Generate structured speech feedback comparing user and reference audio.
-        Returns speed_tip, clarity_tip, articulation_tip, rythm_tip.
+        """Generate structured speech feedback comparing user and reference audio.
+
+        Args:
+            difference_analysis (dict): Analysis of differences between user and reference analysis.
+            wer (float): Word error rate between the user and reference transcription.
+
+        Returns:
+            dict: Returns speed_tip, clarity_tip, articulation_tip, and rythm_tip.
         """
         prompt = self._create_prompt(difference_analysis, wer)
         

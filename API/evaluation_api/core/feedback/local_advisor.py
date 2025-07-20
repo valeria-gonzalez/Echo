@@ -14,6 +14,7 @@ class LocalSpeechAdvisor:
         self._load_model()
         
     def _load_model(self)->None:
+        """Load the local model into memory."""
         try:
             self.model = Llama(
                 model_path=self.full_model_path, 
@@ -27,8 +28,7 @@ class LocalSpeechAdvisor:
         """Generate a structured prompt for the speech coaching LLM.
 
         Args:
-            user_audio_analysis (dict): Analysis data from the user's audio.
-            reference_audio_analysis (dict): Analysis data from the original audio.
+            difference_analysis (dict): Analysis of differences between user and reference analysis.
             wer (float): Word error rate between the user and reference transcription.
 
         Returns:
@@ -83,6 +83,14 @@ class LocalSpeechAdvisor:
         return prompt
     
     def _generate_output(self, prompt:str)->str:
+        """Use prompt to generate output from the model.
+
+        Args:
+            prompt (str): Prompt needed for the model.
+
+        Returns:
+            str: JSON structured string with model response.
+        """
         try:
             response = self.model(
                 prompt,
@@ -101,6 +109,16 @@ class LocalSpeechAdvisor:
             return ""
         
     def _parse_response(self, response:str)->dict:
+        """Parse the response obtained from the model and turn it into a valid
+        dictionary. 
+
+        Args:
+            response (str): Response obtained from the model.
+
+        Returns:
+            dict: Returns a dictionary with keys speed_tip, clarity_tip, 
+            articulation_tip, and rythm_tip.
+        """
         open_dict = response.find('{')
         close_dict = response.rfind('}')
         
@@ -115,7 +133,17 @@ class LocalSpeechAdvisor:
         return feedback_dict
         
     
-    def get_feedback(self, difference_analysis:dict, wer:float):
+    def get_feedback(self, difference_analysis:dict, wer:float)->dict:
+        """Generate structured speech feedback comparing user and reference audio.
+
+        Args:
+            difference_analysis (dict): Analysis of differences between user and reference analysis.
+            wer (float): Word error rate between the user and reference transcription.
+
+        Returns:
+            dict: Returns a dictionary with keys speed_tip, clarity_tip, 
+            articulation_tip, and rythm_tip.
+        """
         prompt = self._create_prompt(difference_analysis, wer)
         
         MAX_TRIES = 2
