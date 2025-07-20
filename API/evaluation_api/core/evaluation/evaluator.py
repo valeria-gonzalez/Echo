@@ -74,6 +74,18 @@ class SpeechEvaluator():
         }
         
     def get_difference_analysis(self, user_analysis:dict, reference_analysis:dict) -> dict:
+        """Generate differences in each aspect of the analysis between the 
+        user analysis and the reference analysis. 
+
+        Args:
+            user_analysis (dict): Analysis of user's audio.
+            reference_analysis (dict): Analysis of reference's audio.
+
+        Returns:
+            dict: Dictionary with keys number_of_syllables, 
+            number_of_pauses, rate_of_speech, articulation_rate, 
+            speaking_duration, original_duration and ratio.
+        """
         categories = user_analysis.keys()
         difference_analysis = dict()
         for category in categories:
