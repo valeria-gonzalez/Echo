@@ -1,12 +1,7 @@
 from jiwer import wer
-from core.feedback.advisor import SpeechAdvisor
-
 class SpeechEvaluator():
     """Class to evaluate speech analysis."""
-    def __init__(self):
-        self.advisor = SpeechAdvisor()
-        
-    def _compare_transcripts(self, reference:str, hypothesis:str, 
+    def compare_transcripts(self, reference:str, hypothesis:str, 
                              tolerance:float=0.10)->float:
         """Compare two transcriptions using Word Error Rate and subtract a 
         tolerance margin.
@@ -45,7 +40,7 @@ class SpeechEvaluator():
             return numerator / denominator if denominator != 0 else fallback
 
         # Clarity: Lower WER is better
-        clarity = 1.0 - self._compare_transcripts(
+        clarity = 1.0 - self.compare_transcripts(
             user_analysis["transcription"],
             reference_analysis["transcription"]
         )
@@ -78,7 +73,7 @@ class SpeechEvaluator():
             "rythm_score" : rythm_score
         }
         
-    def _get_difference_analysis(self, user_analysis:dict, reference_analysis:dict) -> dict:
+    def get_difference_analysis(self, user_analysis:dict, reference_analysis:dict) -> dict:
         categories = user_analysis.keys()
         difference_analysis = dict()
         for category in categories:
@@ -104,25 +99,4 @@ class SpeechEvaluator():
         """
         
         analysis_score = self._get_analysis_score(user_analysis, reference_analysis)
-        return analysis_score
-    
-    def get_feedback(self, user_analysis:dict, reference_analysis:dict) -> dict:
-        """Get feedback of a user's audio based on a reference audio.
-        It includes speed_tip, clarity_tip, articulation_tip, rythm_tip.
-
-        Args:
-            user_audio_name (str): User audio file name.
-            reference_audio_name (str): Reference audio file name.
-            audio_dir (str): Audio directory.
-
-        Returns:
-            dict: _description_
-        """
-        clarity = self._compare_transcripts(
-            user_analysis["transcription"],
-            reference_analysis["transcription"]
-        )
-        difference_analysis = self._get_difference_analysis(user_analysis, reference_analysis)
-        feedback = self.advisor.get_feedback(difference_analysis, clarity)
-        return feedback
-        
+        return analysis_score 

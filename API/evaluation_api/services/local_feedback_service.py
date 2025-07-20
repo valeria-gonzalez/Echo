@@ -3,11 +3,12 @@ from typing import Dict, Any
 
 from schemas.evaluation_schema import FeedbackResponse
 from core.evaluation.evaluator import SpeechEvaluator
-from core.feedback.advisor import SpeechAdvisor
-class FeedbackService():
+from core.feedback.local_advisor import LocalSpeechAdvisor
+
+class LocalFeedbackService:
     def __init__(self):
         self.evaluator = SpeechEvaluator()
-        self.advisor = SpeechAdvisor()
+        self.advisor = LocalSpeechAdvisor()
     
     async def generate_feedback(self, audio_analysis:Dict[str, Any], 
                              reference_analysis:Dict[str,Any]) -> FeedbackResponse: 
@@ -53,7 +54,6 @@ class FeedbackService():
         except Exception as e:
             print(f"Error getting feedback: {e}")
             raise HTTPException(status_code=500, detail="Audio feedback failed.")
-        
-
-def get_feedback_service():
-    return FeedbackService()
+    
+def get_local_feedback_service():
+    return LocalFeedbackService()

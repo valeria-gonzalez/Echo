@@ -128,7 +128,6 @@ class SpeechAdvisor:
 
         try:
             response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
-            print(f"Raw response: {response.text}")
             response_json = response.json()
 
             # Expect structured JSON response under choices[0].text
@@ -163,10 +162,11 @@ class SpeechAdvisor:
         Generate structured speech feedback comparing user and reference audio.
         Returns speed_tip, clarity_tip, articulation_tip, rythm_tip.
         """
+        prompt = self._create_prompt(difference_analysis, wer)
+        
         MAX_RETRIES = 2
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
-        prompt = self._create_prompt(difference_analysis, wer)
         for attempt in range(1, MAX_RETRIES + 1):
             response = self._make_api_request(prompt)
             if (
