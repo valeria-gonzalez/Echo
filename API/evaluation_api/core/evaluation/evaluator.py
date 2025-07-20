@@ -19,8 +19,8 @@ class SpeechEvaluator():
         return max(0.0, adjusted_error)
     
     
-    def _get_analysis_score(self, user_analysis:dict, 
-                       reference_analysis:dict)->dict:
+    def _get_analysis_score(self, user:dict, 
+                       reference:dict)->dict:
         """Score the user audio analysis based on a reference audio analysis.
         The scoring will be over 10 points each and a total of 40 points.
 
@@ -32,45 +32,106 @@ class SpeechEvaluator():
             dict: Scoring of each aspect with clarity_score, speed_score, 
             articulation_score, rythm_score, and total_score.
         """
-        GRADING_THRESHOLD = 10
-        TOTAL_GRADE_THRESHOLD = 40
-        PERCENTAGE = 100
+        weights = {
+            "clarity": {"wer": 0.8, "syllables": 0.2},
+            "speed": {
+                "speech_rate": 0.7,
+                "speaking_duration": 0.15,
+                "total_duration": 0.15
+            },
+            "articulation": {"articulation_rate": 0.8, "syllables": 0.2},
+            "rythm": {
+                "ratio": 0.6,
+                "duration_consistency": 0.2,
+                "pauses": 0.2
+            }
+        }
 
-        def safe_divide(numerator, denominator, fallback=0.0)->float:
-            return numerator / denominator if denominator != 0 else fallback
-
-        # Clarity: Lower WER is better
-        clarity = 1.0 - self.compare_transcripts(
-            user_analysis["transcription"],
-            reference_analysis["transcription"]
+        wer = self.compare_transcripts(
+            reference["transcription"],
+            user["transcription"]
         )
-        clarity_score = max(0, round(clarity * GRADING_THRESHOLD))
 
-        # Speed
-        speed_ratio = safe_divide(user_analysis["speech_rate"], reference_analysis["speech_rate"])
-        speed_diff = abs(1 - speed_ratio)
-        speed_score = max(0, round((1 - min(speed_diff, 1)) * GRADING_THRESHOLD))
+        def clamp(value, min_value=0, max_value=10) -> float:
+            return max(min_value, min(value, max_value))
 
-        # Articulation
-        articulation_ratio = safe_divide(user_analysis["articulation_rate"], reference_analysis["articulation_rate"])
-        articulation_diff = abs(1 - articulation_ratio)
-        articulation_score = max(0, round((1 - min(articulation_diff, 1)) * GRADING_THRESHOLD))
+        def relative_diff(a, b) -> float:
+            if b == 0:
+                return 0 if a == 0 else 1
+            return abs(a - b) / b
 
-        # Rythm
-        rythm_ratio = safe_divide(user_analysis["speaking_duration"], reference_analysis["speaking_duration"])
-        rythm_diff = abs(1 - rythm_ratio)
-        rythm_score = max(0, round((1 - min(rythm_diff, 1)) * GRADING_THRESHOLD))
+        # --- Clarity score ---
+        wer_penalty = wer * weights["clarity"]["wer"] * 10
+        syllable_diff = relative_diff(
+            user["number_of_syllables"],
+            reference["number_of_syllables"]
+        )
+        syllable_penalty = syllable_diff * weights["clarity"]["syllables"] * 10
+        clarity_score = clamp(round(10 - (wer_penalty + syllable_penalty)))
 
-        # Total Score
-        total_score = clarity_score + speed_score + articulation_score + rythm_score
-        total_score = round(total_score / TOTAL_GRADE_THRESHOLD, 2) * PERCENTAGE
+        # --- Speed score ---
+        speed_penalty = (
+            relative_diff(
+                user["speech_rate"], 
+                reference["speech_rate"]
+            ) * weights["speed"]["speech_rate"] +
+            relative_diff(
+                user["speaking_duration"], 
+                reference["speaking_duration"]
+            ) * weights["speed"]["speaking_duration"] +
+            relative_diff(
+                user["total_duration"], 
+                reference["total_duration"]
+            ) * weights["speed"]["total_duration"]
+        ) * 10
+        speed_score = clamp(round(10 - speed_penalty))
+
+        # --- Articulation score ---
+        articulation_penalty = (
+            relative_diff(
+                user["articulation_rate"], 
+                reference["articulation_rate"]
+            ) * weights["articulation"]["articulation_rate"] +
+            relative_diff(
+                user["number_of_syllables"],
+                reference["number_of_syllables"]
+            ) * weights["articulation"]["syllables"]
+        ) * 10
+        articulation_score = clamp(round(10 - articulation_penalty))
+
+        # --- Rhythm score ---
+        ratio_diff = relative_diff(user["ratio"], reference["ratio"])
+        duration_ratio_user = (
+            user["speaking_duration"] / user["total_duration"]
+            if user["total_duration"] > 0 else 0
+        )
+        duration_ratio_ref = (
+            reference["speaking_duration"] / reference["total_duration"]
+            if reference["total_duration"] > 0 else 0
+        )
+        duration_consistency_diff = relative_diff(
+            duration_ratio_user,
+            duration_ratio_ref
+        )
+        pause_diff = abs(user["number_of_pauses"] - reference["number_of_pauses"])
+
+        rhythm_penalty = (
+            ratio_diff * weights["rythm"]["ratio"] +
+            duration_consistency_diff * weights["rythm"]["duration_consistency"]
+        ) * 10 + (pause_diff * weights["rythm"]["pauses"] * 10)
+        rythm_score = clamp(round(10 - rhythm_penalty))
+
+        # --- Total score ---
+        total_score = round(
+            clarity_score + speed_score + articulation_score + rythm_score
+        )
 
         return {
-            "total_score" : total_score,
-            "clarity_score" : clarity_score,
-            "speed_score" : speed_score,
-            "articulation_score" : articulation_score,
-            "rythm_score" : rythm_score
+            "clarity_score": clarity_score,
+            "speed_score": speed_score,
+            "articulation_score": articulation_score,
+            "rythm_score": rythm_score,
+            "total_score": total_score
         }
         
     def get_difference_analysis(self, user_analysis:dict, reference_analysis:dict) -> dict:
