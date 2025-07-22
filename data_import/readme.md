@@ -67,7 +67,7 @@ It import words, sentences and texts using the JSONLs by creating instances `imp
 
 ### the endpoints used
 make sure to update the endpoints when the APIs are deployed to a different server o domain
-- words = "http://127.0.0.1:8000/resourses/words"
-- sentences = "http://127.0.0.1:8000/resourses/sentences"
-- texts = "http://127.0.0.1:8000/resourses/texts"
+- words = "http://127.0.0.1:8000/resources/words"
+- sentences = "http://127.0.0.1:8000/resources/sentences"
+- texts = "http://127.0.0.1:8000/resources/texts"
 
