@@ -123,7 +123,7 @@ class SpeechEvaluator():
 
         # --- Total score ---
         total_score = round(
-            clarity_score + speed_score + articulation_score + rythm_score
+            (clarity_score + speed_score + articulation_score + rythm_score) * 100 / 40
         )
 
         return {
