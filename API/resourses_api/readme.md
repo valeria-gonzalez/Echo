@@ -5,34 +5,39 @@ The Resources API provides endpoints for managin
 API resources includes the following endpoints: 🧠
 
 *This endpoint returns all resources in a JSON object.*
-Method GET | /texts
-Method GET | /sentences
-Method GET | /words
+- Method GET | /texts
+- Method GET | /sentences
+- Method GET | /words
 
 *The endpoints returns a JSON response with the data associated with the specified ID.*
-Method GET | /texts/{id}
-Method GET | /sentences/{id}
-Method GET | /words/{id}
+
+- Method GET | /texts/{id}
+- Method GET | /sentences/{id}
+- Method GET | /words/{id}
 
 *The endpoints returns a List of JSON response with the data associated with the specified dificulty.*
-Method GET | /texts/difficulty/{difficulty}
-Method GET | /sentences/difficulty/{difficulty}
-Method GET | /words/difficulty/{difficulty}
+
+- Method GET | /texts/difficulty/{difficulty}
+- Method GET | /sentences/difficulty/{difficulty}
+- Method GET | /words/difficulty/{difficulty}
 
 *The endpoints returns a List of JSON response with the data associated with the specified categorie.*
-Method GET | /texts/categories/{categories}
-Method GET | /words/categories/{categories}
-Method GET | /sentences/categories/{categories}
+
+- Method GET | /texts/categories/{categories}
+- Method GET | /words/categories/{categories}
+- Method GET | /sentences/categories/{categories}
 
 *The endpoints removes the collection corresponding to the specified ID*
-Method DELETE | /texts/{document_id}
-Method DELETE | /sentences/{document_id}
-Method DELETE | /words/{document_id}
+
+- Method DELETE | /texts/{document_id}
+- Method DELETE | /sentences/{document_id}
+- Method DELETE | /words/{document_id}
 
 *The following endpoints inserts a collection using the provided data*
-Method POST | /sentences
-Method POST | /texts
-Method POST | /words
+
+- Method POST | /sentences
+- Method POST | /texts
+- Method POST | /words
 
 ## Requirements ⚙️⚙️⚙️
 
@@ -70,24 +75,25 @@ The resourses_api directory serves as the root for our API, the app folder conta
 
 here directories within app:
 routers: 
-    This is where you.ll find the API endpoint(routes)
+- This is where you.ll find the API endpoint(routes)
 
 schemas:
-    Contains the data structures for our resourses
+- Contains the data structures for our resourses
 
 service:
-    Manage our resources and accting as an intermediary between the routers and the database
+- Manage our resources and accting as an intermediary between the routers and the database
 
 db.py:
-    contain the conexion to the database
+- contain the conexion to the database
 
 main.py:
-    The primary file thatt initializes and run
+- The primary file thatt initializes and run
 
-To use the API, Follow these two steps:
-1 - Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
+## To use the API, Follow these two steps:
 
-2 - open app /db.py, locate the line cred = credentials.certificate and replace the path
+- 1 Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
+
+- 2 open app /db.py, locate the line cred = credentials.certificate and replace the path
 
 
 db.py file should look similar to this example
