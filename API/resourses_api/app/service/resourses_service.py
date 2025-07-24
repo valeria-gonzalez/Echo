@@ -1,7 +1,9 @@
-from app.db import db
+from app.db import db, bucket
 from app.schemas.resourses_schemas import sentences, texts, words
 from google.cloud.firestore_v1 import FieldFilter
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
+from firebase_admin import storage
+
 
 #get all
 
@@ -148,15 +150,27 @@ async def update_sentences_service(id: int, url:str):
     
     return {"message": "document update"}
 
-async def update_texts_url_service(id: str, url:str):
 
-    query = db.collection("texts").where("chapter_id", "==", id) 
-    results = query.get()
-    
-    if not results:
-        raise HTTPException(status_code= 404, detail="document not found")
+#POST AUDIO
 
-    for doc in results:
-        doc.reference.update({"url": url})
+async def post_audio_sentences_service(file: UploadFile):
+    if file.content_type != "audio/mpeg":
+        return {"error": "extension not suport"}
     
-    return {"message": "document update"}
+    try:
+        content = await file.read()
+        destination_path_cloud = f"tatoeba/{file.filename}"
+        blob = storage.bucket().blob(destination_path_cloud)
+        blob.upload_from_string(content, content_type= "audio/mpeg")
+        blob.make_public()
+        id = int(file.filename.removesuffix(".mp3"))
+        url_public = blob.public_url
+
+        await update_sentences_service(id, url_public)
+
+        return {"message": "Audio and url update"}
+
+
+
+    except Exception as e:
+        return {"error": str(e)}

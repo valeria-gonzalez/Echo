@@ -1,4 +1,4 @@
-from fastapi import APIRouter,HTTPException
+from fastapi import APIRouter,HTTPException, UploadFile, File
 from app.service.resourses_service import *
 from app.schemas.resourses_schemas import texts, sentences, words
 
@@ -95,6 +95,7 @@ async def post_words_router(word: words):
 async def update_sentences_router(id: int, url: str):
     return await update_sentences_service(id,url)
 
-@router.put("/texts/url/{id}")
-async def update_sentences_router(id: str, url: str):
-    return await update_texts_url_service(id,url)
+
+@router.post("/sentences/audios")
+async def post_sentences_audio_raouter(file: UploadFile = File(...)):
+    return await post_audio_sentences_service(file)
