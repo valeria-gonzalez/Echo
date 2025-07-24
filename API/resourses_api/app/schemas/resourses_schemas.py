@@ -1,45 +1,49 @@
 from typing import List
 from pydantic import BaseModel
 
-
-class Transcript(BaseModel):
-    audio_file: str
-    duration: float
-    full_text: str
-    text_lines: List[str]
-
-class texts(BaseModel):
-    #id: str
-    #text_id: int
-    chapter_id: str
-    book_title: str
-
-    transcript: Transcript
-
-    difficulty: int
-    categories: List[str]
-    #word_count: int
-
-class DefinitionsIn(BaseModel):
+class Definitions(BaseModel):
     pos: str
     definitions: List[str]
 
-class words(BaseModel):
-    #id: str
-    word: str
-    definitions: List[DefinitionsIn]
-    ipa: str
-    mp3_url: str
-    translations: list[str]
-    categories: list[str]
-    difficulty: int
+class Audio_analysis(BaseModel):
+    number_of_syllabes: int
+    number_of_pauses: int
+    speech_rate: float
+    articulation_rate: float
+    speaking_rate: float
+    speaking_duration: float
+    ratio: float
+    transcription: str
 
 class sentences(BaseModel):
-    #id: int
-    #sentences_id: int
-    eng_sen: str
-    spa_sen: str
-    audio_id: int
-    #duration: int
-    categories: List[str]
+    audio_url: str
+    text: str
     difficulty: int
+    categories: List[str]
+    word_count: int
+    translation: str
+    audio_id: int
+    audio_analysis: Audio_analysis
+class words(BaseModel):
+    audio_url: str
+    text: str
+    difficulty: int
+    categories: List[str]
+    word_count: int
+    definitions: List[Definitions]
+    ipa: str
+    translations: List[str]
+    audio_analysis: Audio_analysis
+
+class texts(BaseModel):
+    audio_url: str
+    text: str
+    difficulty: int
+    categories: List[str]
+    word_count: int
+    book_title: str
+    translation: str
+    audio_analysis: Audio_analysis
+
+
+
