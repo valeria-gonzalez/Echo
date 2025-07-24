@@ -122,17 +122,41 @@ async def delete_sentences_id_service(document_id: str):
 #post 
 
 async def post_texts_service(text: texts):
-    user_ref = db.collection("texts").document(text.id)
-    user_ref.set(text.model_dump())
-    return {"message": "text insert", "id": text.id}
+    user_ref = db.collection("texts").add(text.model_dump())
+    return {"message": "text insert"}
 
 async def post_words_service(word: words):
-    user_ref = db.collection("words").document(word.id)
-    user_ref.set(word.model_dump())
-    return {"message": "word insert", "id": word.id}
+    user_ref = db.collection("words").add(word.model_dump())
+    return {"message": "word insert"}
 
 async def post_sentences_service(sentence: sentences):
-    user_ref = db.collection("sentences").document(str(sentence.id))
-    user_ref.set(sentence.model_dump())
-    return {"message": "sentence insert", "id": sentence.id}
+    user_ref = db.collection("sentences").add(sentence.model_dump())
+    return {"message": "sentence insert"}
 
+#UPDATE
+
+async def update_sentences_service(id: int, url:str):
+
+    query = db.collection("sentences").where("audio_id", "==", id) 
+    results = query.get()
+    
+    if not results:
+        raise HTTPException(status_code= 404, detail="document not found")
+    
+    for doc in results:
+        doc.reference.update({"url": url})
+    
+    return {"message": "document update"}
+
+async def update_texts_url_service(id: str, url:str):
+
+    query = db.collection("texts").where("chapter_id", "==", id) 
+    results = query.get()
+    
+    if not results:
+        raise HTTPException(status_code= 404, detail="document not found")
+
+    for doc in results:
+        doc.reference.update({"url": url})
+    
+    return {"message": "document update"}

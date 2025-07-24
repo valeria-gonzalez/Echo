@@ -88,3 +88,13 @@ async def post_texts_router(text: texts):
 @router.post("/words")
 async def post_words_router(word: words):
     return await post_words_service(word)
+
+#update
+
+@router.put("/sentences/url/{id}")
+async def update_sentences_router(id: int, url: str):
+    return await update_sentences_service(id,url)
+
+@router.put("/texts/url/{id}")
+async def update_sentences_router(id: str, url: str):
+    return await update_texts_url_service(id,url)

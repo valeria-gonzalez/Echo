@@ -9,7 +9,7 @@ class Transcript(BaseModel):
     text_lines: List[str]
 
 class texts(BaseModel):
-    id: str
+    #id: str
     #text_id: int
     chapter_id: str
     book_title: str
@@ -25,7 +25,8 @@ class DefinitionsIn(BaseModel):
     definitions: List[str]
 
 class words(BaseModel):
-    id: str
+    #id: str
+    word: str
     definitions: List[DefinitionsIn]
     ipa: str
     mp3_url: str
@@ -34,7 +35,7 @@ class words(BaseModel):
     difficulty: int
 
 class sentences(BaseModel):
-    id: int
+    #id: int
     #sentences_id: int
     eng_sen: str
     spa_sen: str
