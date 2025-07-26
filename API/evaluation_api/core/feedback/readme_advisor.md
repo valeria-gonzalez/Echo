@@ -2,7 +2,7 @@
 
 ## 📚 Objective
 
-The `SpeechAdvisor` class uses a Large Language Model (LLM) to provide **friendly, structured feedback** on a user's speech performance compared to a reference. By analyzing timing, rhythm, and transcription accuracy, it generates helpful coaching tips tailored to the speaker's performance.
+The `SpeechAdvisor` class uses a Large Language Model (LLM) hosted on a web server to provide friendly, structured feedback on a user's speech performance compared to a reference. By analyzing timing, rhythm, and transcription accuracy, it generates helpful coaching tips tailored to the speaker's performance.
 
 ## ✨ Overview
 
@@ -18,12 +18,11 @@ It will return three tips for each category with:
 - One tip on how to improve.
 - One tip on how to improve in the future.
 
-
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.8+
 
 ### Installation
 
@@ -113,7 +112,7 @@ print(feedback)
 }
 ```
 
-## 🧩 Class Overview
+## Class Overview
 
 - `get_feedback`: Returns a dictionary with four categories of tips: 
   - speed_tip
