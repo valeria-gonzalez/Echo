@@ -117,7 +117,7 @@ class AnalysisService:
             )
 
         except Exception as e:
-            print(f"Error normalizing file: {e}")
+            print(f"Error analyzing file: {e}")
             raise HTTPException(status_code=500, detail="Audio analysis failed.")
         
         finally:

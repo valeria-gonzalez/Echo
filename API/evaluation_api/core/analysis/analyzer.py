@@ -23,6 +23,7 @@ class SpeechAnalyzer:
                 praat_script_path, -20, 2, 0.3, "yes",
                 full_audio_path, audio_dir + "/", 80, 400, 0.01, capture_output=True
             )
+            
             parsed_textgrid = str(result[1]).strip().split()
             
             # Clean up: delete the .TextGrid file if it exists
