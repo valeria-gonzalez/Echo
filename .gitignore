@@ -4,7 +4,6 @@ env
 venv
 .vs
 __pycache__
-config.py
 .env
 *.wav
 *.gguf

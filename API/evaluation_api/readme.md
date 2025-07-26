@@ -214,19 +214,13 @@ Please download the file named `mistral-7b-instruct-v0.1.Q4_K_M.gguf` from the w
 Create a copy of the `.env.example` file with:
 
 ```bash
-    cp .env.example .env
+cp .env.example .env
 ```
-
-Create a copy of the `config.py` file with:
-
-```bash
-    cp config.py.example config.py
-```
-
-Leave the original `config.py` as is and feel free to add your own new configurations.
 
 Modify the `.env` file by replacing the variable `ARLI_API_KEY` with the API key 
 that [Arli AI](https://www.arliai.com/) provides for **text generation models**.
+
+#### 4. Modify ARLI API key parameters
 
 Also please modify in the ARLI API key parameters the following:
 - Select the Qwen3-14B-ArliAI-RpR-v5-Small as the only **model**.
@@ -234,13 +228,13 @@ Also please modify in the ARLI API key parameters the following:
 - Click **save**.
 
 The parameters that have been modified and applied will have a blue circle next to them.
-![alt text](<Screenshot 2025-07-26 at 3.23.52 p.m..png>)
+![alt text](<parameters.png>)
 
 More information on the different configurations that can be established can be found 
 at the 
 [Arli Text Generation API Documentation](https://www.arliai.com/docs?lang=en&_gl=1*5wid9d*_up*MQ..*_ga*MzY2ODIwNjcxLjE3NTM1NjQ3Nzk.*_ga_7X1GX4PZG5*czE3NTM1NjQ3NzgkbzEkZzEkdDE3NTM1NjQ3OTEkajQ3JGwwJGgw). 
 
-### 4. **Run the API**
+### 5. **Run the API**
 
 In order to run the API, in terminal make sure you are located in the `evaluation_api/app` folder with:
 ```bash

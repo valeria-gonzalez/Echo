@@ -48,7 +48,6 @@ pip install -r requirements.txt
  although it will be included.
 
  Needed files:
-
  - `myspsolution.praat`
 
 ## 🚀 Usage

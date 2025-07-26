@@ -38,19 +38,13 @@ pip install dotenv
 Create a copy of the `.env.example` file with:
 
 ```bash
-    cp .env.example .env
+cp .env.example .env
 ```
-
-Create a copy of the `config.py` file with:
-
-```bash
-    cp config.py.example config.py
-```
-
-Leave the original `config.py` as is and feel free to add your own new configurations.
 
 Modify the `.env` file by replacing the variable `ARLI_API_KEY` with the API key 
 that [Arli AI](https://www.arliai.com/) provides for **text generation models**.
+
+#### 3. Modify ARLI API key parameters
 
 Also please modify in the ARLI API key parameters the following:
 - Select the Qwen3-14B-ArliAI-RpR-v5-Small as the only **model**.
