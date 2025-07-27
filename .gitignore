@@ -4,4 +4,10 @@ env
 venv
 .vs
 __pycache__
+<<<<<<< HEAD
+.env
+*.wav
+*.gguf
+=======
 **/db/**
+>>>>>>> main
