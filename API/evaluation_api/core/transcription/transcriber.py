@@ -20,14 +20,14 @@ class SpeechTranscriber:
         """Transcribe the given audio file to text.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
             suppress_punctuation (bool): Whether to suppress punctuation marks in output.
 
         Returns:
             str: Clean transcription of the audio file.
         """
-        full_audio_path = os.path.join(audio_dir, f"{audio_filename}.wav")
+        full_audio_path = os.path.join(audio_dir, audio_filename)
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)

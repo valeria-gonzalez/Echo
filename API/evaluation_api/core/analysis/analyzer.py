@@ -7,8 +7,13 @@ class SpeechAnalyzer:
     """Class for the analysis of voice without the need of a transcription."""
 
     def _analyze_audio(self, audio_filename: str, audio_dir: str):
-        """Internal helper to run Praat analysis and extract result array."""
-        full_audio_path = f"{audio_dir}/{audio_filename}.wav"
+        """Internal helper to run Praat analysis and extract result array.
+        
+        Args:
+            audio_filename (str): Filename with extension.
+            audio_dir (str): Filepath where the audio is.
+        """
+        full_audio_path = os.path.join(audio_dir, audio_filename)
         
         # Get the path to this script's directory
         base_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +44,7 @@ class SpeechAnalyzer:
         """Detect and count number of syllables.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -52,7 +57,7 @@ class SpeechAnalyzer:
         """Detect and count number of pauses and fillers.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -66,7 +71,7 @@ class SpeechAnalyzer:
         pauses and fillers).
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -80,7 +85,7 @@ class SpeechAnalyzer:
         (excluding pauses and fillers).
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -93,7 +98,7 @@ class SpeechAnalyzer:
         """Measure speaking time (excluding fillers and pauses).
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -106,7 +111,7 @@ class SpeechAnalyzer:
         """Measure speaking time (including fillers and pauses).
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -119,7 +124,7 @@ class SpeechAnalyzer:
         """Measure ratio between speaking duration and total speaking duration.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -134,7 +139,7 @@ class SpeechAnalyzer:
         original duration and ratio.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
@@ -157,7 +162,7 @@ class SpeechAnalyzer:
         """Recognize gender and mood of speech.
 
         Args:
-            audio_filename (str): Filename without extension.
+            audio_filename (str): Filename with extension.
             audio_dir (str): Filepath where the audio is.
 
         Returns:
