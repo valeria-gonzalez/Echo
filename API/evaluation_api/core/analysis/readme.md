@@ -53,7 +53,7 @@ pip install -r requirements.txt
 ## 🚀 Usage
 ```python
     # Define audio file details
-    audio_name = "audio5"
+    audio_name = "audio5.wav"
     audio_dir = os.getcwd()
 
     # Initialize the analyzer
