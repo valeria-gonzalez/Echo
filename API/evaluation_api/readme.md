@@ -36,7 +36,7 @@ Value: [Your audio file]
 
 **Endpoint:** `evaluation/analyze_audio`
 
-The audio analysis endpoint provides speech analysis information for a given audio file.
+The audio analysis endpoint provides speech analysis information for a given audio file in `.wav`, `.mp3`, `.flac`, or `.m4a` format.
 
 It leverages the project "My-Voice-Analysis" created by Shahabks, that can be found at the following [Github Repository](https://github.com/Shahabks/my-voice-analysis).
 
@@ -53,7 +53,7 @@ Using the [Praat Phonetic Model](http://www.praat.org/), it can return informati
 It also uses the [Whisper Speech Recognition Model](https://openai.com/index/whisper/) to create a transcription of the audio file.
 
 #### 🗝️ Keys
-- `audio_file` : Audio file `.wav` 
+- `audio_file` : Audio file in `.wav`, `.mp3`, `.flac`, or `.m4a` format.
 
 #### 🧪 Testing
 ```bash
@@ -169,10 +169,6 @@ curl -X POST http://localhost:8000/feedback \
 }
 ```
 
-### 📊 **Supported Formats**
-
-- Audio files: `.wav`
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -244,6 +240,11 @@ Once this is done, just run:
 ```bash
 python3 main.py
 ```
+Or: 
+```bash
+uvicorn main:app --reload
+```
+
 The API will be available at: `http://localhost:xxxx`
 
 ## 🏗️ Architecture
