@@ -27,6 +27,12 @@ async def root():
 if __name__ == "__main__":
     # If below doesn't work, run in terminal: uvicorn app.main:app --reload
     import uvicorn
-    uvicorn.run("app.main:app", reload=True)
+    uvicorn.run(
+        "app.main:app", 
+        reload=True, 
+        port=8000, 
+        host="127.0.0.1", 
+        reload_delay=0.1
+    )
     
     
