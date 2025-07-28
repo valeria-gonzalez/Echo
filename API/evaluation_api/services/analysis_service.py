@@ -13,8 +13,10 @@ class AnalysisService:
         self.analyzer = SpeechAnalyzer()
         self.transcriber = SpeechTranscriber()
         self.tmp_audio_filepath = None
-        self.base_name = None
+        self.tmp_base_name = None
         self.base_dir = None
+        self.converted_filepath = None
+        self.converted_base_name = None
         self.normalized_filepath = None
         self.normalized_filename = None
 
@@ -29,26 +31,27 @@ class AnalysisService:
             HTTPException: The file could not be created.
         """
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
-                content = await audio_file.read()
-                if not content:
-                    os.remove(tmp_file.name)
-                    raise HTTPException(
-                        status_code=400,
-                        detail="Audio file is empty."
-                    )
-                    
+            content = await audio_file.read()
+            if not content:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Audio file is empty."
+                )
+            
+            # Create temporary audio file in memory with original extension
+            audio_extension = audio_file.filename.split('.')[-1]
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{audio_extension}") as tmp_file:
                 tmp_file.write(content)
                 self.tmp_audio_filepath = tmp_file.name
-                self.base_name = os.path.splitext(os.path.basename(self.tmp_audio_filepath))[0]
-                self.base_dir = os.path.dirname(self.tmp_audio_filepath)
+                self.tmp_base_name = os.path.basename(tmp_file.name)
+                self.base_dir = os.path.dirname(tmp_file.name)
                 print(f"Temporary file created: {self.tmp_audio_filepath}")
-
+                
         except Exception as e:
             print(f"Error creating temporary file: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error while handling audio file.")
-
-    def _remove_temporary_audio(self) -> None:
+            raise HTTPException(status_code=500, detail="Internal server error while handling audio file.")    
+    
+    async def _remove_temporary_audio(self) -> None:
         """Remove the temporary audio file from disk.
         """
         if self.tmp_audio_filepath and os.path.exists(self.tmp_audio_filepath):
@@ -57,14 +60,37 @@ class AnalysisService:
                 print(f"Temporary file removed: {self.tmp_audio_filepath}")
                 
             except Exception as e:
-                print(f"Error removing temporary file: {e}")
+                print(f"Error removing temporar file: {e}")
                 
-    def _normalize_audio(self) -> None:
+        if self.converted_filepath and os.path.exists(self.converted_filepath):
+            try:
+                os.remove(self.converted_filepath)
+                print(f"Converted file removed: {self.converted_filepath}")
+                
+            except Exception as e:
+                print(f"Error removing temporar file: {e}")
+    
+    async def _convert_to_wav(self) -> None:
+        """Convert an audio file to wav.
+        """
+        try:
+            self.converted_filepath = atools.convert_audio_extension(
+                self.tmp_base_name,
+                self.base_dir,
+                extension="wav"
+            )
+            self.converted_base_name = os.path.basename(self.converted_filepath)
+            print(f"Converted file created: {self.converted_filepath}")
+            
+        except Exception as e:
+            print(f"Error converting audio file: {e}")
+        
+    async def _normalize_audio(self) -> None:
         """Normalize the temporary audio file to 44100 Hz and 16 bits resolution.
         """
         try:
             self.normalized_filename = atools.normalize_audio(
-                audio_filename=self.base_name,
+                audio_filename=self.converted_base_name,
                 audio_dir=self.base_dir,
                 frame_rate=44100,
                 resolution=2,
@@ -89,10 +115,11 @@ class AnalysisService:
         Returns:
             AnalysisResponse: Schema for audio analysis.
         """
-        await self._create_temporary_audio(audio_file)
-
         try:
-            self._normalize_audio()
+            await self._create_temporary_audio(audio_file)
+            await self._convert_to_wav()
+            await self._normalize_audio()
+            
             # Get audio analysis
             audio_analysis = self.analyzer.get_overview(
                 self.normalized_filename, 
@@ -121,7 +148,7 @@ class AnalysisService:
             raise HTTPException(status_code=500, detail="Audio analysis failed.")
         
         finally:
-            self._remove_temporary_audio()
+            await self._remove_temporary_audio()
 
 def get_analysis_service():
     return AnalysisService()
