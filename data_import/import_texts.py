@@ -1,16 +1,27 @@
 import requests
 import json
 from pathlib import Path
+from typing import Optional
+
 
 
 class ImportTexts:
-
+    """tranforms the jsonl texts to have the same 
+    fiels as the db and imports the json"""
     def __init__(self, api_direction_url_texts:str, direction_texts_jsonl:str):
        self.api_direction_url_texts = api_direction_url_texts
        self.direction_texts_jsonl = Path(direction_texts_jsonl)
 
     def _trasform_json_for_db(self, input_json: dict) -> dict:
+        """tranforms a JSON in the format expected by the database
+        
+        Args: 
+            input_json(dict): Original dictionary 
 
+        Returns:
+            dict: JSON with keys matching the database schema 
+        """
+        
         json_db = {}
         json_db["text"] = input_json["transcript"]["full_text"]
         json_db["difficulty"] = input_json["difficulty"]
@@ -24,16 +35,27 @@ class ImportTexts:
 
         return json_db
     
-    def _jsonl_import(self):
-
+    def _jsonl_import(self) -> Optional[str]:
+        """Reads the JSONL file and post each iteam to the API
+        
+        Returns: 
+            Optional[str]: error message
+            otherwise, returns none
+        """
+        
         json_text = self.direction_texts_jsonl
 
-        if json_text.exists():
+        if not json_text.exists():
+            return "File not found"
+        
+        try:
+
             with json_text.open() as file:
                 data = json.load(file)
 
                 for content in data:
                     texts_json_final = self._trasform_json_for_db(content)
                     print(requests.post(self.api_direction_url_texts, json = texts_json_final))
-        else:
-            return "file not found"
+                    
+        except Exception as e:
+            return f"An error ocurred: {str(e)}"

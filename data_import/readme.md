@@ -4,21 +4,26 @@ The project aims to import data from JSONL files into to google firebase. 🔍
 
 ## ⚠️ IMPORTANT NOTICE ⚠️
 Before running the import scripts, make sure that the corresponding API is up and running.
+You also have to have all the Tatoeba audios downloaded and the corpus audios.
 
 ## project structure 📦
 
 We need the following directory structure to properly run the project
 ```
-\---Echo
-    |
-    |data_import
-    |    import_sentences.py
-    |    import_texts.py
-    |    import_words.py
-    |    readme.md
-    |    requirements.txt
-    |    test.py
-    |
+    \---data_import
+        ├── data_download
+        │   ├── audios
+        │   ├── download_sentences.py
+        │   └── test.py
+        ├── import_audio_sentences.py
+        ├── import_audio_texts.py
+        ├── import_sentences.py
+        ├── import_texts.py
+        ├── import_words.py
+        ├── readme.md
+        ├── requirements.txt
+        └── test.py
+
     \---data_processing
         +---dataset_manager
         |   |
@@ -26,6 +31,7 @@ We need the following directory structure to properly run the project
         |           sentences_processed.jsonl
         |           texts_processed.jsonl
         |           words_processed.jsonl
+
 ```
 
 ## ⚙️ Requirements ⚙️
@@ -39,6 +45,7 @@ Install the required dependencies:
 ```bash
 pip install requests
 pip install jsonlines
+
 ```
 
 alternatively, you can install all dependencies using the requeriments.txt file:
