@@ -1,9 +1,9 @@
 from fastapi import APIRouter,HTTPException, UploadFile, File
 from app.service.resourses_service import *
-from app.schemas.resourses_schemas import texts, sentences, words
+from app.schemas.resourses_schemas import texts, sentences, words, TextsEvaluation, SentencesEvaluation
 
 router = APIRouter(
-    prefix="/resourses"
+    prefix="/resources"
 )
 
 #get all 
@@ -89,13 +89,18 @@ async def post_texts_router(text: texts):
 async def post_words_router(word: words):
     return await post_words_service(word)
 
-#update
-
-@router.put("/sentences/url/{id}")
-async def update_sentences_router(id: int, url: str):
-    return await update_sentences_service(id,url)
-
-
 @router.post("/sentences/audios")
-async def post_sentences_audio_raouter(file: UploadFile = File(...)):
+async def post_sentences_audio_router(file: UploadFile = File(...)):
     return await post_audio_sentences_service(file)
+
+@router.post("/texts/audios")
+async def post_texts_audio_router(file: UploadFile = File(...), chapter: str = Form(...)):
+    return await post_audio_texts_service(file,chapter)
+
+@router.put("/texts/evaluation")
+async def update_texts_evaluation_router(texts_evaluation: TextsEvaluation):
+    return await update_evaluation_texts_service(texts_evaluation)
+
+@router.put("/sentences/evaluation")
+async def update_sentences_evaluation_router(sentences_evaluation: SentencesEvaluation):
+    return await update_evaluation_sentences_service(sentences_evaluation)
