@@ -11,7 +11,7 @@ class DownloadSentences:
         self.jsonl_file = jsonl_file
         self.destination_directory = destination_directory
         
-    def jsonDownload(self):
+    def _json_download(self):
         os.makedirs(self.destination_directory, exist_ok= True)
 
         with open(self.jsonl_file, "r" , encoding = "utf-8") as f:

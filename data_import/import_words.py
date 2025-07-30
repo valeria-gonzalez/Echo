@@ -1,8 +1,6 @@
-#imports
+import requests
 import json
 from pathlib import Path
-
-import requests
 
 class ImportWords:
 
@@ -10,16 +8,31 @@ class ImportWords:
        self.api_direction_url = api_direction_url
        self.direction_words_jsonl = Path(direction_words_jsonl) 
 
-    def jsonlImport(self):
+    def _trasform_json_for_db(self, input_json: dict) -> dict:
+        json_db = {}
+        json_db["text"] = input_json["word"]
+        json_db["difficulty"] = input_json["difficulty"]
+        json_db["word_count"] = 1
+        json_db["ipa"] = input_json["ipa"]
+        json_db["categories"] = input_json["categories"]
+        json_db["definitions"] = input_json["definitions"]
+        json_db["translation"] = input_json["translations"]
+        json_db["audio_url"] = input_json["mp3_url"]
+
+        return json_db
+
+    def _jsonl_import(self):
+
         json_words = self.direction_words_jsonl
+        
         if json_words.exists():
-            with open(json_words) as file:
+            with json_words.open() as file:
                 data = json.load(file)
                 
-                for word, content in data.items():
-                    content["word"] = word
-                    print(json.dumps(content, indent=4, sort_keys=True))
-                    print(requests.post(self.api_direction_url, json = content))
+                for content in data:
+
+                    word_json_final = self._trasform_json_for_db(content)
+                    print(requests.post(self.api_direction_url, json = word_json_final))
         else:
             return "jsonl not found"
         

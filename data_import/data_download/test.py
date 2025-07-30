@@ -6,7 +6,8 @@ def main():
     destination_directory = "audios"
 
     downloadSentences = DownloadSentences(jsonl_file,destination_directory)
-    downloadSentences.jsonDownload()
+    
+    downloadSentences._json_download()
 
 if __name__ == "__main__":
     main()

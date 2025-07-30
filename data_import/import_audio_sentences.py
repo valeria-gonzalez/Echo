@@ -8,7 +8,7 @@ class ImportAudioSentences:
         self.api_direction_url_audio_sentences = api_direction_url_audio_sentences
         self.direction_audios_download = direction_audios_download
 
-    def AudioImport(self):
+    def _audio_import_sentences(self):
 
         audios_download =  self.direction_audios_download
         list_audio = os.listdir(audios_download)   
