@@ -26,15 +26,15 @@ def main():
     direction_texts_audio = "./../data_processing/texts/datasets/chapters/group_1_audios"
     api_direction_texts_audio = "http://127.0.0.1:8000/resources/texts/audios"
 
-    #importWords = ImportWords(api_direction_words, jsonl_direction_words)
-    #importSentences = ImportSentences(api_direction_sentences, jsonl_direction_sentences)
-    #importTexts = ImportTexts(api_direction_texts,jsonl_direction_texts)
-    #importAudioSentences = ImportAudioSentences(api_direction_sentences_audio, download_audio)
+    importWords = ImportWords(api_direction_words, jsonl_direction_words)
+    importSentences = ImportSentences(api_direction_sentences, jsonl_direction_sentences)
+    importTexts = ImportTexts(api_direction_texts,jsonl_direction_texts)
+    importAudioSentences = ImportAudioSentences(api_direction_sentences_audio, download_audio)
     importAudioTexts = ImportAudioTexts(direction_texts_audio)
 
     #importWords._jsonl_import()
     #importSentences._json_import()
-    #importTexts._jsonl_import()
+    importTexts._jsonl_import()
 
     #importAudioSentences._audio_import_sentences()  
     
