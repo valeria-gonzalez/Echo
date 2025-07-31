@@ -32,11 +32,10 @@ def main():
     importAudioSentences = ImportAudioSentences(api_direction_sentences_audio, download_audio)
     importAudioTexts = ImportAudioTexts(direction_texts_audio)
 
-    #importWords._jsonl_import()
-    #importSentences._json_import()
+    importWords._jsonl_import()
+    importSentences._json_import()
     importTexts._jsonl_import()
-
-    #importAudioSentences._audio_import_sentences()  
+    importAudioSentences._audio_import_sentences()  
     
     path_list = importAudioTexts._extract_chapter_directories()
 

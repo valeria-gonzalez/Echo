@@ -4,14 +4,32 @@ import requests
 import datetime
 
 class DownloadSentences:
+    """
+    Download audio files from tatoeba using audio IDs listen in a JSONl
+    
+    Attributes:
+        json_file (str): Path to the JSON file containg audio IDs.
+        destination_directory (str): Directory where download audio files will be saved
+
+    """
     
     def __init__(self, 
                 jsonl_file:str,
                 destination_directory:str):
+        
         self.jsonl_file = jsonl_file
         self.destination_directory = destination_directory
         
     def _json_download(self):
+        """
+        Download MP3 audio files from tatoeba using IDs in the JSONL file
+
+        For each audio ID, it sends GET request to tatoeba and save the audio file
+        as an MP3 in the specified destination directory
+
+        Logs success or error messages for each download attempt.
+        """
+        
         os.makedirs(self.destination_directory, exist_ok= True)
 
         with open(self.jsonl_file, "r" , encoding = "utf-8") as f:

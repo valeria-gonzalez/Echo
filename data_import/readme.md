@@ -79,6 +79,11 @@ Script	Description
 All scripts use HTTP POST requests to send the data to their respective API endpoints.
 
 ## 🚀 Run the test.py 🚀
+
+```bash
+python3 test.py
+```
+
 the `test.py` script import data from procedded JSONL files and sends it to corresponding API endpoints.
 
 It import words, sentences and texts using the JSONLs by creating instances `importWords`, `importSentences` ,`importTexts`, `importAudioSentences` and `importAudioTexts`
@@ -128,5 +133,6 @@ The following are the default local endpoints and the corresponding file paths u
 
     Audio Directory:
     ../data_processing/texts/datasets/chapters/group_1_audios
+
 
 

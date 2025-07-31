@@ -1,7 +1,10 @@
 from download_sentences import DownloadSentences
 
 def main():
-
+    """
+    Main fuction to download sentencce audio files from tatoeba.
+    """
+    
     jsonl_file = "../../data_processing/dataset_manager/processed_datasets/sentences_processed.jsonl"
     destination_directory = "audios"
 
