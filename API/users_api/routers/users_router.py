@@ -8,7 +8,6 @@ router = APIRouter(
     tags=["Information about users"],
 )
 
-
 @router.get("/")
 async def root():
     return {"message": "Welcome to the Users API!"}
@@ -28,7 +27,6 @@ async def get_users_by_uid_router(uid_user:str):
         return await usersApplicationService.get_users_application_by_uid_service(uid_user_application=uid_user)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
 
 @router.post("/account")
 async def post_users_router(user:User):
@@ -58,6 +56,6 @@ async def post_users_application_progress_router(uid_userApplication:str, progre
 async def get_users_application_progress_uid_router(uid_user_application: str, uid_resource:str):
     try:
         usersApplicationService = UserApplicationService()
-        return await usersApplicationService.get_user_application_progress_uiduser_uidresource_service(uid_userApplication=uid_user_application, uid_resource=uid_resource)
+        return await usersApplicationService.get_user_progress_by_resource_uid(uid_userApplication=uid_user_application, uid_resource=uid_resource)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
