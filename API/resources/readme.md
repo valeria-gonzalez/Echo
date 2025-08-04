@@ -5,39 +5,47 @@ The Resources API provides endpoints for managin
 API resources includes the following endpoints: 🧠
 
 *This endpoint returns all resources in a JSON object.*
-- Method GET | /texts
-- Method GET | /sentences
-- Method GET | /words
+@router.get("/texts")
+@router.get("/sentences")
+@router.get("/words")
 
 *The endpoints returns a JSON response with the data associated with the specified ID.*
+@router.get("/texts/{id}")
+@router.get("/sentences/{id}")
+@router.get("/words/{id}")	
 
-- Method GET | /texts/{id}
-- Method GET | /sentences/{id}
-- Method GET | /words/{id}
+*The endpoints returns a JSON response with the data associated with the specified Id_chapter to texts, audio_id to sentneces, text to words*
+@router.get("/texts/chapter/{id}")
+@router.get("/sentences/audio_id/{id}")
+@router.get("/words/text/{id}")	
 
 *The endpoints returns a List of JSON response with the data associated with the specified dificulty.*
-
-- Method GET | /texts/difficulty/{difficulty}
-- Method GET | /sentences/difficulty/{difficulty}
-- Method GET | /words/difficulty/{difficulty}
-
-*The endpoints returns a List of JSON response with the data associated with the specified categorie.*
-
-- Method GET | /texts/categories/{categories}
-- Method GET | /words/categories/{categories}
-- Method GET | /sentences/categories/{categories}
+@router.get("/texts/difficulty/{difficulty}")
+@router.get("/sentences/difficulty/{difficulty}")
+@router.get("/words/difficulty/{difficulty}")
+@router.get("/texts/categories/{categories}")	
+@router.get("/words/categories/{categories}")
+@router.get("/sentences/categories/{categories}")
 
 *The endpoints removes the collection corresponding to the specified ID*
-
-- Method DELETE | /texts/{document_id}
-- Method DELETE | /sentences/{document_id}
-- Method DELETE | /words/{document_id}
+@router.delete("/texts/{document_id}")
+@router.delete("/words/{document_id}")
+@router.delete("/sentences/{document_id}")
 
 *The following endpoints inserts a collection using the provided data*
+@router.post("/sentences")
+@router.post("/texts")
+@router.post("/words")
 
-- Method POST | /sentences
-- Method POST | /texts
-- Method POST | /words
+*The following endpoints inserts a audio using the provided data*
+@router.post("/sentences/audios")
+@router.post("/texts/audios")
+@router.post("/words/audios")
+
+*The following endpoints update a collection using the provided data*
+@router.put("/texts/evaluation")
+@router.put("/sentences/evaluation")
+@router.put("/words/evaluation")
 
 ## Requirements ⚙️⚙️⚙️
 
@@ -45,6 +53,8 @@ API resources includes the following endpoints: 🧠
 pip install fastapi
 pip install uvicorn
 pip install firebase-admin
+pip install python-multipart
+pip install dotenv
 ```
 
 Alternatively, can use the file requeriments.txt
@@ -56,19 +66,26 @@ pip install -r requeriments.txt
 ## project structure 
 
 ```
-└── resourses_api
+
+└── resources                          # Project root folder (may contain docs and dependency files)
     ├── app
-    │   ├── db.py
-    │   ├── main.py
-    │   ├── routers
-    │   │   ├── __init__.py
-    │   │   └── resourses_router.py
-    │   ├── schemas
-    │   │   ├── __init__.py
-    │   │   └── resourses_schemas.py
-    │   └── service
-    │       ├── __init__.py
-    │       └── resourses_service.py
+    │   ├── config.py                   # General app configuration (environment variables, constants, etc.)
+    │   ├── db.py                       # Database connection and setup
+    │   ├── main.py                     # Main entry point of the FastAPI application
+    ├── readme.md                       # General project documentation
+    ├── requirements.txt                # List of Python dependencies required for the project
+    ├── routers                         # Folder containing API route handlers (controllers)
+    │   ├── __init__.py                 # Marks the directory as a Python package
+    │   └── resources_router.py         # Defines API endpoints related to "resources"
+    ├── schemas                         # Pydantic models for data validation and structure
+    │   ├── __init__.py                 # Marks the directory as a Python package
+    │   └── resources_schemas.py        # Pydantic models specifically for "resources"
+    ├── service                         # Business logic and functions that interact with the database
+    │   ├── __init__.py                 # Marks the directory as a Python package
+    │   ├── sentences_service.py        # Services and operations related to "sentences"
+    │   ├── texts_service.py            # Services and operations related to "texts"
+    │   └── words_service.py            # Services and operations related to "words"
+
 ```
 
 The resourses_api directory serves as the root for our API, the app folder contain all the funcionalities.
@@ -89,24 +106,6 @@ db.py:
 main.py:
 - The primary file thatt initializes and run
 
-## To use the API, Follow these two steps:
-
-- 1 Obtain your Firebase JSON credentials and place this JSON file in a secure and accesible location
-
-- 2 open app /db.py, locate the line cred = credentials.certificate and replace the path
-
-
-db.py file should look similar to this example
-
-
-```
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-cred = credentials.Certificate('path/to/your/serviceAccountKey.json')
-app = firebase_admin.initialize_app(cred)
-db = firestore.client()
-```
 
 ## Running the API🚀🚀🚀
 
