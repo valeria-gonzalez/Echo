@@ -1,9 +1,9 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore, storage
+from app.config import FIREBASE_CREDENTIALS
 
-
-cred = credentials.Certificate("/home/alan-ramos/Escritorio/echo/issue39sjson/echo-9f9e9-firebase-adminsdk-fbsvc-3550993856.json")
+cred = credentials.Certificate(FIREBASE_CREDENTIALS)
 firebase_admin.initialize_app(cred, {
         'storageBucket': 'echo-9f9e9.firebasestorage.app'
 })

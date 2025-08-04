@@ -48,6 +48,7 @@ class texts(BaseModel):
     chapter_id: str
     audio_file:str
 
+
 class SentencesEvaluation(BaseModel):
     audio_id: int
     audio_analysis: AudioAnalysis
@@ -56,6 +57,11 @@ class TextsEvaluation(BaseModel):
     chapter_id: str
     audio_file: str
     audio_analysis: AudioAnalysis
+
+class WordsEvaluation(BaseModel):
+    text: str
+    audio_analysis: AudioAnalysis
+
 
 
 
