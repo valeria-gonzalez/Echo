@@ -2,51 +2,6 @@
 The Resources API provides endpoints for managin 
 **texts**, **sentences** and **words**
 
-API resources includes the following endpoints: 🧠
-
-*This endpoint returns all resources in a JSON object.*
-@router.get("/texts")
-@router.get("/sentences")
-@router.get("/words")
-
-*The endpoints returns a JSON response with the data associated with the specified ID.*
-@router.get("/texts/{id}")
-@router.get("/sentences/{id}")
-@router.get("/words/{id}")	
-
-*The endpoints returns a JSON response with the data associated with the specified Id_chapter to texts, audio_id to sentneces, text to words*
-@router.get("/texts/chapter/{id}")
-@router.get("/sentences/audio_id/{id}")
-@router.get("/words/text/{id}")	
-
-*The endpoints returns a List of JSON response with the data associated with the specified dificulty.*
-@router.get("/texts/difficulty/{difficulty}")
-@router.get("/sentences/difficulty/{difficulty}")
-@router.get("/words/difficulty/{difficulty}")
-@router.get("/texts/categories/{categories}")	
-@router.get("/words/categories/{categories}")
-@router.get("/sentences/categories/{categories}")
-
-*The endpoints removes the collection corresponding to the specified ID*
-@router.delete("/texts/{document_id}")
-@router.delete("/words/{document_id}")
-@router.delete("/sentences/{document_id}")
-
-*The following endpoints inserts a collection using the provided data*
-@router.post("/sentences")
-@router.post("/texts")
-@router.post("/words")
-
-*The following endpoints inserts a audio using the provided data*
-@router.post("/sentences/audios")
-@router.post("/texts/audios")
-@router.post("/words/audios")
-
-*The following endpoints update a collection using the provided data*
-@router.put("/texts/evaluation")
-@router.put("/sentences/evaluation")
-@router.put("/words/evaluation")
-
 ## Requirements ⚙️⚙️⚙️
 
 ```bash
@@ -62,6 +17,13 @@ Alternatively, can use the file requeriments.txt
 ```bash
 pip install -r requeriments.txt
 ```
+
+## `.env` File Setup
+
+Create a file named `.env` in the root of your project and add the following line:
+
+```env
+FIREBASE_CREDENTIAL="hereyourkey.json"
 
 ## project structure 
 
@@ -88,32 +50,13 @@ pip install -r requeriments.txt
 
 ```
 
-The resourses_api directory serves as the root for our API, the app folder contain all the funcionalities.
-
-here directories within app:
-routers: 
-- This is where you.ll find the API endpoint(routes)
-
-schemas:
-- Contains the data structures for our resourses
-
-service:
-- Manage our resources and accting as an intermediary between the routers and the database
-
-db.py:
-- contain the conexion to the database
-
-main.py:
-- The primary file thatt initializes and run
-
-
 ## Running the API🚀🚀🚀
 
-to start navigate to the resourses_api directory in your terminal and execute the following command:
+Run the following command in a directory that contains the `app` folder:
 
 ```bash
-uvicorn app.main:app --reload
-```
+uvicorn app.main:app --reload --port 8001
+
 
 ```bash
 you should see output similar to this
@@ -125,3 +68,439 @@ INFO:     Started server process [21361]
 to explore all avalible API endpoints and their functionalities, visit:
  http://127.0.0.1:8000
 
+ ## API resources includes the following endpoints: 🧠
+
+### 1. Get all texts
+- **URL:** `http://127.0.0.1:8001/texts`
+- **Method:** GET
+- **Request:** No path or body parameters required
+- **Response:** Returns a list of all text documents (you can describe the structure here)
+
+---
+
+### 2. Get all sentences
+- **URL:** `http://127.0.0.1:8001/sentences`
+- **Method:** GET
+- **Request:** No path or body parameters required
+- **Response:** Returns a list of all sentence documents (you can describe the structure here)
+
+---
+
+### 3. Get all words
+- **URL:** `http://127.0.0.1:8001/words`
+- **Method:** GET
+- **Request:** No path or body parameters required
+- **Response:** Returns a list of all word documents (you can describe the structure here)
+
+
+### 4. Get a text by ID
+- **URL:** `http://127.0.0.1:8001/texts/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (string) → UID of the text document to retrieve  
+  - No body parameters required
+- **Response:** Returns a dictionary representing the text document (you can describe the fields here)
+
+---
+
+### 5. Get a sentence by ID
+- **URL:** `http://127.0.0.1:8001/sentences/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (string) → UID of the sentence document to retrieve  
+  - No body parameters required
+- **Response:** Returns a dictionary representing the sentence document (you can describe the fields here)
+
+---
+
+### 6. Get a word by ID
+- **URL:** `http://127.0.0.1:8001/words/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (string) → UID of the word document to retrieve  
+  - No body parameters required
+- **Response:** Returns a dictionary representing the word document (you can describe the fields here)
+
+### 7. Get texts by chapter ID
+- **URL:** `http://127.0.0.1:8001/texts/chapter/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (string) → Chapter ID to filter text documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 8. Get sentences by audio ID
+- **URL:** `http://127.0.0.1:8001/sentences/audio_id/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (integer) → Audio ID to filter sentence documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 9. Get words by text
+- **URL:** `http://127.0.0.1:8001/words/text/{id}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `id` (string) → Text used to filter word documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+
+### 10. Get texts by difficulty
+- **URL:** `http://127.0.0.1:8001/texts/difficulty/{difficulty}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `difficulty` (integer) → Difficulty level to filter text documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 11. Get sentences by difficulty
+- **URL:** `http://127.0.0.1:8001/sentences/difficulty/{difficulty}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `difficulty` (integer) → Difficulty level to filter sentence documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 12. Get words by difficulty
+- **URL:** `http://127.0.0.1:8001/words/difficulty/{difficulty}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `difficulty` (integer) → Difficulty level to filter word documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+### 13. Get texts by category
+- **URL:** `http://127.0.0.1:8001/texts/categories/{categories}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `categories` (string) → Category to filter text documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 14. Get words by category
+- **URL:** `http://127.0.0.1:8001/words/categories/{categories}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `categories` (string) → Category to filter word documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+---
+
+### 15. Get sentences by category
+- **URL:** `http://127.0.0.1:8001/sentences/categories/{categories}`
+- **Method:** GET
+- **Request:** 
+  - **Path parameter:** `categories` (string) → Category to filter sentence documents  
+  - No body parameters required
+- **Response:** Returns a dictionary where each key is a document ID and the value is the document data
+
+
+### 16. Delete a text by ID
+- **URL:** `http://127.0.0.1:8001/texts/{document_id}`
+- **Method:** DELETE
+- **Request:** 
+  - **Path parameter:** `document_id` (string) → UID of the text document to delete  
+  - No body parameters required
+- **Response:** Returns a dictionary containing a confirmation message and the deleted document's ID
+
+---
+
+### 17. Delete a word by ID
+- **URL:** `http://127.0.0.1:8001/words/{document_id}`
+- **Method:** DELETE
+- **Request:** 
+  - **Path parameter:** `document_id` (string) → UID of the word document to delete  
+  - No body parameters required
+- **Response:** Returns a dictionary containing a confirmation message and the deleted document's ID
+
+---
+
+### 18. Delete a sentence by ID
+- **URL:** `http://127.0.0.1:8001/sentences/{document_id}`
+- **Method:** DELETE
+- **Request:** 
+  - **Path parameter:** `document_id` (string) → UID of the sentence document to delete  
+  - No body parameters required
+- **Response:** Returns a dictionary containing a confirmation message and the deleted document's ID
+
+
+### 19. Add a new sentence
+- **URL:** `http://127.0.0.1:8001/sentences`
+- **Method:** POST
+- **Request:** 
+  - **Body parameter:** JSON object representing a `sentence` (according to the `sentences` model)  
+  - Example:
+    ```json
+        {
+        "audio_url": "string",
+        "text": "string",
+        "difficulty": 0,
+        "categories": [
+            "string"
+        ],
+        "word_count": 0,
+        "translation": "string",
+        "audio_id": 0,
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        }
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message and the UID of the new sentence document
+
+---
+
+### 20. Add a new text
+- **URL:** `http://127.0.0.1:8001/texts`
+- **Method:** POST
+- **Request:** 
+  - **Body parameter:** JSON object representing a `text` (according to the `texts` model)  
+  - Example:
+    ```json
+        {
+        "audio_url": "string",
+        "text": "string",
+        "difficulty": 0,
+        "categories": [
+            "string"
+        ],
+        "word_count": 0,
+        "book_title": "string",
+        "translation": "string",
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        },
+        "chapter_id": "string",
+        "audio_file": "string"
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message and the UID of the new text document
+
+---
+
+### 21. Add a new word
+- **URL:** `http://127.0.0.1:8001/words`
+- **Method:** POST
+- **Request:** 
+  - **Body parameter:** JSON object representing a `word` (according to the `words` model)  
+  - Example:
+    ```json
+        {
+        "audio_url": "string",
+        "text": "string",
+        "difficulty": 0,
+        "categories": [
+            "string"
+        ],
+        "word_count": 0,
+        "definitions": [
+            {
+            "pos": "string",
+            "definitions": [
+                "string"
+            ]
+            }
+        ],
+        "ipa": "string",
+        "translation": [
+            "string"
+        ],
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        }
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message and the UID of the new word document
+
+
+### 22. Upload an audio for a sentence
+- **URL:** `http://127.0.0.1:8001/sentences/audios`
+- **Method:** POST
+- **Request:** 
+  - **Form parameter:** `file` → Audio file of type `.mp3`  
+  - No path parameters required
+- **Response:** Returns a dictionary containing a confirmation message about the upload and URL update
+
+---
+
+### 23. Upload an audio for a text
+- **URL:** `http://127.0.0.1:8001/texts/audios`
+- **Method:** POST
+- **Request:** 
+  - **Form parameters:**  
+    - `file` → Audio file of type `.flac`  
+    - `chapter` → Chapter ID to associate with the uploaded audio  
+  - No path parameters required
+- **Response:** Returns a dictionary containing a confirmation message about the upload and URL update
+
+---
+
+### 24. Upload an audio for a word
+- **URL:** `http://127.0.0.1:8001/words/audios`
+- **Method:** POST
+- **Request:** 
+  - **Form parameters:**  
+    - `file` → Audio file of type `.mp3`  
+    - `text` → Text identifier to associate with the uploaded audio  
+  - No path parameters required
+- **Response:** Returns a dictionary containing a confirmation message about the upload and URL update
+
+### 25. Update text evaluation
+- **URL:** `http://127.0.0.1:8001/texts/evaluation`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `TextsEvaluation`  
+  - Example:
+    ```json
+        {
+        "chapter_id": "string",
+        "audio_file": "string",
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        }
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
+
+---
+
+### 26. Update sentence evaluation
+- **URL:** `http://127.0.0.1:8001/sentences/evaluation`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `SentencesEvaluation`  
+  - Example:
+    ```json
+        {
+        "audio_id": 0,
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        }
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
+
+---
+
+### 27. Update word evaluation
+- **URL:** `http://127.0.0.1:8001/words/evaluation`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `WordsEvaluation`  
+  - Example:
+    ```json
+        {
+        "text": "string",
+        "audio_analysis": {
+            "number_of_syllables": 0,
+            "number_of_pauses": 0,
+            "speech_rate": 0,
+            "articulation_rate": 0,
+            "speaking_rate": 0,
+            "speaking_duration": 0,
+            "ratio": 0,
+            "transcription": "string",
+            "total_duration": 0
+        }
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
+
+### 28. Update text audio duration
+- **URL:** `http://127.0.0.1:8001/texts/audio_duration`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `TextsAudioDuration`  
+  - Example:
+    ```json
+        {
+        "chapter_id": "string",
+        "audio_file": "string",
+        "audio_duration": 0
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
+
+---
+
+### 29. Update sentence audio duration
+- **URL:** `http://127.0.0.1:8001/sentences/audio_duration`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `SentencesAudioDuration`  
+  - Example:
+    ```json
+        {
+        "audio_id": 0,
+        "audio_duration": 0
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
+
+---
+
+### 30. Update word audio duration
+- **URL:** `http://127.0.0.1:8001/words/audio_duration`
+- **Method:** PUT
+- **Request:** 
+  - **Body parameter:** JSON object representing a `WordsAudioDuration`  
+  - Example:
+    ```json
+        {
+        "text": "string",
+        "audio_duration": 0
+        }
+    ```
+- **Response:** Returns a dictionary containing a confirmation message of the update
