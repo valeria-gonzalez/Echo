@@ -1,138 +1,94 @@
+# Audio and Data Import and Management Project
 
-# Import JSONLs to Firebase
-The project is designed to import data from JSONL files into to google firebase. 🔍
+This project is designed to handle the downloading, importing, and analysis of audios, words, sentences, and texts for later use in evaluations and audio duration storage. It is divided into several folders according to the functionality of each module.
 
-## ⚠️ IMPORTANT NOTICE ⚠️
-Before runnig any import scripts, make sure:
--1 The API server is up and running
--2 All Tatoeba and corpus audio files download
+## Folder Structure
 
-## project structure 📦
+├── download_audios
+│ ├── audios_sentences
+│ ├── audios_words
+│ ├── download_sentences.py
+│ ├── download_words.py
+│ ├── readme.md
+│ └── test.py
+├── import_audio_duration
+│ ├── import_audio_duration.py
+│ ├── readme.md
+│ └── test.py
+├── import_audios
+│ ├── import_audio_sentences.py
+│ ├── import_audio_texts.py
+│ ├── import_audio_words.py
+│ ├── readme.md
+│ └── test.py
+├── import_evaluation
+│ ├── import_evaluation_sentences.py
+│ ├── import_evaluation_texts.py
+│ ├── import_evaluation_words.py
+│ ├── readme.md
+│ └── test.py
+├── import_jsonl
+│ ├── import_sentences.py
+│ ├── import_texts.py
+│ ├── import_words.py
+│ ├── readme.md
+│ └── test.py
+├── readme.md
 
-Ensure the following directory structure is in place
-```
-    \---data_import
-        ├── data_download
-        │   ├── audios
-        │   ├── download_sentences.py
-        │   └── test.py
-        ├── import_audio_sentences.py
-        ├── import_audio_texts.py
-        ├── import_sentences.py
-        ├── import_texts.py
-        ├── import_words.py
-        ├── readme.md
-        ├── requirements.txt
-        └── test.py
 
-    \---data_processing
-        +---dataset_manager
-        |   |
-        |   \---processed_datasets
-        |           sentences_processed.jsonl
-        |           texts_processed.jsonl
-        |           words_processed.jsonl
+## Execution Flow
 
-```
+To ensure the data is processed correctly, the modules must be run in the following order:
 
-## ⚙️ Requirements ⚙️
+1. **`import_jsonl`**  
+   - This module imports words, sentences, and texts from JSONL files to the API endpoints.
+   - Run `test.py` in this folder to start the import.
 
-### 🔧 Installation
+2. **`download_audios`**  
+   - Downloads audios for words and sentences and organizes them into the `audios_words` and `audios_sentences` folders.
+   - Run `test.py` in this folder to download the audios.
 
-- Python 3.7+
+3. **`import_audios`**  
+   - Imports the downloaded audios into the corresponding API endpoints.
+   - Run `test.py` in this folder after downloading the audios.
 
-Install the required dependencies:
+4. **`import_evaluation`**  
+   - Imports evaluation data associated with words, sentences, and texts.
+   - Run `test.py` in this folder after importing the audios.
 
-```bash
-pip install requests
-pip install jsonlines
+5. **`import_audio_duration`**  
+   - Calculates and updates the duration of each audio in the database or API.
+   - Run `test.py` in this folder at the end of the workflow.
 
-```
+## Notes
 
-alternatively, you can install all dependencies using the requeriments.txt file:
+- Each folder contains its own `readme.md` with specific details about its functionality.
+- The `test.py` scripts serve as entry points to run each module independently.
+- Make sure the API is running before executing modules that interact with it.
+- This project is designed to be executed in the order listed to avoid data dependency errors.
 
-```bash
-pip install -r requirements.txt
-```
+## Requirements
 
-### 🗄️ Required files 🗄️
-Make sure the following processed .jsonl files are available in the path:
+- Python 3.10 or higher.
+- Required libraries are defined in each script or can be consolidated in a general `requirements.txt`.
+- Access to the corresponding API for data import.
 
-- `sentences_processed.jsonl`
-- `texts_processed.jsonl`
-- `words_processed.jsonl`
-
-## 🧠 How It Works
-
-📦 Import Scripts
-
-Each of the following scripts is responsible for importing a specific type of data by sending it to the corresponding API using POST requests. The data can come from either JSONL files or audio files.
-
-Script	Description
-
-`import_words.py`	Imports word data from JSONL files
-`import_sentences.py`	Imports sentence data from JSONL
-`import_texts.py	Imports` text data from JSONL
-`import_audio_sentences.py`	Uploads sentence audio files
-`import_audio_texts.py`	Uploads text audio files
-
-All scripts use HTTP POST requests to send the data to their respective API endpoints.
-
-## 🚀 Run the test.py 🚀
+## Example of Execution
 
 ```bash
-python3 test.py
-```
+# Step 1: Import JSONL data
+python import_jsonl/test.py
 
-the `test.py` script import data from procedded JSONL files and sends it to corresponding API endpoints.
+# Step 2: Download audios
+python download_audios/test.py
 
-It import words, sentences and texts using the JSONLs by creating instances `importWords`, `importSentences` ,`importTexts`, `importAudioSentences` and `importAudioTexts`
+# Step 3: Import downloaded audios
+python import_audios/test.py
 
+# Step 4: Import evaluation data
+python import_evaluation/test.py
 
-🌐 API Endpoints & File Paths
-
-    ⚠️ Important: Make sure to update the endpoints if the APIs are deployed on a different server, port, or domain.
-
-The following are the default local endpoints and the corresponding file paths used by the import scripts:
-🔤 Words
-
-    API Endpoint:
-    http://127.0.0.1:8000/resources/words
-
-    JSONL File Path:
-    ../data_processing/dataset_manager/processed_datasets/words_processed.jsonl
-
-📝 Sentences
-
-    API Endpoint:
-    http://127.0.0.1:8000/resources/sentences
-
-    JSONL File Path:
-    ../data_processing/dataset_manager/processed_datasets/sentences_processed.jsonl
-
-📚 Texts
-
-    API Endpoint:
-    http://127.0.0.1:8000/resources/texts
-
-    JSONL File Path:
-    ../data_processing/dataset_manager/processed_datasets/texts_processed.jsonl
-
-🔊 Sentence Audios
-
-    API Endpoint:
-    http://127.0.0.1:8000/resources/sentences/audios
-
-    Audio Directory:
-    ./data_download/audios
-
-🔉 Text Audios
-
-    API Endpoint:
-    http://127.0.0.1:8000/resources/texts/audios
-
-    Audio Directory:
-    ../data_processing/texts/datasets/chapters/group_1_audios
-
+# Step 5: Update audio durations
+python import_audio_duration/test.py
 
 
