@@ -6,14 +6,15 @@ class Definitions(BaseModel):
     definitions: List[str]
 
 class AudioAnalysis(BaseModel):
-    number_of_syllabes: int
+    number_of_syllables: int
     number_of_pauses: int
     speech_rate: float
     articulation_rate: float
-    speaking_rate: float
+    speaking_rate: Optional[float] = None
     speaking_duration: float
     ratio: float
     transcription: str
+    total_duration: Optional[float] = None
 
 class sentences(BaseModel):
     audio_url: Optional[str] = None
@@ -62,6 +63,17 @@ class WordsEvaluation(BaseModel):
     text: str
     audio_analysis: AudioAnalysis
 
+class TextsAudioDuration(BaseModel):
+    chapter_id: str
+    audio_file: str
+    audio_duration: float
 
+class SentencesAudioDuration(BaseModel):
+    audio_id: int
+    audio_duration: float
+
+class WordsAudioDuration(BaseModel):
+    text: str
+    audio_duration: float
 
 

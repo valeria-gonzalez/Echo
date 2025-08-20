@@ -4,7 +4,7 @@ from service.sentences_service import SentencesService
 from service.texts_service import TextsService
 from service.words_service import WordsService
 
-from schemas.resources_schemas import words, texts, sentences, WordsEvaluation , TextsEvaluation , SentencesEvaluation
+from schemas.resources_schemas import words, texts, sentences, WordsEvaluation , TextsEvaluation , SentencesEvaluation, TextsAudioDuration, SentencesAudioDuration, WordsAudioDuration
 router = APIRouter(
     prefix="/resources",
     tags=["Information about resurces"],
@@ -215,5 +215,27 @@ async def update_sentences_evaluation_router(sentences_evaluation: SentencesEval
 async def update_words_evaluation_router(words_evaluation: WordsEvaluation):
     try:
         return await words_service.update_evaluation(words_evaluation=words_evaluation)    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+#update audio_duration
+@router.put("/texts/audio_duration")
+async def update_texts_audio_duration_router(texts_audio_duration: TextsAudioDuration):
+    try:
+        return await texts_service.update_audio_duration(texts_audio_duration=texts_audio_duration)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+@router.put("/sentences/audio_duration")
+async def update_sentences_audio_duration_router(sentences_audio_duration: SentencesAudioDuration):
+    try:
+        return await sentences_service.update_audio_duration(sentences_audio_duration=sentences_audio_duration)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+@router.put("/words/audio_duration")
+async def update_words_audio_duration_router(words_audio_duration: WordsAudioDuration):
+    try:
+        return await words_service.update_audio_duration(words_audio_duration=words_audio_duration)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
