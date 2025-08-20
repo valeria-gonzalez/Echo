@@ -67,13 +67,13 @@ def main():
     import_evaluation_sentences._get_evaluation_sentences()
 
     
-    import_evaluation_words._get_evaluation_sentences()
+    import_evaluation_words._get_evaluation_words()
 
 
     path_list = import_evaluation_texts._extract_chapter_directories()
 
     for path in path_list:
-        import_evaluation_texts._get_evaluation_texts(mini_directories=path)
+        import_evaluation_texts._get_evaluation_texts(audio_download_path=path)
 
 
 if __name__ == "__main__":
