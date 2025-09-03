@@ -73,7 +73,7 @@ to explore all avalible API endpoints and their functionalities, visit:
 {
   "message": "Welcome to the Users API!"
 }
-
+```
 ### 2. Get User by UID
 - **URL:** `/users/account/{uid_user}`
 - **Method:** GET
