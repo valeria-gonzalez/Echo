@@ -94,7 +94,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "password": "$2b$12$q97No6G6HgfHEQYDvBvgXelFDWGR1Tp6U.u1KN8G1I/rPGFfc7IF6",
   "disables": true
 }
-
+```
 ### 3. Get User Application by UID
 - **URL:** `/users/user_application/{uid_user}`
 - **Method:** GET
@@ -118,7 +118,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "user_uid": "8PVzTlj1fHIOuk9S6ha8",
   "date_of_birth": "2025-09-03T18:41:17.244000+00:00"
 }
-
+```
 ### 4. Add New User
 - **URL:** `/users/account`
 - **Method:** POST
@@ -144,7 +144,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "message": "User added successfully",
   "document_id": "abc123"
 }
-
+```
 ### 5. Add New User Application
 - **URL:** `/users/user_application`
 - **Method:** POST
@@ -173,7 +173,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "message": "User add",
   "doc_id": "u2CeJSI9TCCDByo9kcho"
 }
-
+```
 ### 6. Update User Application
 - **URL:** `/users/user_application`
 - **Method:** PUT
@@ -203,7 +203,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "message": "user_application update",
   "doc_id": "u2CeJSI9TCCDByo9kcho"
 }
-
+```
 ### 7. Add or Update User Application Progress
 - **URL:** `/users/user_application/progress/{uid_user}`
 - **Method:** POST
@@ -256,7 +256,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "message": "progress added",
   "doc_id": "209lwios99z2kAggWwq2"
 }
-
+```
 ### 8. Get User Progress with Attempts > 0
 - **URL:** `/users/progress/attempts/{uid_user}`
 - **Method:** GET
@@ -303,7 +303,7 @@ to explore all avalible API endpoints and their functionalities, visit:
     "completed": true
   }
 ]
-
+```
 ### 9. Get Completed User Progress
 - **URL:** `/users/progress/completed/{uid_user}`
 - **Method:** GET
@@ -381,7 +381,7 @@ to explore all avalible API endpoints and their functionalities, visit:
     "completed": true
   }
 ]
-
+```
 ### 10. Get User Progress by Resource
 - **URL:** `/users/progress/{uid_user_application}/{uid_resource}`
 - **Method:** GET
@@ -429,7 +429,7 @@ to explore all avalible API endpoints and their functionalities, visit:
     }
   }
 ]
-
+```
 ### 11. Upload User Profile Picture
 - **URL:** `/users/user_application/profile_picture/{user_uid}`
 - **Method:** POST
@@ -448,7 +448,7 @@ to explore all avalible API endpoints and their functionalities, visit:
   "message": "Image and url update",
   "image_url": "https://storage.googleapis.com/echo-9f9e9.firebasestorage.app/profile_picture/modulo.jpg"
 }
-
+```
 ### 12. User Login
 - **URL:** `/auth/login`
 - **Method:** POST
@@ -472,3 +472,4 @@ to explore all avalible API endpoints and their functionalities, visit:
 {
   "message": "login successful"
 }
+```
