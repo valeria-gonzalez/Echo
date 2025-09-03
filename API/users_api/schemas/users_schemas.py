@@ -49,3 +49,6 @@ class Progress(BaseModel):
     evaluation: Optional[Evaluation] = None
     audio_analysis: Optional[AudioAnalysis] = None
 
+class BodyLogin(BaseModel):
+    email: str
+    password: str
