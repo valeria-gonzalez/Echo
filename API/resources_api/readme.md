@@ -31,7 +31,7 @@ FIREBASE_CREDENTIAL="hereyourkey.json"
 ## project structure 
 
 ```env
-└── resources                          # Project root folder (may contain docs and dependency files)
+└── resources_api                         # Project root folder (may contain docs and dependency files)
     ├── app
     │   ├── config.py                   # General app configuration (environment variables, constants, etc.)
     │   ├── db.py                       # Database connection and setup
