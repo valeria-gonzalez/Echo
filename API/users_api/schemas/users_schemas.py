@@ -6,7 +6,7 @@ class User(BaseModel):
     email: str
     name: str
     password: str
-    disables: bool
+    disabled: bool
 
 class User_application(BaseModel):
     user_uid: str
