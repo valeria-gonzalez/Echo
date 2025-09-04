@@ -27,11 +27,10 @@ To obtain a private key you need to enter Firebase SDK,
 select Python and click on generate key. After that, a .json file will be downloaded.
 ```env
 FIREBASE_CREDENTIAL="hereyourkey.json"
-
+```
 ## project structure 
 
-```
-
+```env
 └── resources                          # Project root folder (may contain docs and dependency files)
     ├── app
     │   ├── config.py                   # General app configuration (environment variables, constants, etc.)
