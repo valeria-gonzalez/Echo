@@ -9,6 +9,7 @@ class SpeechAdvisor:
     def __init__(self):
         self.API_KEY = None
         self._load_api_key()
+        # self.model = "Gemma-3-27B-it"
         self.API_URL = "https://api.arliai.com/v1/completions"
         
     def _load_api_key(self):
@@ -38,7 +39,7 @@ class SpeechAdvisor:
 
         Each list must:
         - Be written in second person and a warm, friendly tone.
-        - Do not be brief. Each item should be a full, descriptive sentence.
+        - Do not be too long. Each item should be a single descriptive sentence.
         - Each item should be different.
         - Start with one comment ONLY describing how the user performed compared to the original audio.
         - Follow with one tip on what to improve and how to improve it.
@@ -114,17 +115,18 @@ class SpeechAdvisor:
 
         # Payload for ArliAI
         payload = {
-            "model": "Qwen3-14B-ArliAI-RpR-v5-Small",
+            #"model": self.model,
             "prompt": prompt,
             "temperature": 0.2, # Lower temperature = faster + more deterministic
-            "top_p": 0.85, #  Cumulative probability of the top tokens to consider
-            "top_k": 10, # Number of top tokens to consider
-            "max_tokens": 800, # Maximum number of tokens to generate per output sequence
-            "min_tokens": 50, # Minimum number of tokens to generate per output sequence
+            "top_p": 0.7, #  Cumulative probability of the top tokens to consider
+            "top_k": 5, # Number of top tokens to consider
+            "max_tokens": 300, # Maximum number of tokens to generate per output sequence
+            #"min_tokens": 50, # Minimum number of tokens to generate per output sequence
             "n" : 1, # Number of output sequences to return
             "repetition_penalty": 1.2, # Penalizes new tokens based on their frequency in the generated text so far
             "no_repeat_ngram_size": 4,  # Avoid repetitive phrasing (helps speed indirectly)
             "guided_json": guided_schema,
+            "stop":["}"]
         }
 
         headers = {
@@ -135,6 +137,7 @@ class SpeechAdvisor:
         try:
             response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
             response_json = response.json()
+            print(f"response arli: {response_json}")
 
             # Expect structured JSON response under choices[0].text
             if (

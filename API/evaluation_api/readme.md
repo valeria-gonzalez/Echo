@@ -218,13 +218,20 @@ that [Arli AI](https://www.arliai.com/) provides for **text generation models**.
 
 #### 4. Modify ARLI API key parameters
 
-Also please modify in the ARLI API key parameters the following:
-- Select the Qwen3-14B-ArliAI-RpR-v5-Small as the only **model**.
+Also please modify in the ARLI API key **parameters** option the following:
+- Select the `Qwen3-14B-ArliAI-RpR-v5-Small` as the only **model**.
+- If the Qwen model is not available, then please choose the `Gemma-3-27B-ArliAI-RPMax-v3` and the
+`Gemma-3-27B-it` models in the **Multi Models** option.
 - Mark the **hide thinking** checkbox to stop the model from sharing it's thought process.
 - Click **save**.
 
 The parameters that have been modified and applied will have a blue circle next to them.
-![alt text](<parameters.png>)
+
+Parameters using `Qwen3-14B-ArliAI-RpR-v5-Small`:
+![Parameters Arli AI using Qwen](<parameters.png>)
+
+Parameters using `Gemma-3-27B-ArliAI-RPMax-v3` and `Gemma-3-27B-it`:
+![Parameters Arli AI using Gemma](<parameters2.png>)
 
 More information on the different configurations that can be established can be found 
 at the 
