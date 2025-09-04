@@ -21,7 +21,10 @@ pip install -r requeriments.txt
 ## `.env` File Setup
 
 Create a file named `.env` in the root of your project and add the following line:
+FIREBASE_CREDENTIAL The .json file contains the credentials needed to access Firebase.
 
+To obtain a private key you need to enter Firebase SDK, 
+select Python and click on generate key. After that, a .json file will be downloaded.
 ```env
 FIREBASE_CREDENTIAL="hereyourkey.json"
 
