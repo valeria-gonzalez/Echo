@@ -159,6 +159,6 @@ class SpeechEvaluator():
             reference_analysis, 
             user_analysis
         )
-        print(difference_analysis)
+        # print(difference_analysis)
         analysis_score = self._get_analysis_score(wer, difference_analysis)
         return analysis_score 
