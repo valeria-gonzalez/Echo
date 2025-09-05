@@ -37,7 +37,7 @@ class SpeechAnalyzer:
 
             return parsed_textgrid
         except Exception as e:
-            print(f"Try again — the sound of the audio was not clear. Error: {e}")
+            print(f"Error for PRAAT analyzing audio, check analyzer : {e}")
             return None
 
     def get_syllable_count(self, audio_filename: str, audio_dir: str) -> int:

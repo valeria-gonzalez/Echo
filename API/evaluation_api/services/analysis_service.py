@@ -45,10 +45,10 @@ class AnalysisService:
                 self.tmp_audio_filepath = tmp_file.name
                 self.tmp_base_name = os.path.basename(tmp_file.name)
                 self.base_dir = os.path.dirname(tmp_file.name)
-                print(f"Temporary file created: {self.tmp_audio_filepath}")
+                print(f"Temporary audio file created in memory: {self.tmp_audio_filepath}")
                 
         except Exception as e:
-            print(f"Error creating temporary file: {e}")
+            print(f"Error creating temporary audio file in memory: {e}")
             raise HTTPException(status_code=500, detail="Internal server error while handling audio file.")    
     
     async def _remove_temporary_audio(self) -> None:
@@ -57,18 +57,18 @@ class AnalysisService:
         if self.tmp_audio_filepath and os.path.exists(self.tmp_audio_filepath):
             try:
                 os.remove(self.tmp_audio_filepath)
-                print(f"Temporary file removed: {self.tmp_audio_filepath}.")
+                print(f"Temporary audio file removed from memory: {self.tmp_audio_filepath}")
                 
             except Exception as e:
-                print(f"Error removing temporar file: {e}.")
+                print(f"Error removing temporary audio file from memory: {e}")
                 
         if self.converted_filepath and os.path.exists(self.converted_filepath):
             try:
                 os.remove(self.converted_filepath)
-                print(f"Converted file removed: {self.converted_filepath}.")
+                print(f"Converted WAV file removed from memory: {self.converted_filepath}")
                 
             except Exception as e:
-                print(f"Error removing temporar file: {e}")
+                print(f"Error removing converted WAV file from memory: {e}")
     
     async def _convert_to_wav(self) -> None:
         """Convert an audio file to wav.
@@ -80,10 +80,10 @@ class AnalysisService:
                 extension="wav"
             )
             self.converted_base_name = os.path.basename(self.converted_filepath)
-            print(f"Converted WAV file created: {self.converted_filepath}.")
+            print(f"Converted WAV file created: {self.converted_filepath}")
             
         except Exception as e:
-            print(f"Error converting audio file: {e}")
+            print(f"Error converting audio file to WAV: {e}")
         
     async def _normalize_audio(self) -> None:
         """Normalize the temporary audio file to 44100 Hz and 16 bits resolution.
@@ -97,10 +97,10 @@ class AnalysisService:
                 overwrite=True
             )
             self.normalized_filepath = self.base_dir
-            print(f"Audio file normalized...")
+            print(f"Audio file normalized successfully!")
             
         except Exception as e:
-            print(f"Error normalizing file: {e}")
+            print(f"Error normalizing audio file: {e}")
 
     async def analyze_audio(self, audio_file: UploadFile) -> AnalysisResponse:
         """Get the analysis of an audio file, including number of syllables,
