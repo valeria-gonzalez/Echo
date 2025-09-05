@@ -79,7 +79,7 @@ print(diff)
   - rythm_score
   - total_score
 
-- `get_difference_analysis` : Returns a dictionary of differences between user and reference values for analysis keys such as:
+- `get_difference_analysis` : Returns a dictionary of relative differences (value between 0 and 1) between user and reference values for analysis keys such as:
     - **Speech rate:** Total number of syllables spoken per second (including pauses and fillers).
     - **Articulation rate:** Total number of syllables spoken per second (excluding pauses and fillers).
     - **Number of syllables:** Number of syllables spoken.
@@ -87,6 +87,8 @@ print(diff)
     - **Speaking time:** Speaking time (excluding fillers and pauses).
     - **Total speaking time:** Speaking time (including fillers and pauses).
     - **Speaking to Total Time Ratio:** Ratio between speaking duration and total speaking duration.
+
+    Values closer to zero mean more similarity and closer to one mean dissimilarity.
 
 ### 🧪 Example output of `get_score`
 ```json
