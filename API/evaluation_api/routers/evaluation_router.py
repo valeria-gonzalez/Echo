@@ -65,8 +65,8 @@ async def evaluate_audio(
     try:
         # Call the audio evaluation service
         evaluation_response = await evaluation_service.evaluate_audio(
+            user_dict,
             reference_dict,
-            user_dict
         )
         return evaluation_response
     
