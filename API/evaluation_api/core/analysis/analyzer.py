@@ -147,7 +147,10 @@ class SpeechAnalyzer:
         """
         data = self._analyze_audio(audio_filename, audio_dir)
         if not data:
+            print("Getting PRAAT analysis failed ;(")
             return None
+        
+        print("Getting PRAAT analysis success!")
         return {
             "number_of_syllables": int(data[0]),
             "number_of_pauses": int(data[1]),

@@ -57,15 +57,15 @@ class AnalysisService:
         if self.tmp_audio_filepath and os.path.exists(self.tmp_audio_filepath):
             try:
                 os.remove(self.tmp_audio_filepath)
-                print(f"Temporary file removed: {self.tmp_audio_filepath}")
+                print(f"Temporary file removed: {self.tmp_audio_filepath}.")
                 
             except Exception as e:
-                print(f"Error removing temporar file: {e}")
+                print(f"Error removing temporar file: {e}.")
                 
         if self.converted_filepath and os.path.exists(self.converted_filepath):
             try:
                 os.remove(self.converted_filepath)
-                print(f"Converted file removed: {self.converted_filepath}")
+                print(f"Converted file removed: {self.converted_filepath}.")
                 
             except Exception as e:
                 print(f"Error removing temporar file: {e}")
@@ -80,7 +80,7 @@ class AnalysisService:
                 extension="wav"
             )
             self.converted_base_name = os.path.basename(self.converted_filepath)
-            print(f"Converted file created: {self.converted_filepath}")
+            print(f"Converted WAV file created: {self.converted_filepath}.")
             
         except Exception as e:
             print(f"Error converting audio file: {e}")
@@ -97,6 +97,7 @@ class AnalysisService:
                 overwrite=True
             )
             self.normalized_filepath = self.base_dir
+            print(f"Audio file normalized...")
             
         except Exception as e:
             print(f"Error normalizing file: {e}")
