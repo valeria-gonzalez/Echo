@@ -22,7 +22,7 @@ class LocalSpeechAdvisor:
                 verbose=False
             )
         except Exception as e:
-            print(f"Error ocurred during model load: {e}")
+            print(f"Error ocurred during local model load: {e}")
             
     def _create_prompt(self, difference_analysis:dict, wer:float)->str: 
         """Generate a structured prompt for the speech coaching LLM.
@@ -55,29 +55,41 @@ class LocalSpeechAdvisor:
         - End with one tip on how to improve in the future.
         
         Also:
-        - Avoid technical terms like "transcription", "speech rate", etc.
         - Never refer to category names in the tips.
+        - Avoid mentioning numbers and describe things categorically.
         - Refer to the original speaker as "original audio" (not "reference").
-        - Do not mention reading aloud, recording yoursel, listening to native speakers.
+        - Do NOT mention reading aloud, recording yourself, listening to native speakers.
         ---
 
-        Here are the differences between the user and the original audio:
+        Here are the metrics and differences between the user and the original audio:
 
-        - Syllables: {difference_analysis["number_of_syllables"]}
-        - Pauses: {difference_analysis["number_of_pauses"]}
-        - Speech rate: {difference_analysis["speech_rate"]}
-        - Articulation rate: {difference_analysis["articulation_rate"]}
+        - Number of syllables: {difference_analysis["number_of_syllables"]}
+        - Number of pauses: {difference_analysis["number_of_pauses"]}
+        - Speech rate (syllables per second with pauses): {difference_analysis["speech_rate"]}
+        - Articulation rate (syllables per second without pauses): {difference_analysis["articulation_rate"]}
         - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
-        - Total time: {difference_analysis["total_duration"]}
-        - Speaking ratio: {difference_analysis["ratio"]}
+        - Total time (with pauses): {difference_analysis["total_duration"]}
+        - Speaking to total speaking time ratio: {difference_analysis["ratio"]}
 
         Transcription Error Rate (WER): {wer}
 
         Use this to guide your feedback:
-        - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
-        - Moderate differences (±0.1 to 0.5 or ±1 to 2) = "close" → give gentle suggestions.
-        - Large differences (above ±0.5 or ±2) = "varied" → give direct improvement tips.
-        - If WER > 0 → address that in *clarity_tip* only.
+
+        - Values between 0 and 0.3 mean the user was very similar to the original audio → give a positive comment and only mild, encouraging tips.  
+        - Values between 0.4 and 0.6 mean the user was somewhat different → give a possitive comment and improvement suggestions.  
+        - Values between 0.6 and 1 mean the user was very different → give direct and clear improvement tips.  
+
+        For interpretation:
+        - Positive values mean the user had **more** of that metric than the original (e.g., more syllables, more pauses, spoke faster).  
+        - Negative values mean the user had **less** of that metric (e.g., fewer syllables, fewer pauses, spoke slower).  
+
+        For WER:
+        - WER is between 0 and 1.  
+        - WER between 0 and 0.20 means the user's speech was clear and easy to understand.  
+        - WER between 0.30 and 0.50 means the user's speech was unclear at times but had a general idea. 
+        - WER above 0.60 and 1 means the user's speech was unclear and difficult to follow.  
+        - Always address WER differences in the *clarity_tip* list only.  
+
         """
         
         return prompt
@@ -95,17 +107,18 @@ class LocalSpeechAdvisor:
             response = self.model(
                 prompt,
                 max_tokens=800,
-                temperature=0.2,
+                temperature=0.5,
                 repeat_penalty=1.2,
-                presence_penalty=0.2,
-                top_p=0.85,
-                top_k=10,
+                presence_penalty=0.3,
+                top_p=0.9,
+                top_k=40,
                 echo=False
             )
             generated_text = response["choices"][0]["text"]
             return generated_text
         except Exception as e:
-            print(f"Error generating model response: {e}")
+            print(f"Error generating local model response: {e}")
+            print(f"Response: {response}")
             return ""
         
     def _parse_response(self, response:str)->dict:
@@ -119,17 +132,23 @@ class LocalSpeechAdvisor:
             dict: Returns a dictionary with keys speed_tip, clarity_tip, 
             articulation_tip, and rythm_tip.
         """
+        print("Processing local api response...")
         open_dict = response.find('{')
-        close_dict = response.rfind('}')
+        close_dict = response.find('}', open_dict)
         
         if open_dict == -1 or close_dict == -1:
+            print("Response was not in valid JSON format to begin with.")
+            print(f"Response: {response}")
             return {}
         
         try:
             feedback_dict = json.loads(response[open_dict:close_dict+1])
         except json.JSONDecodeError:
+            print(f"Error parsing response, was not in valid JSON format")
+            print(f"Response: {response}")
             return {}
         
+        print("Successfully parsed response!")
         return feedback_dict
         
     
@@ -150,13 +169,16 @@ class LocalSpeechAdvisor:
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         for attempt in range(1, MAX_TRIES + 1):
+            print(f"Making a request, attempt {attempt}...")
             response = self._generate_output(prompt)
-            print(f"Response: {response}")
+            
             feedback_dict = self._parse_response(response)
             if (
+                feedback_dict and 
                 isinstance(feedback_dict, dict) and 
                 all(key in response for key in response_keys)
             ):
+                print("Successful response!")
                 return feedback_dict
             print(f"Retry attempt {attempt} failed. Retrying...")
         
