@@ -182,11 +182,13 @@ class SpeechAdvisor:
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         for attempt in range(1, MAX_RETRIES + 1):
+            print(f"Making a request, attempt {attempt}...", end="")
             response = self._make_api_request(prompt)
             if (
                 isinstance(response, dict) and 
                 all(key in response for key in response_keys)
             ):
+                print("Successful response!")
                 return response
             print(f"Retry attempt {attempt} failed. Retrying request...")
 
