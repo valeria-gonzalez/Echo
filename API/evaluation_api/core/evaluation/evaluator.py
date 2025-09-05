@@ -20,81 +20,50 @@ class SpeechEvaluator():
         return max(0.0, adjusted_error)
     
     
-    def _get_analysis_score(self, difference_analysis:dict, wer:float)->dict:
+    def _get_analysis_score(self, difference_analysis: dict, wer: float) -> dict:
         """Score the user audio analysis based on a reference audio analysis.
-        The scoring will be over 10 points each and a total of 40 points.
+        Each category is over 10 points, total over 100 points.
 
         Args:
-            user_analysis (dict): Analysis of user's audio.
-            reference_analysis (dict): Analysis of reference's audio.
+            difference_analysis (dict): Relative difference between reference and user analysis.
+            wer (float): Word Error Rate.
 
         Returns:
-            dict: Scoring of each aspect with clarity_score, speed_score, 
-            articulation_score, rythm_score, and total_score.
+            dict: Integer scores for clarity, speed, articulation, rythm, and total_score.
         """
         weights = {
-            "clarity": {
-                "wer": 0.8, 
-                "syllables": 0.2
-            },
+            "clarity": {"wer": 0.8, "syllables": 0.2},
             "speed": {
-                "speech_rate": 0.7,
-                "speaking_duration": 0.15,
+                "speech_rate": 0.7, 
+                "speaking_duration": 0.15, 
                 "total_duration": 0.15
             },
-            "articulation": {
-                "articulation_rate": 0.8, 
-                "syllables": 0.2
-            },
-            "rythm": {
-                "ratio": 0.6,
-                "pauses": 0.4
-            }
+            "articulation": {"articulation_rate": 0.8, "syllables": 0.2},
+            "rythm": {"ratio": 0.6, "pauses": 0.4},
         }
 
-        def clamp(value, min_value=0, max_value=10) -> float:
-            """Bounds a value in a range of min_value and max_value.
-            The predifined values mean that the value is kept between a range 
-            of [0,10]"""
-            return max(min_value, min(value, max_value))
+        def compute_score(criteria_weight: dict) -> int:
+            """Compute a weighted integer score (0-10) for an assessment 
+            criteria given each of the weighted metrics."""
+            score = 0
+            for metric, weight in criteria_weight.items():
+                if metric == "wer":
+                    diff = wer
+                else:
+                    diff = abs(difference_analysis.get(metric, 0))
+                diff = min(diff, 1)  # cap at 1 so next step isn't negative
+                metric_score = (1 - diff) * weight
+                score += metric_score
+            return max(0, min(10, round(score * 10)))  # scale to 10
 
-        # --- Clarity score ---
-        wer_penalty = wer * weights["clarity"]["wer"] * 10 # Move a decimal place
-        syllable_penalty = (
-            abs(difference_analysis["number_of_syllables"]) * 
-            weights["clarity"]["syllables"]
-        ) * 10
-        
-        clarity_score = clamp(round(10 - (wer_penalty + syllable_penalty)))
+        clarity_score = compute_score(weights["clarity"])
+        speed_score = compute_score(weights["speed"])
+        articulation_score = compute_score(weights["articulation"])
+        rythm_score = compute_score(weights["rythm"])
 
-        # --- Speed score ---
-        speed_penalty = (
-            abs(difference_analysis["speech_rate"]) * weights["speed"]["speech_rate"] +
-            abs(difference_analysis["speaking_duration"]) * weights["speed"]["speaking_duration"] +
-            abs(difference_analysis["total_duration"]) * weights["speed"]["total_duration"]
-        ) * 10
-        
-        speed_score = clamp(round(10 - speed_penalty))
-
-        # --- Articulation score ---
-        articulation_penalty = (
-            abs(difference_analysis["articulation_rate"]) * weights["articulation"]["articulation_rate"] +
-            abs(difference_analysis["number_of_syllables"]) * weights["articulation"]["syllables"]
-        ) * 10
-        
-        articulation_score = clamp(round(10 - articulation_penalty))
-
-        # --- Rhythm score ---
-        rhythm_penalty = (
-            abs(difference_analysis["ratio"]) * weights["rythm"]["ratio"] +
-            abs(difference_analysis["number_of_pauses"]) * weights["rythm"]["pauses"]
-        ) * 10 
-        
-        rythm_score = clamp(round(10 - rhythm_penalty))
-
-        # --- Total score ---
+        # Multiply by 2.5 because each category is 25 out of 100
         total_score = round(
-            (clarity_score + speed_score + articulation_score + rythm_score) * 100 / 40
+            (clarity_score + speed_score + articulation_score + rythm_score) * 2.5
         )
 
         return {
@@ -102,12 +71,14 @@ class SpeechEvaluator():
             "speed_score": speed_score,
             "articulation_score": articulation_score,
             "rythm_score": rythm_score,
-            "total_score": total_score
+            "total_score": total_score,
         }
         
     def get_difference_analysis(self, reference_analysis:dict, user_analysis:dict) -> dict:
-        """Generate differences in each aspect of the analysis between the 
-        user analysis and the reference analysis. 
+        """Generate relative differences for each metric between the 
+        user analysis and the reference analysis. Each difference has a value
+        between (0,1). Results closer to 0 mean similarity and closer to 1 mean dissimilarity.
+        Positive values mean more of a metric and negative less of a value.
 
         Args:
             user_analysis (dict): Analysis of user's audio.
@@ -119,7 +90,8 @@ class SpeechEvaluator():
             speaking_duration, original_duration and ratio.
         """
         def relative_diff(a:float, b:float)->float:
-            """Returns the difference between a and b, relative to a in a range from [0,1].
+            """Returns the difference between a and b, 
+            relative to a in a range from [0,1].
             """
             if a == 0:
                 return 0 if b == 0 else 1
