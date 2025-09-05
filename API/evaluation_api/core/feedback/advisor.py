@@ -137,7 +137,6 @@ class SpeechAdvisor:
         try:
             response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
             response_json = response.json()
-            print(f"response arli: {response_json}")
 
             # Expect structured JSON response under choices[0].text
             if (
@@ -159,11 +158,12 @@ class SpeechAdvisor:
                         print(f"JSON decode failed after fix: {inner_e}")
                         return {}
 
-            print("Warning: Unexpected API response structure")
+            print("Warning: Unexpected ARLI API response structure")
+            print(f"Response: {response_json}")
             return {}
 
         except Exception as e:
-            print(f"Error obtaining feedback: {e}")
+            print(f"Error obtaining ARLI API feedback: {e}")
             return {}
 
     def get_feedback(self, difference_analysis: dict, wer: float) -> dict:
@@ -188,7 +188,7 @@ class SpeechAdvisor:
                 all(key in response for key in response_keys)
             ):
                 return response
-            print(f"Retry attempt {attempt} failed. Retrying...")
+            print(f"Retry attempt {attempt} failed. Retrying request...")
 
         # Fallback if API fails or returns malformed output
         return {

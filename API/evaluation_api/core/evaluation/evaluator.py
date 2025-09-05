@@ -17,6 +17,7 @@ class SpeechEvaluator():
         """
         error_rate = round(wer(reference, hypothesis), 2)
         adjusted_error = round(error_rate - tolerance, 2)
+        print(f"Calculating wer success!")
         return max(0.0, adjusted_error)
     
     
@@ -31,6 +32,7 @@ class SpeechEvaluator():
         Returns:
             dict: Integer scores for clarity, speed, articulation, rythm, and total_score.
         """
+        
         weights = {
             "clarity": {"wer": 0.8, "syllables": 0.2},
             "speed": {
@@ -65,7 +67,8 @@ class SpeechEvaluator():
         total_score = round(
             (clarity_score + speed_score + articulation_score + rythm_score) * 2.5
         )
-
+        
+        print(f"Calculating evaluation score success!")
         return {
             "clarity_score": clarity_score,
             "speed_score": speed_score,
@@ -107,7 +110,9 @@ class SpeechEvaluator():
                 )
                 if difference != 0:
                     difference = difference * -1
-                difference_analysis[category] =  difference 
+                difference_analysis[category] =  difference
+        
+        print(f"Calculating difference analysis success!") 
         return difference_analysis
         
     def get_score(self, user_analysis:dict, reference_analysis:dict) -> dict:
@@ -127,11 +132,9 @@ class SpeechEvaluator():
             reference_analysis["transcription"],
             user_analysis["transcription"]
         )
-        print(f"wer: {wer}")
         difference_analysis = self.get_difference_analysis(
             reference_analysis, 
             user_analysis
         )
-        print(f"difference analysis: {difference_analysis}")
         analysis_score = self._get_analysis_score(difference_analysis, wer)
         return analysis_score 

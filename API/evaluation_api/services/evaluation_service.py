@@ -38,7 +38,7 @@ class EvaluationService():
             )
 
         except Exception as e:
-            print(f"Error evaluating file: {e}")
+            print(f"Error evaluating file, check evaluation service: {e}")
             raise HTTPException(status_code=500, detail="Audio evaluation failed.")
 
 def get_evaluation_service():

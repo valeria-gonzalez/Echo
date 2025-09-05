@@ -52,7 +52,7 @@ class LocalFeedbackService:
             )
 
         except Exception as e:
-            print(f"Error getting feedback: {e}")
+            print(f"Error getting feedback, check local feedback service: {e}")
             raise HTTPException(status_code=500, detail="Audio feedback failed.")
     
 def get_local_feedback_service():
