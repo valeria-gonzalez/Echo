@@ -15,8 +15,8 @@ class SpeechEvaluator():
         Returns:
             float: Adjusted WER (WER - tolerance). If negative, the WER is within tolerance.
         """
-        error_rate = wer(reference, hypothesis)
-        adjusted_error = error_rate - tolerance
+        error_rate = round(wer(reference, hypothesis), 2)
+        adjusted_error = round(error_rate - tolerance, 2)
         return max(0.0, adjusted_error)
     
     
@@ -61,7 +61,7 @@ class SpeechEvaluator():
         # --- Clarity score ---
         wer_penalty = wer * weights["clarity"]["wer"] * 10 # Move a decimal place
         syllable_penalty = (
-            difference_analysis["number_of_syllables"] * 
+            abs(difference_analysis["number_of_syllables"]) * 
             weights["clarity"]["syllables"]
         ) * 10
         
@@ -69,25 +69,25 @@ class SpeechEvaluator():
 
         # --- Speed score ---
         speed_penalty = (
-            difference_analysis["speech_rate"] * weights["speed"]["speech_rate"] +
-            difference_analysis["speaking_duration"]* weights["speed"]["speaking_duration"] +
-            difference_analysis["total_duration"]* weights["speed"]["total_duration"]
+            abs(difference_analysis["speech_rate"]) * weights["speed"]["speech_rate"] +
+            abs(difference_analysis["speaking_duration"]) * weights["speed"]["speaking_duration"] +
+            abs(difference_analysis["total_duration"]) * weights["speed"]["total_duration"]
         ) * 10
         
         speed_score = clamp(round(10 - speed_penalty))
 
         # --- Articulation score ---
         articulation_penalty = (
-            difference_analysis["articulation_rate"]* weights["articulation"]["articulation_rate"] +
-            difference_analysis["number_of_syllables"] * weights["articulation"]["syllables"]
+            abs(difference_analysis["articulation_rate"]) * weights["articulation"]["articulation_rate"] +
+            abs(difference_analysis["number_of_syllables"]) * weights["articulation"]["syllables"]
         ) * 10
         
         articulation_score = clamp(round(10 - articulation_penalty))
 
         # --- Rhythm score ---
         rhythm_penalty = (
-            difference_analysis["ratio"] * weights["rythm"]["ratio"] +
-            difference_analysis["number_of_pauses"] * weights["rythm"]["pauses"]
+            abs(difference_analysis["ratio"]) * weights["rythm"]["ratio"] +
+            abs(difference_analysis["number_of_pauses"]) * weights["rythm"]["pauses"]
         ) * 10 
         
         rythm_score = clamp(round(10 - rhythm_penalty))
@@ -123,7 +123,7 @@ class SpeechEvaluator():
             """
             if a == 0:
                 return 0 if b == 0 else 1
-            return abs(a - b) / b
+            return (a - b) / b
         
         categories = user_analysis.keys()
         difference_analysis = dict()
@@ -155,10 +155,11 @@ class SpeechEvaluator():
             reference_analysis["transcription"],
             user_analysis["transcription"]
         )
+        print(f"wer: {wer}")
         difference_analysis = self.get_difference_analysis(
             reference_analysis, 
             user_analysis
         )
-        # print(difference_analysis)
-        analysis_score = self._get_analysis_score(wer, difference_analysis)
+        print(f"difference analysis: {difference_analysis}")
+        analysis_score = self._get_analysis_score(difference_analysis, wer)
         return analysis_score 
