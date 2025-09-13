@@ -8,10 +8,10 @@ class LocalSpeechAdvisor:
         # Get the path to this script's directory
         base_path = os.path.dirname(os.path.abspath(__file__))
         #self.model_path = "models/mistral-7b-instruct-v0.1.Q4_K_M.gguf"
-        self.model_path = "models/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
+        self.model_path = "models/gemma-7b-it.Q5_K_M.gguf"
         # Build absolute path to model in models/
         self.full_model_path = os.path.join(base_path, self.model_path)
-        self.CONTEXT_SIZE = 4096
+        self.CONTEXT_SIZE = 2048
         self._load_model()
         self.invalid_responses = 0
         
@@ -41,36 +41,30 @@ class LocalSpeechAdvisor:
         Returns:
             str: Formatted prompt text for the LLM.
         """       
-        prompt = f"""
-        You are a speech coach helping an English learner improve their pronunciation.
-        Your job is to compare the provided numerical analysis of the learners's speech compared to the also provided analysis of the original audio and return feedback.
+        prompt = f"""You are a speech coach helping an English learner improve their pronunciation.
 
-        Return your answer ONLY in **valid JSON format**, exactly like this:
+        Your job is to return feedback based on an analysis comparing the user's delivery to the original delivery.
+        
+        Return your answer ONLY as a **valid JSON object**, exactly like this:
 
         {{"speed_tip": ["...", "...", "..." ],
         "clarity_tip": ["...", "...", "..."],
         "articulation_tip": ["...", "...", "..."],
         "rythm_tip": ["...", "...", "..."]}}
-
-        Each list must:
-        - Contain exactly three full sentences.
-        - Be written in second person with a warm, friendly tone.
-        - Each sentence must be a full and descriptive, do NOT be brief.
+        
+        Rules:
+        - Each list must contain exactly three comma-separated full sentences.
+        - Write in second person, warm and encouraging.
+        - Do NOT mention analysis category names in the sentences.
         - Each sentence should be different.
-        - Start with one sentence ONLY describing how the user performed compared to the original audio.
+        - Start with one sentence describing how the user performed compared to the original delivery.
         - Follow with one tip on what to improve and how to improve it.
         - End with one tip on how to improve in the future.
-
-        Here are the differences between the user audio and the original audio:
-        - Number of syllables: {difference_analysis["number_of_syllables"]}
-        - Number of pauses: {difference_analysis["number_of_pauses"]}
-        - Speech rate: {difference_analysis["speech_rate"]}
-        - Articulation rate: {difference_analysis["articulation_rate"]}
-        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
-        - Total time (with pauses): {difference_analysis["total_duration"]}
-        - Speaking ratio: {difference_analysis["ratio"]}
-        - Word Error Rate (WER): {wer}
-
+        - Avoid mentioning numbers and describe things categorically.
+        - Refer to the original speaker as "original audio" (not "reference").
+        - Do NOT mention reading aloud, recording yourself, listening to native speakers.
+        - Do NOT include explanations, comments, or any text outside the JSON.
+        
         Use this to guide your feedback:
         - Values close to 0 → very similar → give a positive comment and mild tips.
         - Values around ±0.3 → somewhat different → give encouraging suggestions.
@@ -78,8 +72,16 @@ class LocalSpeechAdvisor:
         - Positive values mean the user had more of that metric than the original audio.
         - Negative values mean the user had less of that metric.
         - WER (0-1): low = clear and intelligible, high = unclear and difficult to follow.
-        - Address WER differences ONLY in *clarity_tip*.
-        
+
+        Here is the analysis of the differences between the user and the original audio:
+        - Number of syllables: {difference_analysis["number_of_syllables"]}
+        - Number of pauses: {difference_analysis["number_of_pauses"]}
+        - Speech rate (syllables per second with pauses): {difference_analysis["speech_rate"]}
+        - Articulation rate (syllables per second without pauses): {difference_analysis["articulation_rate"]}
+        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
+        - Total time (with pauses): {difference_analysis["total_duration"]}
+        - Speaking to total speaking time ratio: {difference_analysis["ratio"]}
+        - Transcription Error Rate (WER): {wer}
         """
         
         return prompt
@@ -97,14 +99,16 @@ class LocalSpeechAdvisor:
             response = self.model(
                 prompt,
                 max_tokens=800,
-                temperature=0.2,
+                temperature=0.5,
                 repeat_penalty=1.2,
                 presence_penalty=0.2,
                 top_p=0.85,
-                top_k=10,
-                echo=False
+                top_k=40,
+                echo=False,
+                stop=["}"]
             )
             generated_text = response["choices"][0]["text"]
+            print(f"response: {generated_text}")
             return generated_text
         except Exception as e:
             print(f"Error generating local model response: {e}")
@@ -156,15 +160,15 @@ class LocalSpeechAdvisor:
         """
         prompt = self._create_prompt(difference_analysis, wer)
         
-        MAX_TRIES = 3
-        response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
+        #MAX_TRIES = 2
+        #response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
-        attempt = 1
-        while attempt < MAX_TRIES:
-            print(f"Making a request, attempt {attempt}...")
-            response = self._generate_output(prompt)
+        #attempt = 1
+        #while attempt < MAX_TRIES:
+            #print(f"Making a request, attempt {attempt}...")
+        response = self._generate_output(prompt)
             
-            feedback_dict = self._parse_response(response)
+        """feedback_dict = self._parse_response(response)
             if (
                 feedback_dict and 
                 isinstance(feedback_dict, dict) and 
@@ -179,9 +183,9 @@ class LocalSpeechAdvisor:
                 print("Reloading...This may take a second, do not interrupt...")
                 self._reload_model()
                 print("Will try again now...")
-                attempt -= 1
+                attempt -= 1"""
             
-            attempt += 1
+            #attempt += 1
         
         return {
             "speed_tip": ["We're sorry, no feedback was generated."],
