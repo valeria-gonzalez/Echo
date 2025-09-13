@@ -15,10 +15,11 @@ class SpeechEvaluator():
         Returns:
             float: Adjusted WER (WER - tolerance). If negative, the WER is within tolerance.
         """
-        error_rate = round(wer(reference, hypothesis), 2)
-        adjusted_error = round(error_rate - tolerance, 2)
+        error_rate = round(wer(reference, hypothesis), 1)
+        adjusted_error = max(0.0, round(error_rate - tolerance, 1))
         print(f"Calculating wer...success!")
-        return max(0.0, adjusted_error)
+        print(f"Wer: {adjusted_error}")
+        return adjusted_error
     
     
     def _get_analysis_score(self, difference_analysis: dict, wer: float) -> dict:
@@ -106,13 +107,14 @@ class SpeechEvaluator():
             if category != "transcription":
                 difference = round(
                     relative_diff(reference_analysis[category],
-                                  user_analysis[category]), 2
+                                  user_analysis[category]), 1
                 )
                 if difference != 0:
                     difference = difference * -1
                 difference_analysis[category] =  difference
         
         print(f"Calculating difference analysis...success!") 
+        print(f"Difference analysis: {difference_analysis}")
         return difference_analysis
         
     def get_score(self, user_analysis:dict, reference_analysis:dict) -> dict:
