@@ -1,6 +1,7 @@
 from llama_cpp import Llama
-import json
+import json5
 import os
+import re
 
 class LocalSpeechAdvisor:
     def __init__(self):
@@ -11,9 +12,8 @@ class LocalSpeechAdvisor:
         self.model_path = "models/gemma-7b-it.Q5_K_M.gguf"
         # Build absolute path to model in models/
         self.full_model_path = os.path.join(base_path, self.model_path)
-        self.CONTEXT_SIZE = 4096
+        self.CONTEXT_SIZE = 2048
         self._load_model()
-        self.invalid_responses = 0
         
     def _load_model(self)->None:
         """Load the local model into memory."""
@@ -25,11 +25,6 @@ class LocalSpeechAdvisor:
             )
         except Exception as e:
             print(f"Error ocurred during local model load: {e}")
-    
-    def _reload_model(self):
-        """Force reload of the model from disk."""
-        self.model = None
-        self._load_model()
             
     def _create_prompt(self, difference_analysis:dict, wer:float)->str: 
         """Generate a structured prompt for the speech coaching LLM.
@@ -44,15 +39,15 @@ class LocalSpeechAdvisor:
         prompt = f"""You are a speech coach helping an English learner improve their pronunciation.
         Your job is to compare the user's delivery to the original audio and return feedback.
         You will be given as input a numerical analysis of the differences between both deliveries.
-        Return your answer in **valid JSON format**, exactly like this:
+        
+        You must answer with a valid **JSON object**, with **EXACTLY** the following keys:
+        - speed_tip
+        - clarity_tip
+        - articulation_tip
+        - rythm_tip
 
-        {{"speed_tip": ["...", "...", "..." ],
-        "clarity_tip": ["...", "...", "..."],
-        "articulation_tip": ["...", "...", "..."],
-        "rythm_tip": ["...", "...", "..."]}}
-
-        Each list must:
-        - Have exactly three comma separated sentences.
+        Each key is a list that must:
+        - Have exactly three comma separated sentences, delimited by double quotes ("")
         - Be written in second person and a warm, friendly tone.
         - Each item must be a full, descriptive sentence, do NOT be brief.
         - Each item should be different.
@@ -74,17 +69,26 @@ class LocalSpeechAdvisor:
         - Negative values mean the user had less of that metric.
         - WER (0-1): low = clear and intelligible, high = unclear and difficult to follow.
         
-        Example input: 
-        - Number of syllables: -0.7
-        - Number of pauses: 0
-        - Speech rate (syllables per second with pauses): 0.5
-        - Articulation rate (syllables per second without pauses): -0.5
-        - Speaking time (no pauses): 0.4
-        - Total time (with pauses): -0.1
-        - Speaking to total speaking time ratio: 0.4
-        - Transcription Error Rate (WER): 0.2
+        Here is the numerical analysis of the differences between the user and the original audio you must give feedback on:
+
+        - Syllables: {difference_analysis["number_of_syllables"]}
+        - Pauses: {difference_analysis["number_of_pauses"]}
+        - Speech rate: {difference_analysis["speech_rate"]}
+        - Articulation rate: {difference_analysis["articulation_rate"]}
+        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
+        - Total time: {difference_analysis["total_duration"]}
+        - Speaking ratio: {difference_analysis["ratio"]}
+        - Transcription Error Rate (WER): {wer}
+
         
-        Example output:
+        Here's an example input:
+        
+        {{"number_of_syllables": 6, "number_of_pauses": 0, "speech_rate": 2.0, 
+        "articulation_rate": 2.0, "speaking_duration": 5.6, 
+        "total_duration": 6.0, "ratio": 0.9, 
+        "transcription": "life is not an exact science it is an art"}}
+        
+        Here's the corresponding example output:
         {{
             "clarity_tip": [
                 "There was some variation from the original audio; sometimes words weren't quite clear.",
@@ -107,19 +111,6 @@ class LocalSpeechAdvisor:
                 "Being mindful about forming each sound fully will increase precision overall."
             ]
         }}
-        ---
-        
-        Here is the numerical analysis of the differences between the user and the original audio you must give feedback on:
-
-        - Syllables: {difference_analysis["number_of_syllables"]}
-        - Pauses: {difference_analysis["number_of_pauses"]}
-        - Speech rate: {difference_analysis["speech_rate"]}
-        - Articulation rate: {difference_analysis["articulation_rate"]}
-        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
-        - Total time: {difference_analysis["total_duration"]}
-        - Speaking ratio: {difference_analysis["ratio"]}
-        - Transcription Error Rate (WER): {wer}
-
         """
         
         return prompt
@@ -137,7 +128,7 @@ class LocalSpeechAdvisor:
             print("Obtaining response from model...", end="")
             response = self.model(
                 prompt,
-                max_tokens=1000,
+                max_tokens=800,
                 temperature=0.2,
                 repeat_penalty=1.2,
                 presence_penalty=0.2,
@@ -147,7 +138,6 @@ class LocalSpeechAdvisor:
             )
             generated_text = response["choices"][0]["text"]
             print("Success!")
-            print(f"Generated text: {generated_text}")
             return generated_text
         except Exception as e:
             print(f"Error generating local model response: {e}")
@@ -166,25 +156,36 @@ class LocalSpeechAdvisor:
             articulation_tip, and rythm_tip.
         """
         print("Processing local api response...")
-        open_dict = response.find('{')
-        close_dict = response.find('}', open_dict+1)
+        open_dict = response.rfind('{')
+        close_dict = response.rfind('}')
         
         if open_dict == -1 or close_dict == -1:
-            self.invalid_responses += 1
             print("Response was not in valid JSON format to begin with.")
             print(f"Response: {response}")
             return {}
         
+        json_str = response[open_dict:close_dict+1]
+
+        # Normalize quotes
+        json_str = json_str.replace("'", "\"").replace("”", "\"").replace("“", "\"")
+        
+        # Fix contractions like you"re -> you're
+        json_str = re.sub(r'(\w)"(\w)', r"\1'\2", json_str)
+        
+        # Remove stray trailing commas (common model bug)
+        json_str = re.sub(r",(\s*[}\]])", r"\1", json_str)
+
+        print(f"Cleaned json string: {json_str}")
+        
         try:
-            feedback_dict = json.loads(response[open_dict:close_dict+1])
-        except json.JSONDecodeError:
+            feedback_dict = json5.loads(json_str)
+            print("Successfully parsed response!")
+            return feedback_dict
+        except Exception as e:
             print(f"Error parsing response, could not form a valid JSON format")
+            print(f"Error is: {e}")
             print(f"Response: {response}")
             return {}
-        
-        print("Successfully parsed response!")
-        return feedback_dict
-        
     
     def get_feedback(self, difference_analysis:dict, wer:float)->dict:
         """Generate structured speech feedback comparing user and reference audio.
@@ -199,33 +200,26 @@ class LocalSpeechAdvisor:
         """
         prompt = self._create_prompt(difference_analysis, wer)
         
-        #MAX_TRIES = 2
-        #response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
+        MAX_TRIES = 3
+        response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
-        #attempt = 1
-        #while attempt < MAX_TRIES:
-            #print(f"Making a request, attempt {attempt}...")
-        response = self._generate_output(prompt)
+        attempt = 1
+        while attempt < MAX_TRIES:
+            print(f"Making a request to local model, attempt {attempt}...")
+            response = self._generate_output(prompt)
+            feedback_dict = self._parse_response(response)
             
-        """feedback_dict = self._parse_response(response)
             if (
-                feedback_dict and 
-                isinstance(feedback_dict, dict) and 
-                all(key in response for key in response_keys)
-            ):
-                print("Successful response!")
-                return feedback_dict
-            print(f"Retry attempt {attempt} failed. Retrying...")
+                    feedback_dict and 
+                    isinstance(feedback_dict, dict) and 
+                    all(key in response for key in response_keys)
+                ):
+                    print("Successful response!")
+                    return feedback_dict
+                
+            print(f"Attempt {attempt} failed. Retrying...")    
+            attempt += 1
             
-            if(self.invalid_responses == 2):
-                print("The model doesn't seem to understand...")
-                print("Reloading...This may take a second, do not interrupt...")
-                self._reload_model()
-                print("Will try again now...")
-                attempt -= 1"""
-            
-            #attempt += 1
-        
         return {
             "speed_tip": ["We're sorry, no feedback was generated."],
             "clarity_tip": ["Please try again later."],
