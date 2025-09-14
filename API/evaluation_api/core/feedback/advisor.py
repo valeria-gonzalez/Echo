@@ -48,7 +48,6 @@ class SpeechAdvisor:
         - Never refer to category names in the tips.
         - Refer to the original speaker as "original audio" (not "reference").
         - Do not mention reading aloud, recording or listening to native speakers.
-        ---
 
         Here are the differences between the user and the original audio:
 
@@ -59,14 +58,15 @@ class SpeechAdvisor:
         - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
         - Total time: {difference_analysis["total_duration"]}
         - Speaking ratio: {difference_analysis["ratio"]}
-
-        Transcription Error Rate (WER): {wer}
+        - Transcription Error Rate (WER): {wer}
 
         Use this to guide your feedback:
-        - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
-        - Moderate differences (±0.1 to 0.5 or ±1 to 2) = "close" → give gentle suggestions.
-        - Large differences (above ±0.5 or ±2) = "varied" → give direct improvement tips.
-        - If WER > 0 → address that in *clarity_tip* only.
+        - Values close to 0 → very similar → give a positive comment and mild tips.
+        - Values around ±0.3 → somewhat different → give encouraging suggestions.
+        - Values above ±0.6 → very different → give direct improvement tips.
+        - Positive values mean the user had more of that metric than the original audio.
+        - Negative values mean the user had less of that metric.
+        - WER (0-1): low = clear and intelligible, high = unclear and difficult to follow.
         """
         
         return prompt
