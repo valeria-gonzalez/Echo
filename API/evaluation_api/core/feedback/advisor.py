@@ -120,7 +120,7 @@ class SpeechAdvisor:
             "temperature": 0.2, # Lower temperature = faster + more deterministic
             "top_p": 0.7, #  Cumulative probability of the top tokens to consider
             "top_k": 5, # Number of top tokens to consider
-            "max_tokens": 300, # Maximum number of tokens to generate per output sequence
+            "max_tokens": 1000, # Maximum number of tokens to generate per output sequence
             #"min_tokens": 50, # Minimum number of tokens to generate per output sequence
             "n" : 1, # Number of output sequences to return
             "repetition_penalty": 1.2, # Penalizes new tokens based on their frequency in the generated text so far
