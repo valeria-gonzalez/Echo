@@ -1,4 +1,5 @@
 from llama_cpp import Llama
+from llama_cpp import LlamaGrammar
 import json5
 import os
 import re
@@ -12,7 +13,24 @@ class LocalSpeechAdvisor:
         self.model_path = "models/gemma-7b-it.Q5_K_M.gguf"
         # Build absolute path to model in models/
         self.full_model_path = os.path.join(base_path, self.model_path)
-        self.CONTEXT_SIZE = 2048
+        self.CONTEXT_SIZE = 4096
+        self.JSON_GRAMMAR_STR = r'''
+root ::= ("{"
+    "\"speed_tip\":" ws "[" ws string ws "," ws string ws "," ws string ws "]" ws "," ws
+    "\"clarity_tip\":" ws "[" ws string ws "," ws string ws "," ws string ws "]" ws "," ws
+    "\"articulation_tip\":" ws "[" ws string ws "," ws string ws "," ws string ws "]" ws "," ws
+    "\"rythm_tip\":" ws "[" ws string ws "," ws string ws "," ws string ws "]" ws
+    "}"
+)
+ 
+string ::= "\"" (
+    [^"\\\x7F\x00-\x1F] |
+    "\\" (["\"\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F])
+  )* "\""
+ 
+ws ::= ([ \t\n]*)
+'''
+        self.json_grammar = LlamaGrammar.from_string(self.JSON_GRAMMAR_STR)
         self._load_model()
         
     def _load_model(self)->None:
@@ -40,11 +58,14 @@ class LocalSpeechAdvisor:
         Your job is to compare the user's delivery to the original audio and return feedback.
         You will be given as input a numerical analysis of the differences between both deliveries.
         
-        You must answer with a valid **JSON object**, with **EXACTLY** the following keys:
-        - speed_tip
-        - clarity_tip
-        - articulation_tip
-        - rythm_tip
+        You must answer with a single, continuous line of text that is a valid JSON object.
+        - DO NOT use any newline characters (\\n), tabulations (\\t), or other formatting whitespace.
+        - Your entire response must be a "minified" JSON string starting with {{ and ending with }}.
+        - This JSON object must have **EXACTLY* the following keys:
+            - speed_tip
+            - clarity_tip
+            - articulation_tip
+            - rythm_tip
 
         Each key is a list that must:
         - Have exactly three comma separated sentences, delimited by double quotes ("")
@@ -71,46 +92,28 @@ class LocalSpeechAdvisor:
         
         Here is the numerical analysis of the differences between the user and the original audio you must give feedback on:
 
-        - Syllables: {difference_analysis["number_of_syllables"]}
-        - Pauses: {difference_analysis["number_of_pauses"]}
+        - Syllables per second: {difference_analysis["number_of_syllables"]}
+        - Number of pauses: {difference_analysis["number_of_pauses"]}
         - Speech rate: {difference_analysis["speech_rate"]}
         - Articulation rate: {difference_analysis["articulation_rate"]}
-        - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
-        - Total time: {difference_analysis["total_duration"]}
-        - Speaking ratio: {difference_analysis["ratio"]}
+        - Speaking time: {difference_analysis["speaking_duration"]}
+        - Total audio time: {difference_analysis["total_duration"]}
+        - Speaking time to total time ratio: {difference_analysis["ratio"]}
         - Transcription Error Rate (WER): {wer}
-
-        
+    
         Here's an example input:
         
-        {{"number_of_syllables": 6, "number_of_pauses": 0, "speech_rate": 2.0, 
-        "articulation_rate": 2.0, "speaking_duration": 5.6, 
-        "total_duration": 6.0, "ratio": 0.9, 
-        "transcription": "life is not an exact science it is an art"}}
+        - Syllables per second: 0.0
+        - Number of pauses: 0.0
+        - Speech rate: -0.6
+        - Articulation rate: -0.2
+        - Speaking time: -0.3
+        - Total audio time: -1.0
+        - Speaking time to total time ratio: -0.4
+        - Transcription Error Rate (WER): 0.3
         
         Here's the corresponding example output:
-        {{
-            "clarity_tip": [
-                "There was some variation from the original audio; sometimes words weren't quite clear.",
-                "Pay attention to making sure all parts of each word come through distinctly for better understanding.",
-                "Practicing difficult sounds slowly can make them easier to say clearly over time."
-            ],
-            "speed_tip": [
-                "Overall you were close to the pace of the original audio.",
-                "Try slowing down just slightly when speaking so each word has enough space.",
-                "Focusing on consistent pacing will help listeners understand every part of your message."
-            ],
-            "rythm_tip": [
-                "Your rhythm felt very similar to the original audio.",
-                "Think about emphasizing key words naturally while keeping everything flowing smoothly.",
-                "A natural flow makes your communication feel effortless and engaging!"
-            ],
-            "articulation_tip": [
-                "The way you formed certain sounds varied somewhat from the original audio.",
-                "Imagine stretching out your mouth muscles before starting - this helps create more precise shapes!",
-                "Being mindful about forming each sound fully will increase precision overall."
-            ]
-        }}
+        {{"clarity_tip":["There was some variation from the original audio; sometimes words weren't quite clear.","Pay attention to making sure all parts of each word come through distinctly for better understanding.","Practicing difficult sounds slowly can make them easier to say clearly over time."],"speed_tip":["Overall you were close to the pace of the original audio.","Try slowing down just slightly when speaking so each word has enough space.","Focusing on consistent pacing will help listeners understand every part of your message."],"rythm_tip":["Your rhythm felt very similar to the original audio.","Think about emphasizing key words naturally while keeping everything flowing smoothly.","A natural flow makes your communication feel effortless and engaging!"],"articulation_tip":["The way you formed certain sounds varied somewhat from the original audio.","Imagine stretching out your mouth muscles before starting - this helps create more precise shapes!","Being mindful about forming each sound fully will increase precision overall."]}}
         """
         
         return prompt
@@ -128,15 +131,12 @@ class LocalSpeechAdvisor:
             print("Obtaining response from model...", end="")
             response = self.model(
                 prompt,
-                max_tokens=800,
-                temperature=0.2,
-                repeat_penalty=1.2,
-                presence_penalty=0.2,
-                top_p=0.85,
-                top_k=10,
+                grammar=self.json_grammar,
+                max_tokens=2000,
                 echo=False
             )
             generated_text = response["choices"][0]["text"]
+            print(f"Response: {response}")
             print("Success!")
             return generated_text
         except Exception as e:
@@ -144,20 +144,24 @@ class LocalSpeechAdvisor:
             print(f"Response: {response}")
             return ""
         
-    def _parse_response(self, response:str)->dict:
-        """Parse the response obtained from the model and turn it into a valid
-        dictionary. 
+    def _capitalize(self, text):
+        punc_filter = re.compile('([.!?]\s*)')
+        split_with_punctuation = punc_filter.split(text)
+        for i,j in enumerate(split_with_punctuation):
+            if len(j) > 1:
+                split_with_punctuation[i] = j[0].upper() + j[1:]
+        text = ''.join(split_with_punctuation)
+        text = text.strip()
+        if text[-1] not in ['.', '?', '!']:
+            text += '.'
+        return text
+        
+    def _parse_response(self, response: str) -> dict:
+        """Parse the response obtained from the model and turn it into a valid dictionary."""
 
-        Args:
-            response (str): Response obtained from the model.
-
-        Returns:
-            dict: Returns a dictionary with keys speed_tip, clarity_tip, 
-            articulation_tip, and rythm_tip.
-        """
         print("Processing local api response...")
-        open_dict = response.rfind('{')
-        close_dict = response.rfind('}')
+        open_dict = response.rfind('{')   
+        close_dict = response.rfind('}') 
         
         if open_dict == -1 or close_dict == -1:
             print("Response was not in valid JSON format to begin with.")
@@ -166,23 +170,50 @@ class LocalSpeechAdvisor:
         
         json_str = response[open_dict:close_dict+1]
 
-        # Normalize quotes
-        json_str = json_str.replace("'", "\"").replace("”", "\"").replace("“", "\"")
-        
-        # Fix contractions like you"re -> you're
+        # --- Cleaning fixes ---
+        # 1. Normalize quotes
+        replacements = {
+            "’": "'", "‘": "'", "“": "\"", "”": "\"", "‛": "'"
+        }
+        for bad, good in replacements.items():
+            json_str = json_str.replace(bad, good)
+
+        # 2. Replace single quotes around keys/strings with double quotes
+        json_str = re.sub(r"(?<!\\)'", "\"", json_str)
+
+        # 3. Fix contractions like you"re -> you're
         json_str = re.sub(r'(\w)"(\w)', r"\1'\2", json_str)
-        
-        # Remove stray trailing commas (common model bug)
+
+        # 4. Remove stray trailing commas
         json_str = re.sub(r",(\s*[}\]])", r"\1", json_str)
 
+        # 5. Remove invisible unicode chars (U+2028, U+2029, etc.)
+        json_str = re.sub(r'[\u2028\u2029]', '', json_str)
+
         print(f"Cleaned json string: {json_str}")
-        
+
         try:
             feedback_dict = json5.loads(json_str)
+
+            # 6. Normalize keys to snake_case and enforce schema
+            normalized = {}
+            expected_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
+            key_map = {k.strip().replace(" ", "_"):k for k in feedback_dict.keys()}
+
+            normalized = dict()
+            for ek in expected_keys:
+                if ek in feedback_dict:
+                    normalized[ek] = [self._capitalize(f.lower()) for f in feedback_dict[ek]]
+                elif ek in key_map:
+                    normalized[ek] = [self._capitalize(f.lower()) for f in feedback_dict[key_map[ek]]]
+                else:
+                    normalized[ek] = []
+
             print("Successfully parsed response!")
-            return feedback_dict
+            return normalized
+
         except Exception as e:
-            print(f"Error parsing response, could not form a valid JSON format")
+            print("Error parsing response, could not form a valid JSON format")
             print(f"Error is: {e}")
             print(f"Response: {response}")
             return {}
@@ -199,26 +230,28 @@ class LocalSpeechAdvisor:
             articulation_tip, and rythm_tip.
         """
         prompt = self._create_prompt(difference_analysis, wer)
+        response = self._generate_output(prompt)
+        print(f"final ans: {response}")
         
-        MAX_TRIES = 3
+        """MAX_TRIES = 3
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         attempt = 1
         while attempt < MAX_TRIES:
             print(f"Making a request to local model, attempt {attempt}...")
             response = self._generate_output(prompt)
-            feedback_dict = self._parse_response(response)
+            # feedback_dict = self._parse_response(response)
             
             if (
                     feedback_dict and 
                     isinstance(feedback_dict, dict) and 
-                    all(key in response for key in response_keys)
+                    all(key in feedback_dict for key in response_keys)
                 ):
                     print("Successful response!")
                     return feedback_dict
                 
             print(f"Attempt {attempt} failed. Retrying...")    
-            attempt += 1
+            attempt += 1"""
             
         return {
             "speed_tip": ["We're sorry, no feedback was generated."],
