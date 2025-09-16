@@ -9,7 +9,6 @@ class LocalSpeechAdvisor:
         self.model = None
         # Get the path to this script's directory
         base_path = os.path.dirname(os.path.abspath(__file__))
-        #self.model_path = "models/mistral-7b-instruct-v0.1.Q4_K_M.gguf"
         self.model_path = "models/gemma-7b-it.Q5_K_M.gguf"
         # Build absolute path to model in models/
         self.full_model_path = os.path.join(base_path, self.model_path)
@@ -136,7 +135,6 @@ ws ::= ([ \t\n]*)
                 echo=False
             )
             generated_text = response["choices"][0]["text"]
-            print(f"Response: {response}")
             print("Success!")
             return generated_text
         except Exception as e:
@@ -144,74 +142,13 @@ ws ::= ([ \t\n]*)
             print(f"Response: {response}")
             return ""
         
-    def _capitalize(self, text):
-        punc_filter = re.compile('([.!?]\s*)')
-        split_with_punctuation = punc_filter.split(text)
-        for i,j in enumerate(split_with_punctuation):
-            if len(j) > 1:
-                split_with_punctuation[i] = j[0].upper() + j[1:]
-        text = ''.join(split_with_punctuation)
-        text = text.strip()
-        if text[-1] not in ['.', '?', '!']:
-            text += '.'
-        return text
-        
     def _parse_response(self, response: str) -> dict:
         """Parse the response obtained from the model and turn it into a valid dictionary."""
-
         print("Processing local api response...")
-        open_dict = response.rfind('{')   
-        close_dict = response.rfind('}') 
-        
-        if open_dict == -1 or close_dict == -1:
-            print("Response was not in valid JSON format to begin with.")
-            print(f"Response: {response}")
-            return {}
-        
-        json_str = response[open_dict:close_dict+1]
-
-        # --- Cleaning fixes ---
-        # 1. Normalize quotes
-        replacements = {
-            "’": "'", "‘": "'", "“": "\"", "”": "\"", "‛": "'"
-        }
-        for bad, good in replacements.items():
-            json_str = json_str.replace(bad, good)
-
-        # 2. Replace single quotes around keys/strings with double quotes
-        json_str = re.sub(r"(?<!\\)'", "\"", json_str)
-
-        # 3. Fix contractions like you"re -> you're
-        json_str = re.sub(r'(\w)"(\w)', r"\1'\2", json_str)
-
-        # 4. Remove stray trailing commas
-        json_str = re.sub(r",(\s*[}\]])", r"\1", json_str)
-
-        # 5. Remove invisible unicode chars (U+2028, U+2029, etc.)
-        json_str = re.sub(r'[\u2028\u2029]', '', json_str)
-
-        print(f"Cleaned json string: {json_str}")
-
         try:
-            feedback_dict = json5.loads(json_str)
-
-            # 6. Normalize keys to snake_case and enforce schema
-            normalized = {}
-            expected_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
-            key_map = {k.strip().replace(" ", "_"):k for k in feedback_dict.keys()}
-
-            normalized = dict()
-            for ek in expected_keys:
-                if ek in feedback_dict:
-                    normalized[ek] = [self._capitalize(f.lower()) for f in feedback_dict[ek]]
-                elif ek in key_map:
-                    normalized[ek] = [self._capitalize(f.lower()) for f in feedback_dict[key_map[ek]]]
-                else:
-                    normalized[ek] = []
-
+            feedback_dict = json5.loads(response)
             print("Successfully parsed response!")
-            return normalized
-
+            return feedback_dict
         except Exception as e:
             print("Error parsing response, could not form a valid JSON format")
             print(f"Error is: {e}")
@@ -230,18 +167,15 @@ ws ::= ([ \t\n]*)
             articulation_tip, and rythm_tip.
         """
         prompt = self._create_prompt(difference_analysis, wer)
-        response = self._generate_output(prompt)
-        print(f"final ans: {response}")
         
-        """MAX_TRIES = 3
+        MAX_TRIES = 3
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         attempt = 1
         while attempt < MAX_TRIES:
             print(f"Making a request to local model, attempt {attempt}...")
             response = self._generate_output(prompt)
-            # feedback_dict = self._parse_response(response)
-            
+            feedback_dict = self._parse_response(response)
             if (
                     feedback_dict and 
                     isinstance(feedback_dict, dict) and 
@@ -251,7 +185,7 @@ ws ::= ([ \t\n]*)
                     return feedback_dict
                 
             print(f"Attempt {attempt} failed. Retrying...")    
-            attempt += 1"""
+            attempt += 1
             
         return {
             "speed_tip": ["We're sorry, no feedback was generated."],
