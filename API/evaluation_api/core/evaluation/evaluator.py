@@ -1,4 +1,5 @@
 from jiwer import wer
+import math
 class SpeechEvaluator():
     """Class to evaluate speech analysis."""
     
@@ -18,7 +19,6 @@ class SpeechEvaluator():
         error_rate = round(wer(reference, hypothesis), 1)
         adjusted_error = max(0.0, round(error_rate - tolerance, 1))
         print(f"Calculating wer...success!")
-        print(f"Wer: {adjusted_error}")
         return adjusted_error
     
     
@@ -93,28 +93,27 @@ class SpeechEvaluator():
             number_of_pauses, rate_of_speech, articulation_rate, 
             speaking_duration, original_duration and ratio.
         """
-        def relative_diff(a:float, b:float)->float:
-            """Returns the difference between a and b, 
-            relative to a in a range from [0,1].
+        def relative_diff(a: float, b: float) -> float:
+            """Returns how dissimilar b is in reference to a.
+            0 means identical, 1 means maximally dissimilar.
             """
             if a == 0:
-                return 0 if b == 0 else 1
-            return (a - b) / b
+                return 0.0 if b == 0 else 1.0
+            return min(1.0, abs(a - b) / abs(a))
         
         categories = user_analysis.keys()
         difference_analysis = dict()
         for category in categories:
             if category != "transcription":
-                difference = round(
+                difference = math.trunc(
                     relative_diff(reference_analysis[category],
-                                  user_analysis[category]), 1
-                )
+                                  user_analysis[category]) * 10
+                ) / 10
                 if difference != 0:
                     difference = difference * -1
                 difference_analysis[category] =  difference
         
         print(f"Calculating difference analysis...success!") 
-        print(f"Difference analysis: {difference_analysis}")
         return difference_analysis
         
     def get_score(self, user_analysis:dict, reference_analysis:dict) -> dict:
