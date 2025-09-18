@@ -1,4 +1,5 @@
 from jiwer import wer
+import math
 class SpeechEvaluator():
     """Class to evaluate speech analysis."""
     
@@ -15,9 +16,10 @@ class SpeechEvaluator():
         Returns:
             float: Adjusted WER (WER - tolerance). If negative, the WER is within tolerance.
         """
-        error_rate = round(wer(reference, hypothesis), 2)
-        adjusted_error = round(error_rate - tolerance, 2)
-        return max(0.0, adjusted_error)
+        error_rate = round(wer(reference, hypothesis), 1)
+        adjusted_error = max(0.0, round(error_rate - tolerance, 1))
+        print(f"Calculating wer...success!")
+        return adjusted_error
     
     
     def _get_analysis_score(self, difference_analysis: dict, wer: float) -> dict:
@@ -31,15 +33,16 @@ class SpeechEvaluator():
         Returns:
             dict: Integer scores for clarity, speed, articulation, rythm, and total_score.
         """
+        
         weights = {
-            "clarity": {"wer": 0.8, "syllables": 0.2},
+            "clarity": {"wer": 0.9, "syllables": 0.1},
             "speed": {
                 "speech_rate": 0.7, 
                 "speaking_duration": 0.15, 
                 "total_duration": 0.15
             },
             "articulation": {"articulation_rate": 0.8, "syllables": 0.2},
-            "rythm": {"ratio": 0.6, "pauses": 0.4},
+            "rythm": {"ratio": 0.7, "pauses": 0.3},
         }
 
         def compute_score(criteria_weight: dict) -> int:
@@ -65,7 +68,8 @@ class SpeechEvaluator():
         total_score = round(
             (clarity_score + speed_score + articulation_score + rythm_score) * 2.5
         )
-
+        
+        print(f"Calculating evaluation score...success!")
         return {
             "clarity_score": clarity_score,
             "speed_score": speed_score,
@@ -89,25 +93,27 @@ class SpeechEvaluator():
             number_of_pauses, rate_of_speech, articulation_rate, 
             speaking_duration, original_duration and ratio.
         """
-        def relative_diff(a:float, b:float)->float:
-            """Returns the difference between a and b, 
-            relative to a in a range from [0,1].
+        def relative_diff(a: float, b: float) -> float:
+            """Returns how dissimilar b is in reference to a.
+            0 means identical, 1 means maximally dissimilar.
             """
             if a == 0:
-                return 0 if b == 0 else 1
-            return (a - b) / b
+                return 0.0 if b == 0 else 1.0
+            return min(1.0, abs(a - b) / abs(a))
         
         categories = user_analysis.keys()
         difference_analysis = dict()
         for category in categories:
             if category != "transcription":
-                difference = round(
+                difference = math.trunc(
                     relative_diff(reference_analysis[category],
-                                  user_analysis[category]), 2
-                )
+                                  user_analysis[category]) * 10
+                ) / 10
                 if difference != 0:
                     difference = difference * -1
-                difference_analysis[category] =  difference 
+                difference_analysis[category] =  difference
+        
+        print(f"Calculating difference analysis...success!") 
         return difference_analysis
         
     def get_score(self, user_analysis:dict, reference_analysis:dict) -> dict:
@@ -127,11 +133,9 @@ class SpeechEvaluator():
             reference_analysis["transcription"],
             user_analysis["transcription"]
         )
-        print(f"wer: {wer}")
         difference_analysis = self.get_difference_analysis(
             reference_analysis, 
             user_analysis
         )
-        print(f"difference analysis: {difference_analysis}")
         analysis_score = self._get_analysis_score(difference_analysis, wer)
         return analysis_score 

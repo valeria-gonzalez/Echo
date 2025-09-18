@@ -48,7 +48,6 @@ class SpeechAdvisor:
         - Never refer to category names in the tips.
         - Refer to the original speaker as "original audio" (not "reference").
         - Do not mention reading aloud, recording or listening to native speakers.
-        ---
 
         Here are the differences between the user and the original audio:
 
@@ -59,14 +58,15 @@ class SpeechAdvisor:
         - Speaking time (no pauses): {difference_analysis["speaking_duration"]}
         - Total time: {difference_analysis["total_duration"]}
         - Speaking ratio: {difference_analysis["ratio"]}
-
-        Transcription Error Rate (WER): {wer}
+        - Transcription Error Rate (WER): {wer}
 
         Use this to guide your feedback:
-        - Small differences (less than ±0.1 or ±1) = “very similar” → give a positive comment and mild tips.
-        - Moderate differences (±0.1 to 0.5 or ±1 to 2) = "close" → give gentle suggestions.
-        - Large differences (above ±0.5 or ±2) = "varied" → give direct improvement tips.
-        - If WER > 0 → address that in *clarity_tip* only.
+        - Values close to 0 → very similar → give a positive comment and mild tips.
+        - Values around ±0.3 → somewhat different → give encouraging suggestions.
+        - Values above ±0.6 → very different → give direct improvement tips.
+        - Positive values mean the user had more of that metric than the original audio.
+        - Negative values mean the user had less of that metric.
+        - WER (0-1): low = clear and intelligible, high = unclear and difficult to follow.
         """
         
         return prompt
@@ -120,7 +120,7 @@ class SpeechAdvisor:
             "temperature": 0.2, # Lower temperature = faster + more deterministic
             "top_p": 0.7, #  Cumulative probability of the top tokens to consider
             "top_k": 5, # Number of top tokens to consider
-            "max_tokens": 300, # Maximum number of tokens to generate per output sequence
+            "max_tokens": 1000, # Maximum number of tokens to generate per output sequence
             #"min_tokens": 50, # Minimum number of tokens to generate per output sequence
             "n" : 1, # Number of output sequences to return
             "repetition_penalty": 1.2, # Penalizes new tokens based on their frequency in the generated text so far
@@ -137,7 +137,6 @@ class SpeechAdvisor:
         try:
             response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
             response_json = response.json()
-            print(f"response arli: {response_json}")
 
             # Expect structured JSON response under choices[0].text
             if (
@@ -159,11 +158,12 @@ class SpeechAdvisor:
                         print(f"JSON decode failed after fix: {inner_e}")
                         return {}
 
-            print("Warning: Unexpected API response structure")
+            print("Warning: Unexpected ARLI API response structure")
+            print(f"Response: {response_json}")
             return {}
 
         except Exception as e:
-            print(f"Error obtaining feedback: {e}")
+            print(f"Error obtaining ARLI API feedback: {e}")
             return {}
 
     def get_feedback(self, difference_analysis: dict, wer: float) -> dict:
@@ -182,13 +182,15 @@ class SpeechAdvisor:
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
         for attempt in range(1, MAX_RETRIES + 1):
+            print(f"Making a request, attempt {attempt}...", end="")
             response = self._make_api_request(prompt)
             if (
                 isinstance(response, dict) and 
                 all(key in response for key in response_keys)
             ):
+                print("Successful response!")
                 return response
-            print(f"Retry attempt {attempt} failed. Retrying...")
+            print(f"Retry attempt {attempt} failed. Retrying request...")
 
         # Fallback if API fails or returns malformed output
         return {

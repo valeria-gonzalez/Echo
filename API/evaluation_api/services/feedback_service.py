@@ -51,8 +51,8 @@ class FeedbackService():
             )
 
         except Exception as e:
-            print(f"Error getting feedback: {e}")
-            raise HTTPException(status_code=500, detail="Audio feedback failed.")
+            print(f"Error getting feedback, check feedback service: {e}")
+            raise HTTPException(status_code=500, detail="Audio ARLI feedback failed.")
         
 
 def get_feedback_service():

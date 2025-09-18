@@ -37,7 +37,7 @@ pip install json
 
 In order for the class to work, the `.gguf` file containing the model must be downloaded from [Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF). 
 
-Please download the file named `mistral-7b-instruct-v0.1.Q4_K_M.gguf` from the website and place it inside a directory named `models` with this exact name.
+Please download the file named `mistral-7b-instruct-v0.1.Q5_K_S.gguf` from the website and place it inside a directory named `models` with this exact name.
 
 ## 🚀 Usage
 ```python

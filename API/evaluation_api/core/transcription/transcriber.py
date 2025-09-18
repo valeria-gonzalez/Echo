@@ -27,14 +27,23 @@ class SpeechTranscriber:
         Returns:
             str: Clean transcription of the audio file.
         """
+        
         full_audio_path = os.path.join(audio_dir, audio_filename)
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=UserWarning)
-            result = self.model.transcribe(full_audio_path)
-            transcription = result["text"]
-            clean_transcription = transcription.translate(
-                str.maketrans('', '', string.punctuation)
-            )
+        try:
+            with warnings.catch_warnings():
+                # Only to ignore terminal warnings
+                warnings.simplefilter("ignore", category=UserWarning)
+                
+                result = self.model.transcribe(full_audio_path)
+                transcription = result["text"]
+                clean_transcription = transcription.translate(
+                    str.maketrans('', '', string.punctuation)
+                )
+                print("Getting audio transcription success!")
 
-        return clean_transcription.strip().lower()
+            return clean_transcription.strip().lower()
+        except Exception as e:
+            print(f"Getting audio transcription failed: {e}")
+            return ""
+            

@@ -8,7 +8,7 @@ from core.feedback.local_advisor import LocalSpeechAdvisor
 class LocalFeedbackService:
     def __init__(self):
         self.evaluator = SpeechEvaluator()
-        self.advisor = LocalSpeechAdvisor()
+        self.local_advisor = LocalSpeechAdvisor()
     
     async def generate_feedback(self, audio_analysis:Dict[str, Any], 
                              reference_analysis:Dict[str,Any]) -> FeedbackResponse: 
@@ -39,7 +39,7 @@ class LocalFeedbackService:
             )
             
             # Get feedback
-            feedback = self.advisor.get_feedback(
+            feedback = self.local_advisor.get_feedback(
                 difference_analysis,
                 clarity_score
             )
@@ -52,8 +52,8 @@ class LocalFeedbackService:
             )
 
         except Exception as e:
-            print(f"Error getting feedback: {e}")
-            raise HTTPException(status_code=500, detail="Audio feedback failed.")
+            print(f"Error getting feedback, check local feedback service: {e}")
+            raise HTTPException(status_code=500, detail="Audio local feedback failed.")
     
 def get_local_feedback_service():
     return LocalFeedbackService()
