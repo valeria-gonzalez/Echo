@@ -9,7 +9,7 @@ class LocalSpeechAdvisor:
         self.model = None
         # Get the path to this script's directory
         base_path = os.path.dirname(os.path.abspath(__file__))
-        self.model_path = "models/gemma-7b-it.Q5_K_M.gguf"
+        self.model_path = "models/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
         # Build absolute path to model in models/
         self.full_model_path = os.path.join(base_path, self.model_path)
         self.CONTEXT_SIZE = 4096

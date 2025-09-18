@@ -35,14 +35,14 @@ class SpeechEvaluator():
         """
         
         weights = {
-            "clarity": {"wer": 0.8, "syllables": 0.2},
+            "clarity": {"wer": 0.9, "syllables": 0.1},
             "speed": {
                 "speech_rate": 0.7, 
                 "speaking_duration": 0.15, 
                 "total_duration": 0.15
             },
             "articulation": {"articulation_rate": 0.8, "syllables": 0.2},
-            "rythm": {"ratio": 0.6, "pauses": 0.4},
+            "rythm": {"ratio": 0.7, "pauses": 0.3},
         }
 
         def compute_score(criteria_weight: dict) -> int:
