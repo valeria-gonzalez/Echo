@@ -99,7 +99,7 @@ class SpeechEvaluator():
             """
             if a == 0:
                 return 0.0 if b == 0 else 1.0
-            return min(1.0, abs(a - b) / abs(a))
+            return min(1.0, abs(abs(a) - abs(b)) / abs(a))
         
         categories = user_analysis.keys()
         difference_analysis = dict()
@@ -112,7 +112,7 @@ class SpeechEvaluator():
                 if difference != 0:
                     difference = difference * -1
                 difference_analysis[category] =  difference
-        
+                
         print(f"Calculating difference analysis...success!") 
         return difference_analysis
         
