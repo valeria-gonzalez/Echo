@@ -6,7 +6,8 @@ import os
 # Add parent directory to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from routers.evaluation_router import router
+from routers.evaluation_router import router_evaluation
+from routers.classifier_router import router_classification
 
 app = FastAPI(title="Pronunciation Evaluation API", version="1.0.0")
 
@@ -18,7 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(router_evaluation)
+app.include_router(router_classification)
 
 @app.get("/")
 async def root():

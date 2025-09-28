@@ -7,16 +7,16 @@ from services.evaluation_service import EvaluationService, get_evaluation_servic
 from services.feedback_service import FeedbackService, get_feedback_service
 from services.local_feedback_service import LocalFeedbackService, get_local_feedback_service
 
-router = APIRouter(
+router_evaluation = APIRouter(
     prefix="/evaluation",
     tags=["Audio Evaluation"],
 )
 
-@router.get("/")
+@router_evaluation.get("/")
 async def root():
     return {"message": "Welcome to the Audio Evaluation API prefix!"}
 
-@router.post("/analyze_audio", response_model=AnalysisResponse)
+@router_evaluation.post("/analyze_audio", response_model=AnalysisResponse)
 async def analyze_audio(
     audio_file: UploadFile,
     analysis_service: AnalysisService = Depends(get_analysis_service)
@@ -40,7 +40,7 @@ async def analyze_audio(
             detail="An unexpected error occurred during audio analysis."
         )
 
-@router.post("/evaluate_audio", response_model=EvaluationResponse)
+@router_evaluation.post("/evaluate_audio", response_model=EvaluationResponse)
 async def evaluate_audio(
     reference_analysis: str = Form(...),
     user_analysis: str = Form(...),
@@ -77,7 +77,7 @@ async def evaluate_audio(
             detail="An unexpected error occurred during audio evaluation."
         )
 
-@router.post("/feedback", response_model=FeedbackResponse)
+@router_evaluation.post("/feedback", response_model=FeedbackResponse)
 async def feedback(
     reference_analysis: str = Form(...),
     user_analysis: str = Form(...),
@@ -114,7 +114,7 @@ async def feedback(
             detail="An unexpected error occurred during audio feedback."
         )
         
-@router.post("/feedback/local", response_model=FeedbackResponse)
+@router_evaluation.post("/feedback/local", response_model=FeedbackResponse)
 async def feedback_local(
     reference_analysis: str = Form(...),
     user_analysis: str = Form(...),
