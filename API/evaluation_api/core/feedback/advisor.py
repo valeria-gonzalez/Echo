@@ -148,10 +148,10 @@ class SpeechAdvisor:
             ):
                 try:
                     response_text = response_json["choices"][0]["text"]
+                    print(response_text)
                     return json.loads(response_text)
                 except JSONDecodeError as e:
-                    # Try to fix common problems: truncate at last full }
-                    fixed = response_text.rsplit("}", 1)[0] + "}"
+                    fixed = response_text[response_text.rfind("{"):] + "}"
                     try:
                         return json.loads(fixed)
                     except JSONDecodeError as inner_e:
