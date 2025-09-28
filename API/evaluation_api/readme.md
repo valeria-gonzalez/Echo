@@ -12,13 +12,14 @@ language learners.
 
 ### 🔗 **Endpoints**
 
-| Method | Endpoint                    | Description                |
-| ------ | --------------------------- | -------------------------- |
-| `GET`  | `/`                         | Welcome message            |
-| `POST` | `/evaluation/analyze_audio` | Analyze speech metrics     |
-| `POST` | `/evaluation/evaluate_audio`| Grade speech               |
-| `POST` | `/evaluation/feedback`      | AI feedback generation     |
-| `POST` | `/evaluation/feedback/local`| AI feedback generation.    |
+| Method | Endpoint                        | Description                |
+| ------ | --------------------------------| -------------------------- |
+| `GET`  | `/`                             | Welcome message            |
+| `POST` | `/evaluation/analyze_audio`     | Analyze speech metrics     |
+| `POST` | `/evaluation/evaluate_audio`.   | Grade speech               |
+| `POST` | `/evaluation/feedback`          | AI feedback generation     |
+| `POST` | `/evaluation/feedback/local`.   | AI feedback generation.    |
+| `POST` | `/classification/classify_audio`| Classify user performance. |
 
 ### 📤 **Request Format**
 
@@ -166,6 +167,31 @@ curl -X POST http://localhost:8000/feedback \
         "Practice speaking with a slower pace to give yourself more time to think about how you're pronouncing words.",
         "Consider practicing tongue twisters or other exercises that challenge your ability to articulate sounds."
     ]
+}
+```
+
+### 🔊 **Audio Classification**
+
+**Endpoint:** `/classification/classify_audio`
+
+The audio classificatoin endpoint returns classification of the user's 
+performance as Beginner, Intermediate or Advanced.
+
+#### 🗝️ Keys
+- `user_analysis` : JSON analysis of user audio 
+- `reference_analysis` : JSON analysis of reference audio
+
+#### 🧪 Testing
+```bash
+curl -X POST http://localhost:8000/feedback \
+  -F "reference_analysis={\"number_of_syllables\": 6, \"number_of_pauses\": 0, \"speech_rate\": 2.0, \"articulation_rate\": 2.0, \"speaking_duration\": 5.6, \"total_duration\": 6.0, \"ratio\": 0.9, \"transcription\": \"life is not an exact science it is an art\"}" \
+  -F "user_analysis={\"number_of_syllables\": 13, \"number_of_pauses\": 0, \"speech_rate\": 3.0, \"articulation_rate\": 5.0, \"speaking_duration\": 2.7, \"total_duration\": 4.6, \"ratio\": 0.6, \"transcription\": \"life is not an exact science it is an art\"}"
+```
+
+#### Example output
+```json
+{
+    "label": "Intermediate"
 }
 ```
 

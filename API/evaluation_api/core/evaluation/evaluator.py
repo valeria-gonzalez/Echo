@@ -114,7 +114,6 @@ class SpeechEvaluator():
                     difference *= -1
                 difference_analysis[category] =  difference
         
-        
         print("difference analysis:")
         for key, value in difference_analysis.items():
             print(f"{key}: {value}")

@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import os
+
 class SpeechClassifier:
     def __init__(self):
         # Get the path to this script's directory
@@ -24,7 +25,7 @@ class SpeechClassifier:
             print("Failed.")
             print(f"Speech Classifier error: Could not load model. {e}")
         
-    def _shape_data(self, difference_analysis:dict)->np.array:
+    def _shape_data(self, difference_analysis:dict, wer:float)->np.array:
         """Reshape the difference analysis for the model.
 
         Args:
@@ -35,8 +36,9 @@ class SpeechClassifier:
         """
         print("Reshaping data...", end="")
         difference_data = [abs(x) for x in list(difference_analysis.values())]
+        difference_data.append(wer)
         try:
-            n_features = len(difference_analysis)
+            n_features = len(difference_data)
             difference_np = np.array(difference_data).reshape(1, n_features)
             print("Success!")
             return difference_np
@@ -44,7 +46,7 @@ class SpeechClassifier:
             print("Failed.")
             print(f"Error speech classifier: Could not reshape difference array. Check if the features are correct. {e}")
     
-    def predict(self, difference_analysis:dict)->str:
+    def get_classification(self, difference_analysis:dict, wer:float)->str:
         """Predict a label for the difference array as beginner, intermediate or advanced.
 
         Args:
@@ -54,7 +56,7 @@ class SpeechClassifier:
             str: Label for classification.
         """
         print("Predicting data...")
-        difference_np = self._shape_data(difference_analysis)
+        difference_np = self._shape_data(difference_analysis, wer)
         try:
             y_pred = self.tree.predict(difference_np)[-1]
             label = self.label_map[y_pred]
