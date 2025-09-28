@@ -18,6 +18,7 @@ class SpeechEvaluator():
         """
         error_rate = round(wer(reference, hypothesis), 1)
         adjusted_error = max(0.0, round(error_rate - tolerance, 1))
+        print(f"wer:{adjusted_error}")
         print(f"Calculating wer...success!")
         return adjusted_error
     
@@ -112,6 +113,7 @@ class SpeechEvaluator():
                 if user_analysis[category] < reference_analysis[category]:
                     difference *= -1
                 difference_analysis[category] =  difference
+        
         
         print("difference analysis:")
         for key, value in difference_analysis.items():
