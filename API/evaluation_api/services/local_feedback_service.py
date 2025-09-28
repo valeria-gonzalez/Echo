@@ -28,14 +28,14 @@ class LocalFeedbackService:
         try:
             # Get difference dictionary
             difference_analysis = self.evaluator.get_difference_analysis(
-                audio_analysis,
-                reference_analysis
+                reference_analysis,
+                audio_analysis
             )
             
             # Get transcript clarity score
             clarity_score = self.evaluator.compare_transcripts(
-                audio_analysis["transcription"],
-                reference_analysis["transcription"]
+                reference_analysis["transcription"],
+                audio_analysis["transcription"]
             )
             
             # Get feedback
