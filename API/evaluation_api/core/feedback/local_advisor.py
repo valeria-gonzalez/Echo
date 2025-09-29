@@ -2,7 +2,7 @@ from llama_cpp import Llama
 from llama_cpp import LlamaGrammar
 import json5
 import os
-import re
+import requests
 
 class LocalSpeechAdvisor:
     def __init__(self):

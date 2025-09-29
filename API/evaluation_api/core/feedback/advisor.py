@@ -26,9 +26,11 @@ class SpeechAdvisor:
         Returns:
             str: Formatted prompt text for the LLM.
         """       
-        prompt = f"""You are a speech coach helping an English learner improve their pronunciation.
+        prompt = f"""You are a speech coach helping an English learner improve 
+        their pronunciation.
 
-        Your job is to compare the user's delivery to the original audio and return feedback.
+        Your job is to compare the user's delivery to the original audio and 
+        return feedback.
 
         Return your answer in **valid JSON format**, exactly like this:
 
