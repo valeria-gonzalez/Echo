@@ -1,18 +1,25 @@
 from llama_cpp import Llama
 from llama_cpp import LlamaGrammar
 import json5
-import os
-import requests
+from huggingface_hub import hf_hub_download
 
 class LocalSpeechAdvisor:
     def __init__(self):
         self.model = None
-        # Get the path to this script's directory
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        self.model_path = "models/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
-        # Build absolute path to model in models/
-        self.full_model_path = os.path.join(base_path, self.model_path)
         self.CONTEXT_SIZE = 4096
+        
+        # Define where the model comes from (Hugging Face repo + file)
+        # https://huggingface.co/urdadval/mistral-7b-local-speech/blob/main/mistral-7b-instruct-v0.1.Q5_K_S.gguf
+        self.repo_id = "urdadval/mistral-7b-local-speech"
+        self.filename = "mistral-7b-instruct-v0.1.Q5_K_S.gguf"
+        
+        # Hugging Face will auto-download & cache this file
+        self.full_model_path = hf_hub_download(
+            repo_id=self.repo_id,
+            filename=self.filename,
+            cache_dir="models"  # optional: puts cache under /models
+        )
+        
         self.JSON_GRAMMAR_STR = r'''
 root ::= ("{"
     "\"speed_tip\":" ws "[" ws string ws "," ws string ws "," ws string ws "]" ws "," ws
@@ -32,16 +39,16 @@ ws ::= ([ \t\n]*)
         self.json_grammar = LlamaGrammar.from_string(self.JSON_GRAMMAR_STR)
         self._load_model()
         
-    def _load_model(self)->None:
+    def _load_model(self) -> None:
         """Load the local model into memory."""
         try:
             self.model = Llama(
-                model_path=self.full_model_path, 
+                model_path=self.full_model_path,
                 n_ctx=self.CONTEXT_SIZE,
                 verbose=False
             )
         except Exception as e:
-            print(f"Error ocurred during local model load: {e}")
+            print(f"Error occurred during local model load: {e}")
             
     def _create_prompt(self, difference_analysis:dict, wer:float)->str: 
         """Generate a structured prompt for the speech coaching LLM.
