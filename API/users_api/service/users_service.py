@@ -62,6 +62,17 @@ class UsersService:
         Raises:
             HTTPException: If an error occurs while adding the user.
         """
+
+        query = self.collection.where("email", "==", user.email).limit(1)
+        docs = query.stream()
+        doc = next(docs, None)
+
+        if doc is not None and doc.exists:
+            raise HTTPException(
+                status_code=400,
+                detail="Email already registered"
+            )
+
         try:
             hash_password = Hash.hash_password(user.password)
             user.password = hash_password
@@ -94,7 +105,7 @@ class UsersService:
             if doc is None or not doc.exists:
                 raise HTTPException(status_code=404, detail="user not found")
 
-            return {**doc.to_dict()}
+            return {"id": doc.id, **doc.to_dict()}
         
         except HTTPException:
             raise

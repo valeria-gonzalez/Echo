@@ -50,7 +50,7 @@ async def login_router(data:BodyLogin):
                 )
 
         
-        return{"message": "login successful"}
+        return{"user_id": user["id"]}
 
     except HTTPException:
         raise
