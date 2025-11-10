@@ -2,6 +2,7 @@ from fastapi import APIRouter,HTTPException, UploadFile, File
 from service.users_service import UsersService
 from schemas.users_schemas import BodyLogin
 from utils.hash import Hash
+from utils.jwt_handler import create_access_token
 
 router = APIRouter(
     prefix="/auth",
@@ -19,24 +20,10 @@ users_service = UsersService()
 
 @router.post("/login")
 async def login_router(data:BodyLogin):
-    """
-    Authenticates a user by their email and password.
-
-    Args:
-        data (BodyLogin): The login data containing 'email' and 'password'.
-
-    Returns:
-        dict: A confirmation message and the user ID if authentication succeeds.
-
-    Raises:
-        HTTPException: 
-            - 401 Unauthorized: If the email or password is incorrect.
-            - 500 Internal Server Error: If an unexpected error occurs during login.
-    """
     try:
 
         user = await users_service.get_users_by_email_service(data.email)
-        print(user)
+
         if not user:
             raise HTTPException(
                 status_code = 401, 
@@ -49,8 +36,14 @@ async def login_router(data:BodyLogin):
                 detail= "incorrect password"
                 )
 
-        
-        return{"user_id": user["id"]}
+        access_token = create_access_token({"sub": user["id"]})
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user_id": user["id"]
+        }
+
 
     except HTTPException:
         raise

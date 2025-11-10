@@ -1,10 +1,11 @@
 from fastapi import APIRouter,HTTPException, UploadFile, File, Form
-
 from service.sentences_service import SentencesService
 from service.texts_service import TextsService
 from service.words_service import WordsService
-
 from schemas.resources_schemas import words, texts, sentences, WordsEvaluation , TextsEvaluation , SentencesEvaluation, TextsAudioDuration, SentencesAudioDuration, WordsAudioDuration
+from fastapi import Depends
+from utils.dependencies import get_current_user
+
 router = APIRouter(
     prefix="/resources",
     tags=["Information about resurces"],
@@ -15,7 +16,9 @@ sentences_service = SentencesService()
 words_service = WordsService()
 
 @router.get("/texts")
-async def get_texts_router():
+async def get_texts_router(
+    current_user: dict = Depends(get_current_user)
+):
     """
     Retrieve all text documents.
 
@@ -33,7 +36,9 @@ async def get_texts_router():
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/sentences")
-async def get_sentences_router():
+async def get_sentences_router(
+    current_user: dict = Depends(get_current_user)
+):
     """
     Retrieve all sentence documents.
 
@@ -51,7 +56,9 @@ async def get_sentences_router():
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     
 @router.get("/words")
-async def get_words_router():
+async def get_words_router(
+    current_user: dict = Depends(get_current_user)
+):
     """
     Retrieve all word documents.
 
@@ -71,7 +78,10 @@ async def get_words_router():
 #get by uid
 
 @router.get("/texts/{id}")
-async def get_texts_id_router(id: str):
+async def get_texts_id_router(
+    id: str,
+    current_user: dict = Depends(get_current_user)
+    ):
     """
     Retrieve a text document by its UID.
 
@@ -93,7 +103,10 @@ async def get_texts_id_router(id: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/sentences/{id}")
-async def get_sentences_id_router(id: str):
+async def get_sentences_id_router(
+    id: str,
+    current_user: dict = Depends(get_current_user)
+    ):
     """
     Retrieve a sentence document by its UID.
 
@@ -115,7 +128,10 @@ async def get_sentences_id_router(id: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/words/{id}")	
-async def get_words_id_router(id:str):
+async def get_words_id_router(
+    id:str,
+    current_user: dict = Depends(get_current_user)
+):
     """
     Retrieve a word document by its UID.
 
@@ -139,7 +155,7 @@ async def get_words_id_router(id:str):
 #get by id
 
 @router.get("/texts/chapter/{id}")
-async def get_texts_id_router(id: str):
+async def get_texts_id_router(id: str,current_user: dict = Depends(get_current_user)):
     """
     Retrieve text documents by chapter ID.
 
@@ -160,7 +176,7 @@ async def get_texts_id_router(id: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/sentences/audio_id/{id}")
-async def get_sentences_id_router(id: int):
+async def get_sentences_id_router(id: int,current_user: dict = Depends(get_current_user)):
     """
     Retrieve sentence documents by audio ID.
 
@@ -181,7 +197,7 @@ async def get_sentences_id_router(id: int):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/words/text/{id}")	
-async def get_words_id_router(id:str):
+async def get_words_id_router(id:str,current_user: dict = Depends(get_current_user)):
     """
     Retrieve word documents by text.
 
@@ -204,7 +220,7 @@ async def get_words_id_router(id:str):
 #get by difficulty
 
 @router.get("/texts/difficulty/{difficulty}")
-async def get_texts_difficulty_router(difficulty: int):
+async def get_texts_difficulty_router(difficulty: int,current_user: dict = Depends(get_current_user)):
     """
     Retrieve text documents filtered by difficulty level.
 
@@ -225,7 +241,7 @@ async def get_texts_difficulty_router(difficulty: int):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/sentences/difficulty/{difficulty}")
-async def get_sentences_difficulty_router(difficulty: int):
+async def get_sentences_difficulty_router(difficulty: int,current_user: dict = Depends(get_current_user)):
     """
     Retrieve sentence documents filtered by difficulty level.
 
@@ -246,7 +262,7 @@ async def get_sentences_difficulty_router(difficulty: int):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/words/difficulty/{difficulty}")
-async def get_words_difficulty_router(difficulty: int):
+async def get_words_difficulty_router(difficulty: int,current_user: dict = Depends(get_current_user)):
     """
     Retrieve word documents filtered by difficulty level.
 
@@ -269,7 +285,7 @@ async def get_words_difficulty_router(difficulty: int):
 #get by categories
 
 @router.get("/texts/categories/{categories}")	
-async def get_texts_categories_router(categories: str):
+async def get_texts_categories_router(categories: str,current_user: dict = Depends(get_current_user)):
     """
     Retrieve text documents filtered by category.
 
@@ -291,7 +307,7 @@ async def get_texts_categories_router(categories: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/words/categories/{categories}")
-async def get_words_categories_router(categories: str):
+async def get_words_categories_router(categories: str,current_user: dict = Depends(get_current_user)):
     """
     Retrieve word documents filtered by category.
 
@@ -313,7 +329,7 @@ async def get_words_categories_router(categories: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/sentences/categories/{categories}")	
-async def get_sentences_categories_router(categories: str):
+async def get_sentences_categories_router(categories: str,current_user: dict = Depends(get_current_user)):
     """
     Retrieve sentence documents filtered by category.
 
@@ -337,7 +353,7 @@ async def get_sentences_categories_router(categories: str):
 #delete by id
 
 @router.delete("/texts/{document_id}")
-async def delete_texts_id_router(document_id: str):
+async def delete_texts_id_router(document_id: str,current_user: dict = Depends(get_current_user)):
     """
     Delete a text document by its UID.
 
@@ -358,7 +374,7 @@ async def delete_texts_id_router(document_id: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/words/{document_id}")
-async def delete_words_id_router(document_id: str):
+async def delete_words_id_router(document_id: str,current_user: dict = Depends(get_current_user)):
     """
     Delete a word document by its UID.
 
@@ -379,7 +395,7 @@ async def delete_words_id_router(document_id: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/sentences/{document_id}")
-async def delete_sentences_id_router(document_id: str):
+async def delete_sentences_id_router(document_id: str,current_user: dict = Depends(get_current_user)):
     """
     Delete a sentence document by its UID.
 
@@ -402,7 +418,7 @@ async def delete_sentences_id_router(document_id: str):
 #post texts. words, sentences
 
 @router.post("/sentences")
-async def post_sentence_router(sentence: sentences):
+async def post_sentence_router(sentence: sentences,current_user: dict = Depends(get_current_user)):
     """
     Add a new sentence document to the collection.
 
@@ -423,7 +439,7 @@ async def post_sentence_router(sentence: sentences):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.post("/texts")
-async def post_texts_router(text: texts):
+async def post_texts_router(text: texts,current_user: dict = Depends(get_current_user)):
     """
     Add a new text document to the collection.
 
@@ -444,7 +460,7 @@ async def post_texts_router(text: texts):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.post("/words")
-async def post_words_router(word: words):
+async def post_words_router(word: words,current_user: dict = Depends(get_current_user)):
     """
     Add a new word document to the collection.
 
@@ -466,7 +482,7 @@ async def post_words_router(word: words):
 
 #post audio
 @router.post("/sentences/audios")
-async def post_sentences_audio_router(file: UploadFile = File(...)):
+async def post_sentences_audio_router(file: UploadFile = File(...),current_user: dict = Depends(get_current_user)):
     """
     Upload an audio file for a sentence document.
 
@@ -488,7 +504,7 @@ async def post_sentences_audio_router(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.post("/texts/audios")
-async def post_texts_audio_router(file: UploadFile = File(...), chapter: str = Form(...)):
+async def post_texts_audio_router(file: UploadFile = File(...), chapter: str = Form(...),current_user: dict = Depends(get_current_user)):
     """
     Upload an audio file for a text document.
 
@@ -512,7 +528,7 @@ async def post_texts_audio_router(file: UploadFile = File(...), chapter: str = F
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.post("/words/audios")
-async def post_words_audio_router(file: UploadFile = File(...), text: str = Form(...)):
+async def post_words_audio_router(file: UploadFile = File(...), text: str = Form(...),current_user: dict = Depends(get_current_user)):
     """
     Upload an audio file for a word document.
 
@@ -536,7 +552,7 @@ async def post_words_audio_router(file: UploadFile = File(...), text: str = Form
 
 #update evaluation
 @router.put("/texts/evaluation")
-async def update_texts_evaluation_router(texts_evaluation: TextsEvaluation):
+async def update_texts_evaluation_router(texts_evaluation: TextsEvaluation,current_user: dict = Depends(get_current_user)):
     """
     Update the audio analysis evaluation of text documents.
 
@@ -559,7 +575,7 @@ async def update_texts_evaluation_router(texts_evaluation: TextsEvaluation):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/sentences/evaluation")
-async def update_sentences_evaluation_router(sentences_evaluation: SentencesEvaluation):
+async def update_sentences_evaluation_router(sentences_evaluation: SentencesEvaluation,current_user: dict = Depends(get_current_user)):
     """
     Update the audio analysis evaluation of sentence documents.
 
@@ -582,7 +598,7 @@ async def update_sentences_evaluation_router(sentences_evaluation: SentencesEval
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/words/evaluation")
-async def update_words_evaluation_router(words_evaluation: WordsEvaluation):
+async def update_words_evaluation_router(words_evaluation: WordsEvaluation,current_user: dict = Depends(get_current_user)):
     """
     Update the audio analysis evaluation of word documents.
 
@@ -606,7 +622,7 @@ async def update_words_evaluation_router(words_evaluation: WordsEvaluation):
 
 #update audio_duration
 @router.put("/texts/audio_duration")
-async def update_texts_audio_duration_router(texts_audio_duration: TextsAudioDuration):
+async def update_texts_audio_duration_router(texts_audio_duration: TextsAudioDuration,current_user: dict = Depends(get_current_user)):
     """
     Update the audio duration of text documents.
 
@@ -629,7 +645,7 @@ async def update_texts_audio_duration_router(texts_audio_duration: TextsAudioDur
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     
 @router.put("/sentences/audio_duration")
-async def update_sentences_audio_duration_router(sentences_audio_duration: SentencesAudioDuration):
+async def update_sentences_audio_duration_router(sentences_audio_duration: SentencesAudioDuration,current_user: dict = Depends(get_current_user)):
     """
     Update the audio duration of sentence documents.
 
@@ -652,7 +668,7 @@ async def update_sentences_audio_duration_router(sentences_audio_duration: Sente
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     
 @router.put("/words/audio_duration")
-async def update_words_audio_duration_router(words_audio_duration: WordsAudioDuration):
+async def update_words_audio_duration_router(words_audio_duration: WordsAudioDuration,current_user: dict = Depends(get_current_user)):
     """
     Update the audio duration of word documents.
 
