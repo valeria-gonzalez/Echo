@@ -8,5 +8,5 @@ __pycache__
 *.wav
 *.gguf
 **/db/**
-**/models/** 
+**/models/*/
 key.json
