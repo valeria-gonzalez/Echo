@@ -26,8 +26,10 @@ FIREBASE_CREDENTIAL The .json file contains the credentials needed to access Fir
 To obtain a private key you need to enter Firebase SDK, 
 select Python and click on generate key. After that, a .json file will be downloaded.
 ```env
-FIREBASE_CREDENTIAL="hereyourkey.json"
+FIREBASE_CREDENTIAL="hereyourfirebasekey.json"
 ```
+Please **rename** the Firebase API key as `key.json` and place inside the folder.
+
 ## project structure 
 
 ```env
