@@ -21,8 +21,9 @@ pip install -r requirements.txt
 Create a file named `.env` in the root of your project and add the following line:
 
 ```env
-FIREBASE_CREDENTIAL="hereyourkey.json"
-
+FIREBASE_CREDENTIAL="hereyourfirebasekey.json"
+```
+Please **rename** the Firebase API key as `key.json` and place inside the folder.
 
 ## Project Structure
 ```env
@@ -41,14 +42,14 @@ FIREBASE_CREDENTIAL="hereyourkey.json"
 │   └── users_service.py
 ├── utils
 │   └── hash.py
-
+```
 ## Running the API🚀🚀🚀
 
 Run the following command in a directory that contains the `app` folder:
 
 ```bash
 uvicorn app.main:app --reload --port 8000
-
+```
 
 ```bash
 you should see output similar to this

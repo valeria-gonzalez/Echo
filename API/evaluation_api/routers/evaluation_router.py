@@ -111,7 +111,7 @@ async def feedback(
         print(f"Unexpected error: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred during audio feedback."
+            detail=f"{str(e)}"
         )
         
 @router_evaluation.post("/feedback/local", response_model=FeedbackResponse)
@@ -148,6 +148,6 @@ async def feedback_local(
         print(f"Unexpected error: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred during audio feedback."
+            detail=f"{str(e)}"
         )
         

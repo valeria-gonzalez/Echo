@@ -44,6 +44,9 @@ class LocalFeedbackService:
                 clarity_score
             )
             
+            if not feedback:
+                raise HTTPException(status_code=500, detail="Could not generate local feeback.")
+            
             return FeedbackResponse(
                 clarity_tip = feedback["clarity_tip"],
                 speed_tip = feedback["speed_tip"],
@@ -53,7 +56,7 @@ class LocalFeedbackService:
 
         except Exception as e:
             print(f"Error getting feedback, check local feedback service: {e}")
-            raise HTTPException(status_code=500, detail="Audio local feedback failed.")
+            raise HTTPException(status_code=500, detail=f"{e}")
     
 def get_local_feedback_service():
     return LocalFeedbackService()
