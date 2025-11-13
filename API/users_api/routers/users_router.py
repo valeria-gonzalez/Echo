@@ -2,6 +2,8 @@ from fastapi import APIRouter,HTTPException, UploadFile, File
 from service.users_service import UsersService
 from service.userApplication_service import UserApplicationService
 from schemas.users_schemas import User, User_application, Progress
+from fastapi import Depends
+from utils.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -23,7 +25,8 @@ async def root():
 
 @router.get("/account/{uid_user}")
 async def get_users_by_uid_router(
-    uid_user:str
+    uid_user:str,
+    current_user: dict = Depends(get_current_user)
     ):
     """
     Retrieves a user by their UID.
@@ -55,7 +58,8 @@ async def get_users_by_uid_router(
     
 @router.get("/user_application/{uid_user}")
 async def get_users_by_uid_router(
-    uid_user:str
+    uid_user:str,
+    current_user: dict = Depends(get_current_user) 
     ):
     """
     Retrieves a user application by the user's UID.
@@ -147,7 +151,8 @@ async def post_users_application_router(
     
 @router.put("/user_application")
 async def post_users_application_router(
-    user_application:User_application
+    user_application:User_application,
+    current_user: dict = Depends(get_current_user) 
     ):
     """
     Updates an existing user application record in Firestore.
@@ -181,7 +186,8 @@ async def post_users_application_router(
 @router.post("/user_application/progress/{uid_user}")
 async def post_users_application_progress_router(
     uid_user:str, 
-    progress:Progress
+    progress:Progress,
+    current_user: dict = Depends(get_current_user) 
     ):
     """
     Adds or updates a user's progress record for a specific resource within their application.
@@ -216,7 +222,8 @@ async def post_users_application_progress_router(
     
 @router.get("/progress/attempts/{uid_user}")
 async def get_users_application_progress_attempts_uid_router(
-    uid_user: str
+    uid_user: str,
+    current_user: dict = Depends(get_current_user) 
     ):
     """
     Retrieves all progress records with attempts greater than zero for a specific user.
@@ -248,7 +255,8 @@ async def get_users_application_progress_attempts_uid_router(
     
 @router.get("/progress/completed/{uid_user}")
 async def get_users_application_progress_completed_uid_router(
-    uid_user: str
+    uid_user: str,
+    current_user: dict = Depends(get_current_user)
     ):
     """
     Retrieves all completed progress records for a specific user's application.
@@ -279,7 +287,8 @@ async def get_users_application_progress_completed_uid_router(
 @router.get("/progress/{uid_user_application}/{uid_resource}")
 async def get_users_application_progress_uid_router(
     uid_user_application: str, 
-    uid_resource:str
+    uid_resource:str,
+    current_user: dict = Depends(get_current_user)
     ):
     """
     Retrieves progress records for a specific resource within a user's application.

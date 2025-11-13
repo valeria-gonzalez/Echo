@@ -56,3 +56,8 @@ class Progress(BaseModel):
 class BodyLogin(BaseModel):
     email: str
     password: str
+
+class UserResponse(BaseModel):
+    email: str
+    message: str
+
