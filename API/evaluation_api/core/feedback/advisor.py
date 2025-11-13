@@ -1,7 +1,6 @@
 import requests
 from json.decoder import JSONDecodeError
 import json
-from collections import defaultdict
 from config import ARLI_API_KEY
 
 class SpeechAdvisor:
@@ -137,7 +136,10 @@ class SpeechAdvisor:
         }
 
         try:
-            response = requests.post(self.API_URL, headers=headers, data=json.dumps(payload))
+            response = requests.post(self.API_URL, 
+                                     headers=headers, 
+                                     data=json.dumps(payload)
+                                    )
             response_json = response.json()
 
             # Expect structured JSON response under choices[0].text
@@ -155,7 +157,8 @@ class SpeechAdvisor:
                 except JSONDecodeError as e:
                     fixed = response_text[response_text.rfind("{"):] + "}"
                     try:
-                        return json.loads(fixed)
+                        final_response = json.loads(fixed)
+                        return final_response
                     except JSONDecodeError as inner_e:
                         print(f"JSON decode failed after fix: {inner_e}")
                         return {}
@@ -180,25 +183,22 @@ class SpeechAdvisor:
         """
         prompt = self._create_prompt(difference_analysis, wer)
         
-        MAX_RETRIES = 2
+        MAX_TRIES = 3
         response_keys = ["speed_tip", "clarity_tip", "articulation_tip", "rythm_tip"]
         
-        for attempt in range(1, MAX_RETRIES + 1):
-            print(f"Making a request, attempt {attempt}...", end="")
+        attempt = 1
+        while attempt < MAX_TRIES:
+            print(f"Making a request to ARLI model, attempt {attempt}...")
             response = self._make_api_request(prompt)
             if (
-                isinstance(response, dict) and 
-                all(key in response for key in response_keys)
-            ):
-                print("Successful response!")
-                return response
-            print(f"Retry attempt {attempt} failed. Retrying request...")
+                    isinstance(response, dict) and 
+                    all(key in response for key in response_keys)
+                ):
+                    print("Successful response!")
+                    return response
+            print(f"Attempt {attempt} failed. Retrying...")    
+            attempt += 1
 
         # Fallback if API fails or returns malformed output
-        return {
-            "speed_tip": ["We're sorry, no feedback was generated."],
-            "clarity_tip": ["Please try again later."],
-            "articulation_tip": [],
-            "rythm_tip": []
-        }
+        return {}
         

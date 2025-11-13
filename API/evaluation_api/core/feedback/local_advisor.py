@@ -1,7 +1,8 @@
 from llama_cpp import Llama
 from llama_cpp import LlamaGrammar
 import json5
-from huggingface_hub import hf_hub_download
+import os
+# from huggingface_hub import hf_hub_download
 
 class LocalSpeechAdvisor:
     def __init__(self):
@@ -11,14 +12,16 @@ class LocalSpeechAdvisor:
         # Define where the model comes from (Hugging Face repo + file)
         # https://huggingface.co/urdadval/mistral-7b-local-speech/blob/main/mistral-7b-instruct-v0.1.Q5_K_S.gguf
         self.repo_id = "urdadval/mistral-7b-local-speech"
-        self.filename = "mistral-7b-instruct-v0.1.Q5_K_S.gguf"
+        self.model_filename = "models/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        self.full_model_path = os.path.join(base_path, self.model_filename)
         
         # Hugging Face will auto-download & cache this file
-        self.full_model_path = hf_hub_download(
-            repo_id=self.repo_id,
-            filename=self.filename,
-            cache_dir="models"  # optional: puts cache under /models
-        )
+        #self.full_model_path = hf_hub_download(
+        #    repo_id=self.repo_id,
+        #    filename=self.filename,
+        #    cache_dir="models"  # optional: puts cache under /models
+        #)
         
         self.JSON_GRAMMAR_STR = r'''
 root ::= ("{"
@@ -142,7 +145,7 @@ ws ::= ([ \t\n]*)
                 echo=False
             )
             generated_text = response["choices"][0]["text"]
-            print("Success!")
+            print(generated_text)
             return generated_text
         except Exception as e:
             print(f"Error generating local model response: {e}")
@@ -194,9 +197,4 @@ ws ::= ([ \t\n]*)
             print(f"Attempt {attempt} failed. Retrying...")    
             attempt += 1
             
-        return {
-            "speed_tip": ["We're sorry, no feedback was generated."],
-            "clarity_tip": ["Please try again later."],
-            "articulation_tip": [],
-            "rythm_tip": []
-        }
+        return {}
