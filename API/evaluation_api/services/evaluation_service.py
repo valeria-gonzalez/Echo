@@ -29,6 +29,11 @@ class EvaluationService():
             # Get final score
             score = self.evaluator.get_score(audio_analysis, reference_analysis)
             
+            keys = ["total_score", "clarity_score", "speed_score", "articulation_score", "rythm_score"]
+            for key in keys:
+                if key not in score or score[key] is None:
+                    score[key] = -1
+            
             return EvaluationResponse(
                 total_score=score["total_score"],
                 clarity_score=score["clarity_score"],
