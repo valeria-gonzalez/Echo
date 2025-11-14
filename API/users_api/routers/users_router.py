@@ -272,17 +272,12 @@ async def get_users_application_progress_completed_uid_router(
             - 404 Not Found: If no completed progress is found for the user.
             - 500 Internal Server Error: If an unexpected error occurs during retrieval.
     """
-    try:
-        return await users_application_service.get_user_progress_by_completed_user_uid(
-            uid_user=uid_user
-            )
-    except HTTPException:
-        raise 
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Error: {str(e)}"
-            )
+    result = await users_application_service.get_user_progress_by_completed_user_uid(uid_user)
+
+    if result is None:
+        return {"detail": "Progress not found"}  # still status 200
+
+    return result
     
 @router.get("/progress/{uid_user_application}/{uid_resource}")
 async def get_users_application_progress_uid_router(

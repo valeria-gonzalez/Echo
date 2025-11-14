@@ -300,33 +300,21 @@ class UserApplicationService:
             docs = query.stream()
             doc = next(docs, None)
             if not doc:
-                raise HTTPException(status_code=200, detail="dont exit progress")
-            
+                return None  # no progress record
+
             progress_ref = self.collection.document(doc.id).collection("progress")
             result = progress_ref.stream()
 
             progress_by_uid = []
             for progress_doc in result:
                 data = progress_doc.to_dict()
+                if data.get("completed") is True:
+                    progress_by_uid.append({"id": progress_doc.id, **data})
 
-                if "completed" in data and isinstance(data["completed"], (bool)) and data["completed"] == True:
-                    progress_by_uid.append({
-                        "id": progress_doc.id,
-                        **data
-                        })
+            return progress_by_uid or None
 
-            if not progress_by_uid:
-                raise HTTPException(
-                    status_code=404,
-                    detail="progress not found"
-                    )
-
-            return progress_by_uid
         except Exception as e:
-            raise HTTPException(
-                status_code=500, 
-                detail=f"Error {str(e)}"
-                )
+            raise HTTPException(status_code=500, detail=f"Error {str(e)}")
 
     async def update_image_url(
             self,
