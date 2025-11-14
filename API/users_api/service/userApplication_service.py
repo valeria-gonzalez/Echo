@@ -300,7 +300,7 @@ class UserApplicationService:
             docs = query.stream()
             doc = next(docs, None)
             if not doc:
-                raise HTTPException(status_code=404, detail="user not found")
+                raise HTTPException(status_code=200, detail="dont exit progress")
             
             progress_ref = self.collection.document(doc.id).collection("progress")
             result = progress_ref.stream()
